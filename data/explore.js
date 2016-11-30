@@ -15,22 +15,37 @@ $(document).ready(function() {
     renderVersions();
     update();
 
-    $("#new_in_version").change(update);
+    $("#select_constraint").change(update);
+    $("#select_version").change(update);
     $("#optout").change(update);
   });
 });
 
 function update() {
+  var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
-  var revision = $("#new_in_version").val();
+  var revision = $("#select_version").val();
   var histograms = data["histograms"];
 
   // Version filter.
-  if (revision != "all") {
+  if (revision != "any") {
     var filtered = {};
+    var version = parseInt(data.revisions[revision].version);
 
     $.each(data.histograms, (name, history) => {
-      history = history.filter(h => h.revs.first == revision);
+      history = history.filter(h => {
+        switch (version_constraint) {
+          case "is_in":
+            var first_ver = parseInt(data.revisions[h.revs.first].version);
+            var last_ver = parseInt(data.revisions[h.revs.last].version);
+            return (first_ver <= version) && (last_ver >= version);
+          case "new_in":
+            return h.revs.first == revision;
+          default:
+            throw "Yuck, unknown selector.";
+        }
+      });
+
       if (history.length > 0) {
         filtered[name] = history;
       }
@@ -57,7 +72,7 @@ function update() {
 }
 
 function renderVersions() {
-  var select = $("#new_in_version");
+  var select = $("#select_version");
   var versions = [];
   var versionToRev = {};
 
@@ -85,7 +100,7 @@ function renderHistograms(histograms) {
   var container = $("#measurements");
   var items = [];
 
-  $.each(histograms, function(name, history) {
+  $.each(histograms, (name, history) => {
     items.push("<h3>" + name + "</h3>");
 
     var first_version = h => data.revisions[h["revs"]["first"]].version;
