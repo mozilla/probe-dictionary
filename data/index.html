@@ -1,0 +1,39 @@
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<html>
+<head>
+<title>Firefox data explorer</title>
+<style type="text/css">
+  table {
+    border-collapse: collapse;
+  }
+  table, th, td {
+    border: 1px solid black;
+  }
+</style>
+<script type="text/javascript"
+        src="https://code.jquery.com/jquery-3.1.1.min.js"
+        integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+        crossorigin="anonymous"></script>
+<script type="text/javascript" src="explore.js"></script>
+</head>
+
+<body>
+
+<form>
+  New in version:
+  <select id="new_in_version">
+    <option value="all" selected="selected">All</option>
+  </select>
+  <br />
+  <input id="optout" type="checkbox" checked="checked">
+  <label for="optout">opt-out measurements only</label>
+</form>
+
+<div id="measurements">
+</div>
+
+</body>
+</html>
