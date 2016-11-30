@@ -39645,64 +39645,104 @@
   }, 
   "revisions": {
     "078baf501b55": {
-      "tag": "FIREFOX_46_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_46_0_RELEASE", 
+      "version": "46"
     }, 
     "1f22a8cc7aa5": {
-      "tag": "FIREFOX_33_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_33_0_RELEASE", 
+      "version": "33"
     }, 
     "29182ac68a26": {
-      "tag": "FIREFOX_37_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_37_0_RELEASE", 
+      "version": "37"
     }, 
     "32dddf30405a": {
-      "tag": "FIREFOX_31_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_31_0_RELEASE", 
+      "version": "31"
     }, 
     "32e36869f84a": {
-      "tag": "FIREFOX_35_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_35_0_RELEASE", 
+      "version": "35"
     }, 
     "416dc3163a1f": {
-      "tag": "FIREFOX_49_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_49_0_RELEASE", 
+      "version": "49"
     }, 
     "44234f451065": {
-      "tag": "FIREFOX_32_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_32_0_RELEASE", 
+      "version": "32"
     }, 
     "456394191c90": {
-      "tag": "FIREFOX_34_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_34_0_RELEASE", 
+      "version": "34"
     }, 
     "4c4dc6640c7e": {
-      "tag": "FIREFOX_38_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_38_0_RELEASE", 
+      "version": "38"
     }, 
     "78c82e5cd777": {
-      "tag": "FIREFOX_41_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_41_0_RELEASE", 
+      "version": "41"
     }, 
     "84e0a4087157": {
-      "tag": "FIREFOX_40_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_40_0_RELEASE", 
+      "version": "40"
     }, 
     "88c5342693e3": {
-      "tag": "FIREFOX_36_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_36_0_RELEASE", 
+      "version": "36"
     }, 
     "9b79adf82b13": {
-      "tag": "FIREFOX_44_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_44_0_RELEASE", 
+      "version": "44"
     }, 
     "b0310cb90fd0": {
-      "tag": "FIREFOX_47_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_47_0_RELEASE", 
+      "version": "47"
     }, 
     "b6609650a911": {
-      "tag": "FIREFOX_45_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_45_0_RELEASE", 
+      "version": "45"
     }, 
     "c1de04f39fa9": {
-      "tag": "FIREFOX_48_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_48_0_RELEASE", 
+      "version": "48"
     }, 
     "d3b3e57e8088": {
-      "tag": "FIREFOX_39_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_39_0_RELEASE", 
+      "version": "39"
     }, 
     "dc617d65c9f0": {
-      "tag": "FIREFOX_50_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_50_0_RELEASE", 
+      "version": "50"
     }, 
     "e2f9a0ed50bc": {
-      "tag": "FIREFOX_42_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_42_0_RELEASE", 
+      "version": "42"
     }, 
     "fc05d86dc310": {
-      "tag": "FIREFOX_43_0_RELEASE"
+      "channel": "release", 
+      "tag": "FIREFOX_43_0_RELEASE", 
+      "version": "43"
     }
   }
 }

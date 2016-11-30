@@ -122,7 +122,6 @@ for tag in reversed(tags):
 			os.remove(path)
 
 	# Get histogram and python files for the revision.
-	#client.cat(files=histogram_files, rev=rev, output=hgdata_dir + "/%s")
 	for path in histogram_files + python_files:
 		base = os.path.basename(path)
 		try:
@@ -185,7 +184,9 @@ print ""
 revisions = {}
 for t in tags:
 	revisions[t[2]] = {
-		"tag": t[0]
+		"tag": t[0],
+		"channel": "release",
+		"version": t[0].split('_')[1],
 	}
 
 output = {
