@@ -1,0 +1,10 @@
+
+*.pyc
+
+hg-data/histogram_tools.py
+
+hg-data/Histograms.json
+
+hg-data/nsDeprecatedOperationList.h
+
+hg-data/UseCounters.conf
