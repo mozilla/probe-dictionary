@@ -9,8 +9,10 @@ Currently this is a hackish POC and only supports:
 * major releases
 * histograms
 
-Update the data with:```
-python extract.py path/to/mozilla-release```
+Update the data with:
+```
+python extract.py path/to/mozilla-release
+```  
 ... where `mozilla-release` is a checkout of [the hg release repository](https://hg.mozilla.org/releases/mozilla-release/).
 
 The output is in `data/measurements.json`. A simple web viewer is found under `data/index.html`.
