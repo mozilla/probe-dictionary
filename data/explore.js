@@ -111,19 +111,18 @@ function renderMeasurements(measurements) {
     var last_version = h => gData.revisions[h["revisions"]["last"]].version;
 
     var columns = new Map([
-      ["kind", h => h.details.kind],
-      ["optout", h => h.optout],
-      ["keyed", h => h.details.keyed],
-      ["first", h => first_version(h)],
-      ["last", h => last_version(h)],
-      ["dist", h => `<a href="${getHistogramDistributionURL(name, first_version(h), last_version(h))}">#</a>`],
-      ["description", h => h.description],
+      ["type", (d, h) => d.type],
+      ["optout", (d, h) => h.optout],
+      ["first", (d, h) => first_version(h)],
+      ["last", (d, h) => last_version(h)],
+      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(name, first_version(h), last_version(h))}">#</a>`],
+      ["description", (d, h) => h.description],
     ]);
 
     var table = "<table>";
     table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
     for (var h of history) {
-      var cells = [...columns.values()].map(fn => fn(h));
+      var cells = [...columns.values()].map(fn => fn(data, h));
       table += "<tr><td>" + cells.join("</td><td>") + "</td></tr>";
     }
     table += "</table>";
