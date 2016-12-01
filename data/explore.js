@@ -18,6 +18,8 @@ $(document).ready(function() {
     $("#select_constraint").change(update);
     $("#select_version").change(update);
     $("#optout").change(update);
+    $("#text_search").change(update);
+    $("#text_constraint").change(update);
   });
 });
 
@@ -25,10 +27,12 @@ function update() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var revision = $("#select_version").val();
+  var text_search = $("#text_search").val();
+  var text_constraint = $("#search_constraint").val();
   var measurements = gData.measurements;
 
   // No filtering? Just render everything.
-  if ((revision == "any") && !optout) {
+  if ((revision == "any") && !optout && (text_search == "")) {
     renderMeasurements(measurements);
     return;
   }
@@ -57,6 +61,19 @@ function update() {
             return m.revisions.first == revision;
           default:
             throw "Yuck, unknown selector.";
+        }
+      });
+    }
+
+    // Filter for text search.
+    if (text_search != "") {
+      var s = text_search.toLowerCase();
+      var test = (str) => str.toLowerCase().includes(s);
+      history = history.filter(h => {
+        switch (text_constraint) {
+          case "in_name": return test(data.name);
+          case "in_any": return test(data.name) || test(h.description);
+          default: throw "Yuck, unsupported text search constraint.";
         }
       });
     }
