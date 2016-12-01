@@ -8,3 +8,5 @@ hg-data/Histograms.json
 hg-data/nsDeprecatedOperationList.h
 
 hg-data/UseCounters.conf
+
+hg-data/dom/base/usecounters.py

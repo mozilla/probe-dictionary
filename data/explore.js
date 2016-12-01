@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var data = null;
+var gData = null;
 
 $(document).ready(function() {
   $.ajaxSetup({
@@ -11,7 +11,7 @@ $(document).ready(function() {
   });
 
   $.getJSON("measurements.json", function(result) {
-    data = result;
+    gData = result;
     renderVersions();
     update();
 
@@ -25,50 +25,53 @@ function update() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var revision = $("#select_version").val();
-  var histograms = data["histograms"];
+  var measurements = gData.measurements;
 
-  // Version filter.
-  if (revision != "any") {
-    var filtered = {};
-    var version = parseInt(data.revisions[revision].version);
+  // No filtering? Just render everything.
+  if ((revision == "any") && !optout) {
+    renderMeasurements(measurements);
+    return;
+  }
 
-    $.each(data.histograms, (name, history) => {
-      history = history.filter(h => {
+  // Filter out by selected criteria.
+  var filtered = {};
+
+  $.each(measurements, (id, data) => {
+    var history = data.history
+
+    // Filter by optout.
+    if (optout) {
+      history = history.filter(m => m.optout);
+    }
+
+    // Filter for version constraint.
+    if (revision != "any") {
+      var version = parseInt(gData.revisions[revision].version);
+      history = history.filter(m => {
         switch (version_constraint) {
           case "is_in":
-            var first_ver = parseInt(data.revisions[h.revs.first].version);
-            var last_ver = parseInt(data.revisions[h.revs.last].version);
+            var first_ver = parseInt(gData.revisions[m.revisions.first].version);
+            var last_ver = parseInt(gData.revisions[m.revisions.last].version);
             return (first_ver <= version) && (last_ver >= version);
           case "new_in":
-            return h.revs.first == revision;
+            return m.revisions.first == revision;
           default:
             throw "Yuck, unknown selector.";
         }
       });
+    }
 
-      if (history.length > 0) {
-        filtered[name] = history;
+    // Extract properties
+    if (history.length > 0) {
+      filtered[id] = {};
+      for (var p of Object.keys(measurements[id])) {
+        filtered[id][p] = measurements[id][p];
       }
-    });
+      filtered[id]["history"] = history;
+    }
+  });
 
-    histograms = filtered;
-  }
-
-  // Opt-out filter.
-  if (optout) {
-    var filtered = {};
-
-    $.each(histograms, (name, history) => {
-      history = history.filter(h => h.histogram.optout);
-      if (history.length > 0) {
-        filtered[name] = history;
-      }
-    });
-
-    histograms = filtered;
-  }
-
-  renderHistograms(histograms);
+  renderMeasurements(filtered);
 }
 
 function renderVersions() {
@@ -76,7 +79,7 @@ function renderVersions() {
   var versions = [];
   var versionToRev = {};
 
-  $.each(data.revisions, (rev, details) => {
+  $.each(gData.revisions, (rev, details) => {
     versions.push(details.version);
     versionToRev[details.version] = rev;
   });
@@ -96,23 +99,25 @@ function getHistogramDistributionURL(name, min_version="null", max_version="null
           `&product=Firefox`;
 }
 
-function renderHistograms(histograms) {
+function renderMeasurements(measurements) {
   var container = $("#measurements");
   var items = [];
 
-  $.each(histograms, (name, history) => {
-    items.push("<h3>" + name + "</h3>");
+  $.each(measurements, (id, data) => {
+    items.push("<h3>" + data.name + "</h3>"); 
 
-    var first_version = h => data.revisions[h["revs"]["first"]].version;
-    var last_version = h => data.revisions[h["revs"]["last"]].version;
+    var history = data.history;
+    var first_version = h => gData.revisions[h["revisions"]["first"]].version;
+    var last_version = h => gData.revisions[h["revisions"]["last"]].version;
+
     var columns = new Map([
-      ["kind", h => h.histogram.kind],
-      ["optout", h => h.histogram.optout],
-      ["keyed", h => h.histogram.keyed],
+      ["kind", h => h.details.kind],
+      ["optout", h => h.optout],
+      ["keyed", h => h.details.keyed],
       ["first", h => first_version(h)],
       ["last", h => last_version(h)],
       ["dist", h => `<a href="${getHistogramDistributionURL(name, first_version(h), last_version(h))}">#</a>`],
-      ["description", h => h.histogram.description],
+      ["description", h => h.description],
     ]);
 
     var table = "<table>";
