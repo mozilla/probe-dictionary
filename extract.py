@@ -120,8 +120,7 @@ tags = client.tags()
 #tags = filter(lambda t: re.match("^FIREFOX_.+_RELEASE$", t[0]), client.tags())
 tags = filter(lambda t: re.match("^FIREFOX_[0-9]+_0_RELEASE$", t[0]), tags)
 tags = sorted(tags, key=lambda t: distutils.version.LooseVersion(t[0].split('_')[1] + '_' + str(t[1]) + '_' + t[0]))
-#tags = tags[-20:]
-tags = tags[-10:]
+tags = tags[-20:]
 print "will process these tags:"
 for t in tags:
     print t
