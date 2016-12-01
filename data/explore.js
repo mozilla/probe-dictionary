@@ -19,7 +19,7 @@ $(document).ready(function() {
     $("#select_version").change(update);
     $("#optout").change(update);
     $("#text_search").change(update);
-    $("#text_constraint").change(update);
+    $("#search_constraint").change(update);
   });
 });
 
@@ -72,6 +72,7 @@ function update() {
       history = history.filter(h => {
         switch (text_constraint) {
           case "in_name": return test(data.name);
+          case "in_description": return test(h.description);
           case "in_any": return test(data.name) || test(h.description);
           default: throw "Yuck, unsupported text search constraint.";
         }
