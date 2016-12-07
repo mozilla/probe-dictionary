@@ -5,9 +5,11 @@
 import hglib
 import os
 import json
+import yaml
 import sys
 import re
 import distutils.version
+import shutil
 
 histogram_files = [
     'toolkit/components/telemetry/Histograms.json',
@@ -15,10 +17,18 @@ histogram_files = [
     'dom/base/nsDeprecatedOperationList.h',
 ]
 
+scalar_files = [
+    'toolkit/components/telemetry/Scalars.yaml',
+]
+
 python_files = [
     'toolkit/components/telemetry/histogram_tools.py',
     'dom/base/usecounters.py',
+    'toolkit/components/telemetry/parse_scalars.py',
+    'toolkit/components/telemetry/shared_telemetry_utils.py',
 ]
+
+all_files = histogram_files + python_files + scalar_files
 
 def get_from_nested_dict(dictionary, path, default=None):
     keys = path.split('/')
@@ -99,6 +109,127 @@ def extract_histogram_data(h):
 
     return data
 
+def load_histograms_from_rev(rev, major_version):
+    files = [hgdata_dir + "/" + os.path.basename(path) for path in histogram_files]
+    if major_version < 43:
+        # The DeprecatedOperation parser was added in Fx 43.
+        files = [f for f in files if os.path.basename(f) != 'nsDeprecatedOperationList.h']
+    files = [f for f in files if os.path.exists(f)]
+    histograms = list(histogram_tools.from_files(files))
+
+    for h in histograms:
+        name = h.name()
+        id = "histogram/" + name
+        data = extract_histogram_data(h)
+
+        if not id in probe_data:
+            probe_data[id] = {
+                "type": "histogram",
+                "name": name,
+                "history": [],
+            }
+        else:
+            # If the histograms state didn't change from the previous revision,
+            # let's continue.
+            # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
+            # * from 43 to 49 it has: "high": 3, "n_buckets": 4
+            # * from 50 on it has: "high": 4, "n_buckets": 5
+            previous = probe_data[id]["history"][-1]
+            if histograms_equal(previous, data):
+                previous["revisions"]["first"] = rev
+                continue
+
+        data["revisions"] = {"first": rev, "last": rev}
+        probe_data[id]["history"].append(data)
+
+def scalars_equal(s1, s2):
+    props = [
+        "details/keyed",
+        "details/kind",
+        "cpp_guard",
+        "optout",
+    ]
+    for p in props:
+        if get_from_nested_dict(s1, p) != get_from_nested_dict(s2, p):
+            return False
+    return True
+
+def extract_scalar_data(s):
+    props = {
+        # source_field: target_field
+        "label": "name",
+        "kind": "details/kind",
+        "keyed": "details/keyed",
+        "name": "details/name",
+
+        "cpp_guard": "cpp_guard",
+        "description": "description",
+        "expires": "expiry_version",
+    }
+
+    defaults = {
+        "cpp_guard": None,
+        "keyed": False,
+        "expiration": "never",
+    }
+
+    data = {
+        "details": {}
+    }
+
+    for source_field,target_field in props.iteritems():
+        value = None
+        if getattr(s, source_field, None):
+            value = getattr(s, source_field)
+        elif source_field in defaults:
+            value = defaults[source_field]
+        set_in_nested_dict(data, target_field, value)
+
+    # We only care about opt-out or opt-in really.
+    optout = getattr(s, "dataset", "").endswith('_OPTOUT')
+    data["optout"] = optout
+
+    # Normalize some field values.
+    if data["expiry_version"] == "default":
+        data["expiry_version"] = "never"
+
+    return data
+
+def load_scalars_from_rev(rev, major_version):
+    files = [hgdata_dir + "/" + os.path.basename(path) for path in scalar_files]
+    if major_version < 48:
+        # Scalars were only added in Fx 43.
+        return
+    scalars = parse_scalars.load_scalars(files[0])
+
+    scalars = filter(lambda s: not s.label.startswith("telemetry.test."), scalars)
+
+    for s in scalars:
+        name = s.label
+        id = "scalar/" + name
+        data = extract_scalar_data(s)
+
+        if not id in probe_data:
+            probe_data[id] = {
+                "type": "scalar",
+                "name": name,
+                "history": [],
+            }
+        else:
+            # If the histograms state didn't change from the previous revision,
+            # let's continue.
+            # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
+            # * from 43 to 49 it has: "high": 3, "n_buckets": 4
+            # * from 50 on it has: "high": 4, "n_buckets": 5
+            previous = probe_data[id]["history"][-1]
+            if scalars_equal(previous, data):
+                previous["revisions"]["first"] = rev
+                continue
+
+        data["revisions"] = {"first": rev, "last": rev}
+        probe_data[id]["history"].append(data)
+
+
 if __name__ != "__main__":
     raise RuntimeError
 
@@ -145,19 +276,25 @@ for tag in reversed(tags):
     print ""
 
     # Clean up previous state.
-    for f in histogram_files + python_files:
+    for f in os.listdir(hgdata_dir):
+        if f == "buildconfig.py":
+            continue
         path = hgdata_dir + "/" + f
-        if os.path.exists(path):
+        if os.path.isdir(path):
+            shutil.rmtree(path)
+        else:
             os.remove(path)
 
     # Get histogram and python files for the revision.
-    for path in histogram_files + python_files:
+    for path in all_files:
         base = os.path.basename(path)
         try:
             client.cat(files=[path], rev=rev, output=hgdata_dir + "/" + base)
         except hglib.error.CommandError:
-            if base not in ['Histograms.json', 'histogram_tools.py']:
-                pass
+            # We always should have these two.
+            print "... command error for", base
+            if base in ['Histograms.json', 'histogram_tools.py']:
+                raise
 
     # histogram_tools expects usecounters.py to be in $topsrcdir/dom/base.
     if os.path.exists(hgdata_dir + '/usecounters.py'):
@@ -170,53 +307,21 @@ for tag in reversed(tags):
     # In subsequent passes we need to trigger a reload to pick up the changed module.
     if first_import:
         import histogram_tools
+        import parse_scalars
         first_import = False
     else:
         reload(histogram_tools)
+        if os.path.exists(hgdata_dir + "/parse_scalars.py"):
+            reload(parse_scalars)
 
-    # Parse histograms.
-    files = [hgdata_dir + "/" + os.path.basename(path) for path in histogram_files]
-    if major_version < 43:
-        # The DeprecatedOperation parser was added in Fx 43.
-        files = [f for f in files if os.path.basename(f) != 'nsDeprecatedOperationList.h']
-    histograms = list(histogram_tools.from_files(files))
-
-    for h in histograms:
-        name = h.name()
-        id = "histogram/" + name
-        data = extract_histogram_data(h)
-
-        if not id in probe_data:
-            probe_data[id] = {
-                "type": "histogram",
-                "name": name,
-                "history": [],
-            }
-        else:
-            # If the histograms state didn't change from the previous revision,
-            # let's continue.
-            # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
-            # * from 43 to 49 it has: "high": 3, "n_buckets": 4
-            # * from 50 on it has: "high": 4, "n_buckets": 5
-            previous = probe_data[id]["history"][-1]
-            if histograms_equal(previous, data):
-                previous["revisions"]["first"] = rev
-                continue
-
-        data["revisions"] = {"first": rev, "last": rev}
-        probe_data[id]["history"].append(data)
+    load_histograms_from_rev(rev, major_version)
+    if os.path.exists(hgdata_dir + "/Scalars.yaml"):
+        load_scalars_from_rev(rev, major_version)
 
 print "********************************"
 lengths = map(lambda p: len(p["history"]), probe_data.itervalues())
 print "min history length", min(lengths)
 print "max history length", max(lengths)
-print "history length > 1 (first 20):"
-
-for id,data in probe_data.iteritems():
-    if len(data["history"]) <= 1:
-        continue
-    print " * " + id + ": " + str(len(data["history"]))
-print ""
 
 # Rewrite the tags into revision data.
 revisions = {}
@@ -236,10 +341,3 @@ if not os.path.exists(data_dir):
         os.makedirs(data_dir)
 with open(data_dir + '/measurements.json', 'w') as f:
     json.dump(output, f, sort_keys=True, indent=2)
-
-# Maybe what we really want instead is a table of different measurements:
-# [name_or_id, channel, first_rev, last_rev, optout, type, description, expiry_version, details]
-# ... where:
-# type: histogram, scalar, event, ...
-# first_rev: the rev we first saw this measurement in with this state.
-# details: contains all the type-specific detailed data

@@ -109,7 +109,11 @@ function renderVersions() {
   }
 }
 
-function getHistogramDistributionURL(name, min_version="null", max_version="null") {
+function getHistogramDistributionURL(name, type, min_version="null", max_version="null") {
+  if (type != "histogram") {
+    return;
+  }
+
   return `https://telemetry.mozilla.org/new-pipeline/dist.html#!` +
           `max_channel_version=release%252F${max_version}&`+
           `min_channel_version=release%252F${min_version}&` +
@@ -133,7 +137,7 @@ function renderMeasurements(measurements) {
       ["optout", (d, h) => h.optout],
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
-      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(name, first_version(h), last_version(h))}">#</a>`],
+      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(name, h.type, first_version(h), last_version(h))}">#</a>`],
       ["description", (d, h) => h.description],
     ]);
 

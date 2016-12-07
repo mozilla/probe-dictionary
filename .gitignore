@@ -10,3 +10,13 @@ hg-data/nsDeprecatedOperationList.h
 hg-data/UseCounters.conf
 
 hg-data/dom/base/usecounters.py
+
+hg-data/Scalars.yaml
+
+hg-data/parse_scalars.py
+
+data/measurements.json
+
+data/jquery-3.1.1.min.js
+
+data/measurements.json
