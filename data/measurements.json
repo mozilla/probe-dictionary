@@ -47746,6 +47746,138 @@
       ], 
       "name": "ZOOMED_VIEW_ENABLED", 
       "type": "histogram"
+    }, 
+    "scalar/browser.engagement.max_concurrent_tab_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of maximum number of tabs open during a subsession, across all windows, including tabs in private windows and restored at startup.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "max_concurrent_tab_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.max_concurrent_tab_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.max_concurrent_tab_count", 
+      "type": "scalar"
+    }, 
+    "scalar/browser.engagement.max_concurrent_window_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of maximum number of browser windows open during a subsession. This includes private windows and the ones opened when starting the browser.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "max_concurrent_window_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.max_concurrent_window_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.max_concurrent_window_count", 
+      "type": "scalar"
+    }, 
+    "scalar/browser.engagement.tab_open_event_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of tab open events per subsession, across all windows, after the session has been restored. This includes tab open events from private windows.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "tab_open_event_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.tab_open_event_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.tab_open_event_count", 
+      "type": "scalar"
+    }, 
+    "scalar/browser.engagement.total_uri_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of the total non-unique http(s) URIs visited in a subsession, including page reloads, after the session has been restored. This does not include background page requests and URIs from embedded pages or private browsing.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "total_uri_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.total_uri_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.total_uri_count", 
+      "type": "scalar"
+    }, 
+    "scalar/browser.engagement.unique_domains_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of the unique domains visited in a subsession, after the session has been restored. Subdomains under eTLD are aggregated after the first level (i.e. test.example.com and other.example.com are only counted once). This does not include background page requests and domains from embedded pages or private browsing. The count is limited to 100 unique domains.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "unique_domains_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.unique_domains_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.unique_domains_count", 
+      "type": "scalar"
+    }, 
+    "scalar/browser.engagement.window_open_event_count": {
+      "history": [
+        {
+          "cpp_guard": null, 
+          "description": "The count of browser window open events per subsession, after the session has been restored. The count includes the private windows.\n", 
+          "details": {
+            "keyed": false, 
+            "kind": "uint", 
+            "name": "window_open_event_count"
+          }, 
+          "expiry_version": "55.0a1", 
+          "name": "browser.engagement.window_open_event_count", 
+          "optout": true, 
+          "revisions": {
+            "first": "dc617d65c9f0", 
+            "last": "dc617d65c9f0"
+          }
+        }
+      ], 
+      "name": "browser.engagement.window_open_event_count", 
+      "type": "scalar"
     }
   }, 
   "revisions": {
