@@ -111,7 +111,7 @@ function renderVersions() {
 
 function getHistogramDistributionURL(name, type, min_version="null", max_version="null") {
   if (type != "histogram") {
-    return;
+    return "";
   }
 
   return `https://telemetry.mozilla.org/new-pipeline/dist.html#!` +
@@ -137,7 +137,7 @@ function renderMeasurements(measurements) {
       ["optout", (d, h) => h.optout],
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
-      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(name, h.type, first_version(h), last_version(h))}">#</a>`],
+      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(d.name, d.type, first_version(h), last_version(h))}">#</a>`],
       ["description", (d, h) => h.description],
     ]);
 
