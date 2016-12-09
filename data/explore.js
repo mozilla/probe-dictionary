@@ -90,6 +90,7 @@ function update() {
   });
 
   renderMeasurements(filtered);
+  renderStats(filtered);
 }
 
 function renderVersions() {
@@ -154,3 +155,9 @@ function renderMeasurements(measurements) {
   container.empty();
   container.append(items.join(""));
 }
+
+function renderStats(filtered) {
+  var count = Object.keys(filtered).length;
+  $("#stats").text("Found " + count + " probes.");
+}
+
