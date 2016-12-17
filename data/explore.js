@@ -61,8 +61,9 @@ function filterMeasurements() {
           case "is_in":
             var first_ver = parseInt(gData.revisions[m.revisions.first].version);
             var last_ver = parseInt(gData.revisions[m.revisions.last].version);
-            var expires = parseInt(m.expiry_version);
-            return (first_ver <= version) && (last_ver >= version) && (expires >= version);
+            var expires = m.expiry_version;
+            return (first_ver <= version) && (last_ver >= version) &&
+                   ((expires == "never") || (parseInt(expires) >= version));
           case "new_in":
             return m.revisions.first == revision;
           default:
