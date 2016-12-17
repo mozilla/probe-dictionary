@@ -37,10 +37,17 @@ find probes | <a href="stats.html">stats</a>
     <option value="is_in" selected="selected">recorded in</option>
     <option value="new_in">new in</option>
   </select>
-  version:
+  version
   <select id="select_version">
     <option id="version_any" value="any" selected="selected">Any</option>
   </select>
+  on channel
+  <select id="select_channel">
+    <option value="release" selected="selected">release</option>
+    <option value="beta">beta</option>
+    <option value="aurora">aurora</option>
+  </select>
+  .
   <br />
   <input id="optout" type="checkbox" checked="checked">
   <label for="optout">Show only opt-out measurements.</label>

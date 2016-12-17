@@ -10,6 +10,7 @@ import sys
 import re
 import distutils.version
 import shutil
+import argparse
 
 histogram_files = [
     'toolkit/components/telemetry/Histograms.json',
@@ -109,7 +110,7 @@ def extract_histogram_data(h):
 
     return data
 
-def load_histograms_from_rev(rev, major_version):
+def load_histograms_from_rev(rev, major_version, channel):
     files = [hgdata_dir + "/" + os.path.basename(path) for path in histogram_files]
     if major_version < 43:
         # The DeprecatedOperation parser was added in Fx 43.
@@ -126,21 +127,23 @@ def load_histograms_from_rev(rev, major_version):
             probe_data[id] = {
                 "type": "histogram",
                 "name": name,
-                "history": [],
+                "history": {channel: []},
             }
+        elif not channel in probe_data[id]["history"]:
+            probe_data[id]["history"][channel] = []
         else:
             # If the histograms state didn't change from the previous revision,
             # let's continue.
             # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
             # * from 43 to 49 it has: "high": 3, "n_buckets": 4
             # * from 50 on it has: "high": 4, "n_buckets": 5
-            previous = probe_data[id]["history"][-1]
+            previous = probe_data[id]["history"][channel][-1]
             if histograms_equal(previous, data):
                 previous["revisions"]["first"] = rev
                 continue
 
         data["revisions"] = {"first": rev, "last": rev}
-        probe_data[id]["history"].append(data)
+        probe_data[id]["history"][channel].append(data)
 
 def scalars_equal(s1, s2):
     props = [
@@ -195,7 +198,7 @@ def extract_scalar_data(s):
 
     return data
 
-def load_scalars_from_rev(rev, major_version):
+def load_scalars_from_rev(rev, major_version, channel):
     files = [hgdata_dir + "/" + os.path.basename(path) for path in scalar_files]
     if major_version < 48:
         # Scalars were only added in Fx 43.
@@ -213,124 +216,164 @@ def load_scalars_from_rev(rev, major_version):
             probe_data[id] = {
                 "type": "scalar",
                 "name": name,
-                "history": [],
+                "history": {channel: []},
             }
+        elif not channel in probe_data[id]["history"]:
+            probe_data[id]["history"][channel] = []
         else:
             # If the histograms state didn't change from the previous revision,
             # let's continue.
             # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
             # * from 43 to 49 it has: "high": 3, "n_buckets": 4
             # * from 50 on it has: "high": 4, "n_buckets": 5
-            previous = probe_data[id]["history"][-1]
+            previous = probe_data[id]["history"][channel][-1]
             if scalars_equal(previous, data):
                 previous["revisions"]["first"] = rev
                 continue
 
         data["revisions"] = {"first": rev, "last": rev}
-        probe_data[id]["history"].append(data)
+        probe_data[id]["history"][channel].append(data)
 
+def extract_tag_data(tags, channel):
+    if channel == "release":
+        tags = filter(lambda t: re.match("^FIREFOX_[0-9]+_0_RELEASE$", t[0]), tags)
+    elif channel == "beta":
+        tags = filter(lambda t: re.match("^FIREFOX_BETA_[0-9]+_END$", t[0]), tags)
+    elif channel == "aurora":
+        tags = filter(lambda t: re.match("^FIREFOX_AURORA_[0-9]+_END$", t[0]), tags)
+    else:
+        raise RuntimeError, "Unsupported channel."
+
+    results = []
+
+    for name,_,rev,_ in tags:
+        version = ""
+        if channel == "release":
+            version = name.split('_')[1]
+        elif channel in ["beta", "aurora"]:
+            version = name.split('_')[2]
+        else:
+            raise RuntimeError, "Unsupported channel."
+
+        if int(version) >= 30:
+            results.append({
+                "revision": rev,
+                "version": version,
+            })
+
+    results = sorted(results, key=lambda r: int(r["version"]))
+    return results
 
 if __name__ != "__main__":
     raise RuntimeError
+
+# Get channel repo paths from arguments.
+channel_paths = {}
+channels = ['release', 'beta', 'aurora']
+
+parser = argparse.ArgumentParser(description='Extract Firefox measurement information.')
+for c in channels:
+    parser.add_argument('--' + c, type=str, help='Path to hg ' + c + ' repo.')
+args = vars(parser.parse_args())
+for c in channels:
+    if c in args and args[c] != None:
+        channel_paths[c] = args[c]
+
+if len(channel_paths) < 1:
+    raise RuntimeError, "Expected at least one channel to be specified."
 
 # Path setup.
 base_dir = os.path.dirname(os.path.abspath(__file__))
 hgdata_dir = base_dir + '/hg-data'
 data_dir = base_dir + "/data"
-repo_dir = sys.argv[1]
-
-probe_data = {}
-
-# Some hglib/commandserver usage requires pwd to be in the repository,
-# even when full paths are given.
-os.chdir(repo_dir)
-client = hglib.open(repo_dir)
-
-# Get tags. For now we just take all the initial Firefox release revisions.
-tags = client.tags()
-#tags = filter(lambda t: re.match("^FIREFOX_.+_RELEASE$", t[0]), client.tags())
-tags = filter(lambda t: re.match("^FIREFOX_[0-9]+_0_RELEASE$", t[0]), tags)
-tags = sorted(tags, key=lambda t: distutils.version.LooseVersion(t[0].split('_')[1] + '_' + str(t[1]) + '_' + t[0]))
-tags = tags[-20:]
-print "will process these tags:"
-for t in tags:
-    print t
-print ""
 
 # We need to mock buildconfig.topsrcdir for histogram_tools lookups to work.
-# If this is not present, it skips processing of UseCounters and nsDeprecatedOperationList.
+# If this is not present, processing of UseCounters and nsDeprecatedOperationList is skipped.
 sys.path.insert(0, hgdata_dir)
 import buildconfig
 buildconfig.set_fake_topsrcdir(hgdata_dir)
 
-# We iterate the revisions from latest to most recent.
-# That allows us to always grab the last state for field updates like
-# expiry by version.
+# Wether we already imported the modules from hg.
 first_import = True
-for tag in reversed(tags):
-    name = tag[0]
-    major_version = int(name.split('_')[1])
-    rev = tag[2]
-    print "********************************"
-    print "processing", tag
+
+# This stores the extracted data.
+probe_data = {}
+revisions = {}
+
+for channel,repo_dir in channel_paths.iteritems():
+    print "\n\nExtracting from channel", channel, "."
+    # Some hglib/commandserver usage requires pwd to be in the repository,
+    # even when full paths are given.
+    os.chdir(repo_dir)
+    client = hglib.open(repo_dir)
+
+    # Get tags. For now we just take all the initial Firefox release revisions.
+    tags = client.tags()
+    tag_data = list(reversed(extract_tag_data(tags, channel)))
+    print "Will process these tags:"
+    for t in tag_data:
+        print t
     print ""
 
-    # Clean up previous state.
-    for f in os.listdir(hgdata_dir):
-        if f == "buildconfig.py":
-            continue
-        path = hgdata_dir + "/" + f
-        if os.path.isdir(path):
-            shutil.rmtree(path)
+    # Rewrite the tags into revision data.
+    for t in tag_data:
+        revisions[t["revision"]] = {
+            "channel": channel,
+            "version": t["version"],
+        }
+
+    # We iterate the revisions from latest to most recent.
+    # That allows us to always grab the last state for field updates like
+    # expiry by version.
+    for t in tag_data:
+        major_version = int(t["version"])
+        rev = t["revision"]
+        print "********************************"
+        print "processing", t
+        print ""
+
+        # Clean up previous state.
+        for f in os.listdir(hgdata_dir):
+            if f == "buildconfig.py":
+                continue
+            path = hgdata_dir + "/" + f
+            if os.path.isdir(path):
+                shutil.rmtree(path)
+            else:
+                os.remove(path)
+
+        # Get histogram and python files for the revision.
+        for path in all_files:
+            base = os.path.basename(path)
+            try:
+                client.cat(files=[path], rev=rev, output=hgdata_dir + "/" + base)
+            except hglib.error.CommandError:
+                # We always should have these two.
+                print "... command error for", base
+                if base in ['Histograms.json', 'histogram_tools.py']:
+                    raise
+
+        # histogram_tools expects usecounters.py to be in $topsrcdir/dom/base.
+        if os.path.exists(hgdata_dir + '/usecounters.py'):
+            dom_base_dir = hgdata_dir + '/dom/base'
+            if not os.path.exists(dom_base_dir):
+                os.makedirs(dom_base_dir)
+            os.rename(hgdata_dir + '/usecounters.py', dom_base_dir + '/usecounters.py')
+
+        # We only need to import the module on the first pass.
+        # In subsequent passes we need to trigger a reload to pick up the changed module.
+        if first_import:
+            import histogram_tools
+            import parse_scalars
+            first_import = False
         else:
-            os.remove(path)
+            reload(histogram_tools)
+            if os.path.exists(hgdata_dir + "/parse_scalars.py"):
+                reload(parse_scalars)
 
-    # Get histogram and python files for the revision.
-    for path in all_files:
-        base = os.path.basename(path)
-        try:
-            client.cat(files=[path], rev=rev, output=hgdata_dir + "/" + base)
-        except hglib.error.CommandError:
-            # We always should have these two.
-            print "... command error for", base
-            if base in ['Histograms.json', 'histogram_tools.py']:
-                raise
-
-    # histogram_tools expects usecounters.py to be in $topsrcdir/dom/base.
-    if os.path.exists(hgdata_dir + '/usecounters.py'):
-        dom_base_dir = hgdata_dir + '/dom/base'
-        if not os.path.exists(dom_base_dir):
-            os.makedirs(dom_base_dir)
-        os.rename(hgdata_dir + '/usecounters.py', dom_base_dir + '/usecounters.py')
-
-    # We only need to import the module on the first pass.
-    # In subsequent passes we need to trigger a reload to pick up the changed module.
-    if first_import:
-        import histogram_tools
-        import parse_scalars
-        first_import = False
-    else:
-        reload(histogram_tools)
-        if os.path.exists(hgdata_dir + "/parse_scalars.py"):
-            reload(parse_scalars)
-
-    load_histograms_from_rev(rev, major_version)
-    if os.path.exists(hgdata_dir + "/Scalars.yaml"):
-        load_scalars_from_rev(rev, major_version)
-
-print "********************************"
-lengths = map(lambda p: len(p["history"]), probe_data.itervalues())
-print "min history length", min(lengths)
-print "max history length", max(lengths)
-
-# Rewrite the tags into revision data.
-revisions = {}
-for t in tags:
-    revisions[t[2]] = {
-        "tag": t[0],
-        "channel": "release",
-        "version": t[0].split('_')[1],
-    }
+        load_histograms_from_rev(rev, major_version, channel)
+        if os.path.exists(hgdata_dir + "/Scalars.yaml"):
+            load_scalars_from_rev(rev, major_version, channel)
 
 output = {
     "measurements": probe_data,

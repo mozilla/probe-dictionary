@@ -18,6 +18,7 @@ $(document).ready(function() {
     $("#select_constraint").change(update);
     $("#select_version").change(update);
     $("#select_version").keyup(update);
+    $("#select_channel").change(update);
     $("#optout").change(update);
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
@@ -34,6 +35,7 @@ function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var revision = $("#select_version").val();
+  var channel = $("#select_channel").val();
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
   var measurements = gData.measurements;
@@ -47,7 +49,10 @@ function filterMeasurements() {
   var filtered = {};
 
   $.each(measurements, (id, data) => {
-    var history = data.history
+    var history = data.history[channel];
+    if (!history) {
+      return;
+    }
 
     // Filter by optout.
     if (optout) {
