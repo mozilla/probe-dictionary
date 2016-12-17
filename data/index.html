@@ -32,9 +32,10 @@ find probes | <a href="stats.html">stats</a>
 <br/>
 
 <form>
+  Probe is
   <select id="select_constraint">
-    <option value="is_in" selected="selected">Is recorded in</option>
-    <option value="new_in">Is new in</option>
+    <option value="is_in" selected="selected">recorded in</option>
+    <option value="new_in">new in</option>
   </select>
   version:
   <select id="select_version">
@@ -42,7 +43,7 @@ find probes | <a href="stats.html">stats</a>
   </select>
   <br />
   <input id="optout" type="checkbox" checked="checked">
-  <label for="optout">opt-out measurements only</label>
+  <label for="optout">Show only opt-out measurements.</label>
   <br />
   Text search
   <select id="search_constraint">
@@ -50,6 +51,7 @@ find probes | <a href="stats.html">stats</a>
     <option value="in_name">in name</option>
     <option value="in_description">in description</option>
   </select>
+  for:
   <input id="text_search" name="text_search">
 </form>
 
