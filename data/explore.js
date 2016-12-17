@@ -34,6 +34,7 @@ function update() {
   // No filtering? Just render everything.
   if ((revision == "any") && !optout && (text_search == "")) {
     renderMeasurements(measurements);
+    renderStats(measurements);
     return;
   }
 
