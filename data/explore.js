@@ -24,6 +24,12 @@ $(document).ready(function() {
 });
 
 function update() {
+  var filtered = filterMeasurements();
+  renderMeasurements(filtered);
+  renderStats(filtered);
+}
+
+function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var revision = $("#select_version").val();
@@ -33,9 +39,7 @@ function update() {
 
   // No filtering? Just render everything.
   if ((revision == "any") && !optout && (text_search == "")) {
-    renderMeasurements(measurements);
-    renderStats(measurements);
-    return;
+    return measurements;
   }
 
   // Filter out by selected criteria.
@@ -90,8 +94,7 @@ function update() {
     }
   });
 
-  renderMeasurements(filtered);
-  renderStats(filtered);
+  return filtered;
 }
 
 function renderVersions() {
