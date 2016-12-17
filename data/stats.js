@@ -12,14 +12,21 @@ $(document).ready(function() {
 
   $.getJSON("measurements.json", function(result) {
     gData = result;
-    
-    var perVersion = getMeasurementsPerVersion();
-    render(perVersion);
+    update();
+
+    $("#select_channel").change(update);
   });
 });
 
+function update() {
+  var perVersion = getMeasurementsPerVersion();
+  render(perVersion);
+}
+
 function getMeasurementsPerVersion() {
   let last = array => array[array.length - 1];
+
+  let channel = $("#select_channel").val();
 
   let revisions = {};
   Object.keys(gData.revisions).forEach(k => revisions[k] = {})
@@ -32,7 +39,12 @@ function getMeasurementsPerVersion() {
   });
 
   $.each(gData.measurements, (id, data) => {
-    let m = last(data.history);
+    let history = data.history[channel];
+    if (!history) {
+      return;
+    }
+
+    let m = last(history);
     let k = m.optout ? "optout" : "optin";
     revisions[m.revisions.first][k] += 1;
   });
@@ -47,13 +59,28 @@ function getMeasurementsPerVersion() {
 }
 
 function render(data) {
+  let last = array => array[array.length - 1];
+
   // Prepare data.
   var columns = ["optin", "optout"];
   data.sort(function(a, b) { return parseInt(a.version) - parseInt(b.version); });
+
+  // Remove leading & trailing 0 entries.
+  while (data[0].total == 0) {
+    data = data.slice(1);
+  }
+  while (last(data).total == 0) {
+    data = data.slice(0, -1);
+  }
+
+  // Remove the first non-0 entry. All probes would be new in that first version,
+  // which changes the scale of the diagram significantly.
   data = data.slice(1);
 
   // Render.
   var svg = d3.select("#stats");
+  svg.selectAll("*").remove();
+
   var margin = {top: 20, right: 20, bottom: 30, left: 40};
   var width = +svg.attr("width") - margin.left - margin.right;
   var height = +svg.attr("height") - margin.top - margin.bottom;
