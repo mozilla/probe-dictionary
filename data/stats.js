@@ -32,11 +32,6 @@ function getMeasurementsPerVersion() {
   });
 
   $.each(gData.measurements, (id, data) => {
-    if (id.startsWith("histogram/TELEMETRY_TEST_") ||
-        id.startsWith("scalar/telemetry.test.")) {
-      return;
-    }
-
     let m = last(data.history);
     let k = m.optout ? "optout" : "optin";
     revisions[m.revisions.first][k] += 1;

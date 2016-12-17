@@ -120,6 +120,10 @@ def load_histograms_from_rev(rev, major_version, channel):
 
     for h in histograms:
         name = h.name()
+        if name.startswith("TELEMETRY_TEST_"):
+            # These are test-only probes and never sent out.
+            continue
+
         id = "histogram/" + name
         data = extract_histogram_data(h)
 
@@ -204,7 +208,7 @@ def load_scalars_from_rev(rev, major_version, channel):
         # Scalars were only added in Fx 43.
         return
     scalars = parse_scalars.load_scalars(files[0])
-
+    # Filter out test-only probes that are never sent out.
     scalars = filter(lambda s: not s.label.startswith("telemetry.test."), scalars)
 
     for s in scalars:
