@@ -61,7 +61,8 @@ function filterMeasurements() {
           case "is_in":
             var first_ver = parseInt(gData.revisions[m.revisions.first].version);
             var last_ver = parseInt(gData.revisions[m.revisions.last].version);
-            return (first_ver <= version) && (last_ver >= version);
+            var expires = parseInt(m.expiry_version);
+            return (first_ver <= version) && (last_ver >= version) && (expires >= version);
           case "new_in":
             return m.revisions.first == revision;
           default:
@@ -142,6 +143,7 @@ function renderMeasurements(measurements) {
       ["optout", (d, h) => h.optout],
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
+      ["expiry", (d, h) => h.expiry_version],
       ["dist", (d, h) => `<a href="${getHistogramDistributionURL(d.name, d.type, first_version(h), last_version(h))}">#</a>`],
       ["description", (d, h) => h.description],
     ]);
