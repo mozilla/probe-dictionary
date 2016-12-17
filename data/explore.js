@@ -17,6 +17,7 @@ $(document).ready(function() {
 
     $("#select_constraint").change(update);
     $("#select_version").change(update);
+    $("#select_version").keyup(update);
     $("#optout").change(update);
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
