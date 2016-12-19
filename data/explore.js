@@ -58,7 +58,6 @@ function updateUI() {
 
   // Show only versions available for this channel.
   $("#select_version > option").each(function() {
-    console.log(this.value);
     $(this).toggle((this.value == "any") || (this.value in channelInfo.versions));
   });
 
@@ -89,11 +88,6 @@ function filterMeasurements() {
   var text_constraint = $("#search_constraint").val();
   var measurements = gData.measurements;
 
-  // No filtering? Just render everything.
-  if ((version == "any") && !optout && (text_search == "")) {
-    return measurements;
-  }
-
   // Look up revision.
   var revision = (version == "any") ? "any" : gChannelInfo[channel].versions[version];
 
@@ -101,10 +95,10 @@ function filterMeasurements() {
   var filtered = {};
 
   $.each(measurements, (id, data) => {
-    var history = data.history[channel];
-    if (!history) {
+    if (!(channel in data.history)) {
       return;
     }
+    var history = data.history[channel];
 
     // Filter by optout.
     if (optout) {
@@ -150,7 +144,7 @@ function filterMeasurements() {
       for (var p of Object.keys(measurements[id])) {
         filtered[id][p] = measurements[id][p];
       }
-      filtered[id]["history"] = history;
+      filtered[id]["history"][channel] = history;
     }
   });
 
@@ -184,13 +178,14 @@ function getHistogramDistributionURL(name, type, min_version="null", max_version
 }
 
 function renderMeasurements(measurements) {
+  var channel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
 
   $.each(measurements, (id, data) => {
     items.push("<h3>" + data.name + "</h3>"); 
 
-    var history = data.history;
+    var history = data.history[channel];
     var first_version = h => gData.revisions[h["revisions"]["first"]].version;
     var last_version = h => gData.revisions[h["revisions"]["last"]].version;
 
