@@ -4,6 +4,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 var gData = null;
+// {release: {versions: {31: rev}}}
+var gChannelInfo = null;
 
 $(document).ready(function() {
   $.ajaxSetup({
@@ -12,6 +14,8 @@ $(document).ready(function() {
 
   $.getJSON("measurements.json", function(result) {
     gData = result;
+    extractChannelInfo();
+
     renderVersions();
     update();
 
@@ -25,25 +29,73 @@ $(document).ready(function() {
   });
 });
 
+function extractChannelInfo() {
+  var result = {};
+  gChannelInfo = {};
+
+  $.each(gData.revisions, (rev, details) => {
+    if (!(details.channel in gChannelInfo)) {
+      gChannelInfo[details.channel] = {versions: {}};
+    }
+    gChannelInfo[details.channel].versions[details.version] = rev;
+  });
+}
+
 function update() {
+  updateUI();
+
   var filtered = filterMeasurements();
   renderMeasurements(filtered);
   renderStats(filtered);
 }
 
+function updateUI() {
+  var last = array => array[array.length - 1];
+
+  var channel = $("#select_channel").val();
+  var version = $("#select_version").val();
+  var channelInfo = gChannelInfo[channel];
+
+  // Show only versions available for this channel.
+  $("#select_version > option").each(function() {
+    console.log(this.value);
+    $(this).toggle((this.value == "any") || (this.value in channelInfo.versions));
+  });
+
+  if (version == "any") {
+    return;
+  }
+
+  // Use the closest valid version if an unavailable one was selected.
+  if (!(version in channelInfo.versions)) {
+    var versions = Object.keys(channelInfo.versions).sort();
+    if (parseInt(version) < parseInt(versions[0])) {
+      version = versions[0];
+    }
+    if (parseInt(version) > parseInt(last(versions))) {
+      version = last(versions);
+    }
+  }
+
+  $("#select_version").val(version);
+}
+
 function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
-  var revision = $("#select_version").val();
+  var version = $("#select_version").val();
   var channel = $("#select_channel").val();
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
   var measurements = gData.measurements;
 
   // No filtering? Just render everything.
-  if ((revision == "any") && !optout && (text_search == "")) {
+  if ((version == "any") && !optout && (text_search == "")) {
     return measurements;
   }
+
+  // Look up revision.
+  var revision = (version == "any") ? "any" : gChannelInfo[channel].versions[version];
 
   // Filter out by selected criteria.
   var filtered = {};
@@ -107,18 +159,15 @@ function filterMeasurements() {
 
 function renderVersions() {
   var select = $("#select_version");
-  var versions = [];
-  var versionToRev = {};
+  var versions = new Set();
 
   $.each(gData.revisions, (rev, details) => {
-    versions.push(details.version);
-    versionToRev[details.version] = rev;
+    versions.add(details.version);
   });
-  versions.sort().reverse();
+  versions = [...versions.values()].sort().reverse();
 
   for (var version of versions) {
-    var rev = versionToRev[version];
-    select.append("<option value=\""+rev+"\" >"+version+"</option>");
+    select.append("<option value=\""+version+"\" >"+version+"</option>");
   }
 }
 
