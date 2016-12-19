@@ -5,6 +5,8 @@
 <html>
 <head>
 <title>Firefox data explorer - Find probes</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="explorer.css">
 <style type="text/css">
   table {
     border-collapse: collapse;
@@ -15,6 +17,10 @@
   #stats {
     font-style: italic;
     font-size: small;
+    margin-bottom: 20px;
+  }
+  #measurements h4 {
+    margin: 10px 5px 3px 0px;
   }
 </style>
 <script type="text/javascript"
@@ -25,11 +31,19 @@
 
 <body>
 
-<a href="https://github.com/georgf/fx-data-explorer"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+<a id="github-banner"
+   href="https://github.com/georgf/fx-data-explorer">
+   <img src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" />
+</a>
 
-find probes | <a href="stats.html">stats</a>
+<ul class="tabrow">
+  <li class="selected">find probes</li>
+  <li><a href="stats.html">stats</a></li>
+</ul>
 <br/>
 <br/>
+
+<div id="content">
 
 <form>
   Probe is
@@ -66,6 +80,8 @@ find probes | <a href="stats.html">stats</a>
 </div>
 
 <div id="measurements">
+</div>
+
 </div>
 
 </body>

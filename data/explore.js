@@ -183,11 +183,13 @@ function renderMeasurements(measurements) {
   var items = [];
 
   $.each(measurements, (id, data) => {
-    items.push("<h3>" + data.name + "</h3>"); 
+    items.push("<h4>" + data.name + "</h3>"); 
 
     var history = data.history[channel];
     var first_version = h => gData.revisions[h["revisions"]["first"]].version;
     var last_version = h => gData.revisions[h["revisions"]["last"]].version;
+
+    items.push("<i>" + history[0].description + "</i>");
 
     var columns = new Map([
       ["type", (d, h) => d.type],
@@ -195,8 +197,7 @@ function renderMeasurements(measurements) {
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
       ["expiry", (d, h) => h.expiry_version],
-      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(d.name, d.type, first_version(h), last_version(h))}">#</a>`],
-      ["description", (d, h) => h.description],
+      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(d.name, d.type, first_version(h), last_version(h))}">#</a>`]
     ]);
 
     var table = "<table>";
