@@ -29,7 +29,11 @@ python_files = [
     'toolkit/components/telemetry/shared_telemetry_utils.py',
 ]
 
-all_files = histogram_files + python_files + scalar_files
+other_files = [
+    'toolkit/components/telemetry/histogram-whitelists.json',
+]
+
+all_files = histogram_files + python_files + scalar_files + other_files
 
 def get_from_nested_dict(dictionary, path, default=None):
     keys = path.split('/')
@@ -242,9 +246,9 @@ def extract_tag_data(tags, channel):
     if channel == "release":
         tags = filter(lambda t: re.match("^FIREFOX_[0-9]+_0_RELEASE$", t[0]), tags)
     elif channel == "beta":
-        tags = filter(lambda t: re.match("^FIREFOX_BETA_[0-9]+_END$", t[0]), tags)
+        tags = filter(lambda t: re.match("^FIREFOX_BETA_[0-9]+_BASE$", t[0]), tags)
     elif channel == "aurora":
-        tags = filter(lambda t: re.match("^FIREFOX_AURORA_[0-9]+_END$", t[0]), tags)
+        tags = filter(lambda t: re.match("^FIREFOX_AURORA_[0-9]+_BASE$", t[0]), tags)
     else:
         raise RuntimeError, "Unsupported channel."
 
