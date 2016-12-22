@@ -12,8 +12,11 @@ Currently this is a quick hack and supports:
 
 Update the data with:
 ```
-python extract.py path/to/mozilla-release
+python extract.py --release <path> --beta <path> --aurora <path>
 ```  
-... where `mozilla-release` is a checkout of [the hg release repository](https://hg.mozilla.org/releases/mozilla-release/).
+... where `<path>` is a checkout of the corresponding hg repository:
+* [release](https://hg.mozilla.org/releases/mozilla-release/)
+* [beta](https://hg.mozilla.org/releases/mozilla-beta/)
+* [aurora](https://hg.mozilla.org/releases/mozilla-aurora/)
 
 The output is in [`data/measurements.json`](https://github.com/georgf/fx-data-explorer/blob/master/data/measurements.json). A simple web viewer is found under `data/index.html` or [here](http://georgf.github.io/fx-data-explorer/index.html).
