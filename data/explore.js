@@ -182,7 +182,11 @@ function renderMeasurements(measurements) {
   var container = $("#measurements");
   var items = [];
 
-  $.each(measurements, (id, data) => {
+  var name = probeId => probeId.split("/")[1];
+  var sortedProbeKeys = Object.keys(measurements)
+                              .sort((a, b) => name(a).toLowerCase().localeCompare(name(b).toLowerCase()));
+  sortedProbeKeys.forEach(id => {
+    var data = measurements[id];
     items.push("<h4>" + data.name + "</h3>"); 
 
     var history = data.history[channel];
