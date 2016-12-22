@@ -60,7 +60,9 @@ function getMeasurementsPerVersion() {
             let ver = parseInt(data.version);
             let firstVer = parseInt(revisions[h.revisions.first].version);
             let lastVer = parseInt(revisions[h.revisions.last].version);
-            return ((ver >= firstVer) && (ver <= lastVer));
+            let expires = h.expiry_version;
+            return ((ver >= firstVer) && (ver <= lastVer) &&
+                    ((expires == "never") || (parseInt(expires) >= ver)));
           });
           // If so, increase the count.
           if (recording) {
