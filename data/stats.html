@@ -30,12 +30,18 @@
 <div id="content">
 
 <form>
-  Channel for stats:
+  How many probes are
+  <select id="select_constraint">
+    <option value="new_in"  selected="selected">new</option>
+    <option value="is_in">recorded</option>
+  </select>
+  on channel
   <select id="select_channel">
     <option value="release" selected="selected">release</option>
     <option value="beta">beta</option>
     <option value="aurora">aurora</option>
   </select>
+  for each version?
 </form>
 
 <svg id="stats" width="960" height="500"></svg>

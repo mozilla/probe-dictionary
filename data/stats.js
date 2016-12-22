@@ -15,6 +15,7 @@ $(document).ready(function() {
     update();
 
     $("#select_channel").change(update);
+    $("#select_constraint").change(update);
   });
 });
 
@@ -27,6 +28,7 @@ function getMeasurementsPerVersion() {
   let last = array => array[array.length - 1];
 
   let channel = $("#select_channel").val();
+  let version_constraint = $("#select_constraint").val();
 
   let revisions = {};
   Object.keys(gData.revisions).forEach(k => revisions[k] = {})
@@ -44,9 +46,31 @@ function getMeasurementsPerVersion() {
       return;
     }
 
-    let m = last(history);
-    let k = m.optout ? "optout" : "optin";
-    revisions[m.revisions.first][k] += 1;
+    switch (version_constraint) {
+      case "new_in": {
+        let oldest = last(history);
+        let k = oldest.optout ? "optout" : "optin";
+        revisions[oldest.revisions.first][k] += 1;
+        break;
+      }
+      case "is_in": {
+        $.each(revisions, (rev, data) => {
+          // Is this measurement recording for this revision?
+          let recording = history.find(h => {
+            let ver = parseInt(data.version);
+            let firstVer = parseInt(revisions[h.revisions.first].version);
+            let lastVer = parseInt(revisions[h.revisions.last].version);
+            return ((ver >= firstVer) && (ver <= lastVer));
+          });
+          // If so, increase the count.
+          if (recording) {
+            let k = recording.optout ? "optout" : "optin";
+            data[k] += 1;
+          }
+        });
+        break;
+      }
+    }
   });
 
   let counts = [];
@@ -60,6 +84,7 @@ function getMeasurementsPerVersion() {
 
 function render(data) {
   let last = array => array[array.length - 1];
+  let version_constraint = $("#select_constraint").val();
 
   // Prepare data.
   var columns = ["optin", "optout"];
@@ -130,7 +155,7 @@ function render(data) {
       .attr("dy", "0.35em")
       .attr("text-anchor", "start")
       .attr("fill", "#000")
-      .text("Count of new probes");
+      .text("Count of " + (version_constraint == "new_in" ? "new": "recorded") + " probes");
 
   var legend = g.selectAll(".legend")
     .data(columns.reverse())
