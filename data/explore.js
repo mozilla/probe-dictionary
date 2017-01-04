@@ -26,6 +26,8 @@ $(document).ready(function() {
     $("#optout").change(update);
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
+
+    $("#last_update").text(gData.meta.lastUpdate);
   });
 });
 

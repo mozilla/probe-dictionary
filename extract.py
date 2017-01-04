@@ -11,6 +11,7 @@ import re
 import distutils.version
 import shutil
 import argparse
+import datetime
 
 histogram_files = [
     'toolkit/components/telemetry/Histograms.json',
@@ -385,7 +386,10 @@ for channel,repo_dir in channel_paths.iteritems():
 
 output = {
     "measurements": probe_data,
-    "revisions": revisions
+    "revisions": revisions,
+    "meta": {
+        "lastUpdate": datetime.date.today().isoformat(),
+    },
 }
 
 if not os.path.exists(data_dir):
