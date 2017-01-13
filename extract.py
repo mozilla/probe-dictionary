@@ -13,6 +13,8 @@ import shutil
 import argparse
 import datetime
 
+MIN_FIREFOX_VERSION = 30
+
 histogram_files = [
     'toolkit/components/telemetry/Histograms.json',
     'dom/base/UseCounters.conf',
@@ -23,10 +25,15 @@ scalar_files = [
     'toolkit/components/telemetry/Scalars.yaml',
 ]
 
+event_files = [
+    'toolkit/components/telemetry/Events.yaml',
+]
+
 python_files = [
     'toolkit/components/telemetry/histogram_tools.py',
     'dom/base/usecounters.py',
     'toolkit/components/telemetry/parse_scalars.py',
+    'toolkit/components/telemetry/parse_events.py',
     'toolkit/components/telemetry/shared_telemetry_utils.py',
 ]
 
@@ -34,7 +41,7 @@ other_files = [
     'toolkit/components/telemetry/histogram-whitelists.json',
 ]
 
-all_files = histogram_files + python_files + scalar_files + other_files
+all_files = histogram_files + scalar_files + event_files + python_files + other_files
 
 def get_from_nested_dict(dictionary, path, default=None):
     keys = path.split('/')
@@ -67,14 +74,15 @@ def histograms_equal(h1, h2):
 def extract_histogram_data(h):
     props = {
         # source_field: target_field
+        "cpp_guard": "cpp_guard",
+        "description": "description",
+        "expiration": "expiry_version",
+
         "n_buckets": "details/n_buckets",
         "low": "details/low",
         "high": "details/high",
         "keyed": "details/keyed",
         "kind": "details/kind",
-        "cpp_guard": "cpp_guard",
-        "description": "description",
-        "expiration": "expiry_version",
     }
 
     defaults = {
@@ -143,9 +151,6 @@ def load_histograms_from_rev(rev, major_version, channel):
         else:
             # If the histograms state didn't change from the previous revision,
             # let's continue.
-            # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
-            # * from 43 to 49 it has: "high": 3, "n_buckets": 4
-            # * from 50 on it has: "high": 4, "n_buckets": 5
             previous = probe_data[id]["history"][channel][-1]
             if histograms_equal(previous, data):
                 previous["revisions"]["first"] = rev
@@ -208,6 +213,9 @@ def extract_scalar_data(s):
     return data
 
 def load_scalars_from_rev(rev, major_version, channel):
+    if not os.path.exists(hgdata_dir + "/Scalars.yaml"):
+        return
+
     files = [hgdata_dir + "/" + os.path.basename(path) for path in scalar_files]
     if major_version < 48:
         # Scalars were only added in Fx 43.
@@ -230,11 +238,8 @@ def load_scalars_from_rev(rev, major_version, channel):
         elif not channel in probe_data[id]["history"]:
             probe_data[id]["history"][channel] = []
         else:
-            # If the histograms state didn't change from the previous revision,
+            # If the scalars state didn't change from the previous revision,
             # let's continue.
-            # A good candidate for checking history is HTTP_AUTH_DIALOG_STATS:
-            # * from 43 to 49 it has: "high": 3, "n_buckets": 4
-            # * from 50 on it has: "high": 4, "n_buckets": 5
             previous = probe_data[id]["history"][channel][-1]
             if scalars_equal(previous, data):
                 previous["revisions"]["first"] = rev
@@ -364,7 +369,7 @@ def extract_tag_data(tags, channel):
         else:
             raise RuntimeError, "Unsupported channel."
 
-        if int(version) >= 30:
+        if int(version) >= MIN_FIREFOX_VERSION:
             results.append({
                 "revision": rev,
                 "version": version,
@@ -378,7 +383,7 @@ if __name__ != "__main__":
 
 # Get channel repo paths from arguments.
 channel_paths = {}
-channels = ['release', 'beta', 'aurora']
+channels = ['aurora', 'beta', 'release']
 
 parser = argparse.ArgumentParser(description='Extract Firefox measurement information.')
 for c in channels:
@@ -402,15 +407,16 @@ sys.path.insert(0, hgdata_dir)
 import buildconfig
 buildconfig.set_fake_topsrcdir(hgdata_dir)
 
-# Wether we already imported the modules from hg.
-first_import = True
-
 # This stores the extracted data.
 probe_data = {}
 revisions = {}
 
-for channel,repo_dir in channel_paths.iteritems():
-    print "\n\nExtracting from channel", channel, "."
+for channel in channels:
+    if not channel in channel_paths:
+        continue
+    repo_dir = channel_paths[channel]
+
+    print "\n\nExtracting from channel", channel, "at", repo_dir
     # Some hglib/commandserver usage requires pwd to be in the repository,
     # even when full paths are given.
     os.chdir(repo_dir)
@@ -419,6 +425,8 @@ for channel,repo_dir in channel_paths.iteritems():
     # Get tags. For now we just take all the initial Firefox release revisions.
     tags = client.tags()
     tag_data = list(reversed(extract_tag_data(tags, channel)))
+    # Fix last, still incomplete version to point to tip revision
+    tag_data[0]["revision"] = client.identify(id=True).replace('\n', '')
     print "Will process these tags:"
     for t in tag_data:
         print t
@@ -457,8 +465,8 @@ for channel,repo_dir in channel_paths.iteritems():
             try:
                 client.cat(files=[path], rev=rev, output=hgdata_dir + "/" + base)
             except hglib.error.CommandError:
-                # We always should have these two.
                 print "... command error for", base
+                # We always should have these two.
                 if base in ['Histograms.json', 'histogram_tools.py']:
                     raise
 
@@ -471,12 +479,13 @@ for channel,repo_dir in channel_paths.iteritems():
 
         # We only need to import the module on the first pass.
         # In subsequent passes we need to trigger a reload to pick up the changed module.
-        if first_import:
+        if not "histogram_tools" in sys.modules:
             import histogram_tools
-            import parse_scalars
-            first_import = False
         else:
             reload(histogram_tools)
+        if not "parse_scalars" in sys.modules:
+            import parse_scalars
+        else:
             if os.path.exists(hgdata_dir + "/parse_scalars.py"):
                 reload(parse_scalars)
         if not "parse_events" in sys.modules:
@@ -486,8 +495,7 @@ for channel,repo_dir in channel_paths.iteritems():
                 reload(parse_events)
 
         load_histograms_from_rev(rev, major_version, channel)
-        if os.path.exists(hgdata_dir + "/Scalars.yaml"):
-            load_scalars_from_rev(rev, major_version, channel)
+        load_scalars_from_rev(rev, major_version, channel)
         load_events_from_rev(rev, major_version, channel)
 
 output = {
