@@ -243,6 +243,106 @@ def load_scalars_from_rev(rev, major_version, channel):
         data["revisions"] = {"first": rev, "last": rev}
         probe_data[id]["history"][channel].append(data)
 
+def extract_event_data(e):
+    props = {
+        # source_field: target_field
+
+        # TODO: extract description.
+        "description": "description",
+        "expiry_version": "expiry_version",
+        "expiry_day": "expiry_day",
+
+        "methods": "details/methods",
+        "objects": "details/objects",
+        # TODO: extract key descriptions too.
+        "extra_keys": "details/extra_keys",
+    }
+
+    defaults = {
+        "expiry_version": "never",
+        "expiry_day": "never",
+        "name": e.methods[0],
+        "description": "<TODO>",
+    }
+
+    data = {
+        "details": {}
+    }
+
+    for source_field,target_field in props.iteritems():
+        value = None
+        if getattr(e, source_field, None):
+            value = getattr(e, source_field)
+        elif source_field in defaults:
+            value = defaults[source_field]
+        set_in_nested_dict(data, target_field, value)
+
+    # We only care about opt-out or opt-in really.
+    optout = getattr(e, "dataset", "").endswith('_OPTOUT')
+    data["optout"] = optout
+
+    # Normalize some field values.
+    if data["expiry_version"] == "default":
+        data["expiry_version"] = "never"
+
+    return data
+
+def events_equal(e1, e2):
+    props = [
+        "details/methods",
+        "details/objects",
+        "details/extra_keys",
+        "cpp_guard",
+        "optout",
+    ]
+    for p in props:
+        if get_from_nested_dict(s1, p) != get_from_nested_dict(s2, p):
+            return False
+    return True
+
+def load_events_from_rev(rev, major_version, channel):
+    if not os.path.exists(hgdata_dir + "/Events.yaml") or not os.path.exists(hgdata_dir + "/parse_events.py"):
+        return
+
+    files = [hgdata_dir + "/" + os.path.basename(path) for path in event_files]
+    if major_version < 52:
+        # The first non-test event was added in Fx 52.
+        return
+    events = parse_events.load_events(files[0])
+    # Filter out test-only probes that are never sent out.
+    events = filter(lambda s: not s.category.startswith("telemetry.test"), events)
+
+    for e in events:
+        # In Firefox 53 the format changed from:
+        #   {category: [event, ...]}
+        # to:
+        #   {category: {event_name: event, ...}}
+        full_name = e.category + "." + e.methods[0]
+        if getattr(e, "name", None):
+            full_name += e.name
+
+        id = "event/" + full_name
+        data = extract_event_data(e)
+
+        if not id in probe_data:
+            probe_data[id] = {
+                "type": "event",
+                "name": full_name,
+                "history": {channel: []},
+            }
+        elif not channel in probe_data[id]["history"]:
+            probe_data[id]["history"][channel] = []
+        else:
+            # If the events state didn't change from the previous revision,
+            # let's continue.
+            previous = probe_data[id]["history"][channel][-1]
+            if events_equal(previous, data):
+                previous["revisions"]["first"] = rev
+                continue
+
+        data["revisions"] = {"first": rev, "last": rev}
+        probe_data[id]["history"][channel].append(data)
+
 def extract_tag_data(tags, channel):
     if channel == "release":
         tags = filter(lambda t: re.match("^FIREFOX_[0-9]+_0_RELEASE$", t[0]), tags)
@@ -379,10 +479,16 @@ for channel,repo_dir in channel_paths.iteritems():
             reload(histogram_tools)
             if os.path.exists(hgdata_dir + "/parse_scalars.py"):
                 reload(parse_scalars)
+        if not "parse_events" in sys.modules:
+            import parse_events
+        else:
+            if os.path.exists(hgdata_dir + "/parse_events.py"):
+                reload(parse_events)
 
         load_histograms_from_rev(rev, major_version, channel)
         if os.path.exists(hgdata_dir + "/Scalars.yaml"):
             load_scalars_from_rev(rev, major_version, channel)
+        load_events_from_rev(rev, major_version, channel)
 
 output = {
     "measurements": probe_data,
