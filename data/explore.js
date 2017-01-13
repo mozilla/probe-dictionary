@@ -167,14 +167,19 @@ function renderVersions() {
   }
 }
 
-function getHistogramDistributionURL(name, type, min_version="null", max_version="null") {
-  if (type != "histogram") {
+function getTelemetryDashboardURL(name, type, channel, min_version="null", max_version="null") {
+  if (!["histogram", "scalar"].includes(type)) {
     return "";
   }
 
+  // The aggregator/TMO data uses this naming scheme for scalars.
+  if (type == "scalar") {
+    name = 'SCALARS_' + name.toUpperCase();
+  }
+
   return `https://telemetry.mozilla.org/new-pipeline/dist.html#!` +
-          `max_channel_version=release%252F${max_version}&`+
-          `min_channel_version=release%252F${min_version}&` +
+          `max_channel_version=${channel}%252F${max_version}&`+
+          `min_channel_version=${channel}%252F${min_version}&` +
           `measure=${name}` +
           `&product=Firefox`;
 }
@@ -203,7 +208,7 @@ function renderMeasurements(measurements) {
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
       ["expiry", (d, h) => h.expiry_version],
-      ["dist", (d, h) => `<a href="${getHistogramDistributionURL(d.name, d.type, first_version(h), last_version(h))}">#</a>`]
+      ["dist", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`]
     ]);
 
     var table = "<table>";
