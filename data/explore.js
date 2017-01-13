@@ -208,7 +208,7 @@ function renderMeasurements(measurements) {
       ["first", (d, h) => first_version(h)],
       ["last", (d, h) => last_version(h)],
       ["expiry", (d, h) => h.expiry_version],
-      ["dist", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`]
+      ["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`]
     ]);
 
     var table = "<table>";
