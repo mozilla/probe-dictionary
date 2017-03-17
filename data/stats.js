@@ -3,19 +3,29 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
- var gData = null;
+var gGeneralData = null;
+var gRevisionsData = null;
+var gProbeData = null;
 
 $(document).ready(function() {
   $.ajaxSetup({
     cache:false
   });
 
-  $.getJSON("measurements.json", function(result) {
-    gData = result;
-    update();
+  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/"
+  $.getJSON(base_uri + "general.json", function(general) {
+    $.getJSON(base_uri + "revisions.json", function(revisions) {
+      $.getJSON(base_uri + "probes.json", function(probes) {
+        gGeneralData = general;
+        gRevisionsData = revisions;
+        gProbeData = probes;
 
-    $("#select_channel").change(update);
-    $("#select_constraint").change(update);
+        update();
+
+        $("#select_channel").change(update);
+        $("#select_constraint").change(update);
+      });
+    });
   });
 });
 
@@ -31,8 +41,8 @@ function getMeasurementsPerVersion() {
   let version_constraint = $("#select_constraint").val();
 
   let revisions = {};
-  Object.keys(gData.revisions).forEach(k => revisions[k] = {})
-  $.each(gData.revisions, (rev, data) => {
+  Object.keys(gRevisionsData).forEach(k => revisions[k] = {})
+  $.each(gRevisionsData, (rev, data) => {
     revisions[rev] = {
       version: data.version,
       optin: 0,
@@ -40,7 +50,7 @@ function getMeasurementsPerVersion() {
     };
   });
 
-  $.each(gData.measurements, (id, data) => {
+  $.each(gProbeData, (id, data) => {
     let history = data.history[channel];
     if (!history) {
       return;

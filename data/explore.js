@@ -3,31 +3,39 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var gData = null;
-// {release: {versions: {31: rev}}}
 var gChannelInfo = null;
+var gGeneralData = null;
+var gRevisionsData = null;
+var gProbeData = null;
 
 $(document).ready(function() {
   $.ajaxSetup({
     cache:false
   });
 
-  $.getJSON("measurements.json", function(result) {
-    gData = result;
-    extractChannelInfo();
+  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/"
+  $.getJSON(base_uri + "general.json", function(general) {
+    $.getJSON(base_uri + "revisions.json", function(revisions) {
+      $.getJSON(base_uri + "probes.json", function(probes) {
+        gGeneralData = general;
+        gRevisionsData = revisions;
+        gProbeData = probes;
 
-    renderVersions();
-    update();
+        extractChannelInfo();
+        renderVersions();
+        update();
 
-    $("#select_constraint").change(update);
-    $("#select_version").change(update);
-    $("#select_version").keyup(update);
-    $("#select_channel").change(update);
-    $("#optout").change(update);
-    $("#text_search").keyup(update);
-    $("#search_constraint").change(update);
+        $("#select_constraint").change(update);
+        $("#select_version").change(update);
+        $("#select_version").keyup(update);
+        $("#select_channel").change(update);
+        $("#optout").change(update);
+        $("#text_search").keyup(update);
+        $("#search_constraint").change(update);
 
-    $("#last_update").text(gData.meta.lastUpdate);
+        $("#last_update").text(gGeneralData.lastUpdate);
+      });
+    });
   });
 });
 
@@ -35,7 +43,7 @@ function extractChannelInfo() {
   var result = {};
   gChannelInfo = {};
 
-  $.each(gData.revisions, (rev, details) => {
+  $.each(gRevisionsData, (rev, details) => {
     if (!(details.channel in gChannelInfo)) {
       gChannelInfo[details.channel] = {versions: {}};
     }
@@ -88,7 +96,7 @@ function filterMeasurements() {
   var channel = $("#select_channel").val();
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
-  var measurements = gData.measurements;
+  var measurements = gProbeData;
 
   // Look up revision.
   var revision = (version == "any") ? "any" : gChannelInfo[channel].versions[version];
@@ -109,12 +117,12 @@ function filterMeasurements() {
 
     // Filter for version constraint.
     if (revision != "any") {
-      var version = parseInt(gData.revisions[revision].version);
+      var version = parseInt(gRevisionsData[revision].version);
       history = history.filter(m => {
         switch (version_constraint) {
           case "is_in":
-            var first_ver = parseInt(gData.revisions[m.revisions.first].version);
-            var last_ver = parseInt(gData.revisions[m.revisions.last].version);
+            var first_ver = parseInt(gRevisionsData[m.revisions.first].version);
+            var last_ver = parseInt(gRevisionsData[m.revisions.last].version);
             var expires = m.expiry_version;
             return (first_ver <= version) && (last_ver >= version) &&
                    ((expires == "never") || (parseInt(expires) >= version));
@@ -157,7 +165,7 @@ function renderVersions() {
   var select = $("#select_version");
   var versions = new Set();
 
-  $.each(gData.revisions, (rev, details) => {
+  $.each(gRevisionsData, (rev, details) => {
     versions.add(details.version);
   });
   versions = [...versions.values()].sort().reverse();
@@ -197,8 +205,8 @@ function renderMeasurements(measurements) {
     items.push("<h4>" + data.name + "</h3>"); 
 
     var history = data.history[channel];
-    var first_version = h => gData.revisions[h["revisions"]["first"]].version;
-    var last_version = h => gData.revisions[h["revisions"]["last"]].version;
+    var first_version = h => gRevisionsData[h["revisions"]["first"]].version;
+    var last_version = h => gRevisionsData[h["revisions"]["last"]].version;
 
     items.push("<i>" + history[0].description + "</i>");
 
