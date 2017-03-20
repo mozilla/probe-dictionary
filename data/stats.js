@@ -41,8 +41,7 @@ function getMeasurementsPerVersion() {
   let version_constraint = $("#select_constraint").val();
 
   let revisions = {};
-  Object.keys(gRevisionsData).forEach(k => revisions[k] = {})
-  $.each(gRevisionsData, (rev, data) => {
+  $.each(gRevisionsData[channel], (rev, data) => {
     revisions[rev] = {
       version: data.version,
       optin: 0,

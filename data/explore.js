@@ -43,11 +43,13 @@ function extractChannelInfo() {
   var result = {};
   gChannelInfo = {};
 
-  $.each(gRevisionsData, (rev, details) => {
-    if (!(details.channel in gChannelInfo)) {
-      gChannelInfo[details.channel] = {versions: {}};
-    }
-    gChannelInfo[details.channel].versions[details.version] = rev;
+  $.each(gRevisionsData, (channel, revs) => {
+    $.each(revs, (rev, details) => {
+      if (!(channel in gChannelInfo)) {
+        gChannelInfo[channel] = {versions: {}};
+      }
+      gChannelInfo[channel].versions[details.version] = rev;
+    });
   });
 }
 
@@ -117,12 +119,12 @@ function filterMeasurements() {
 
     // Filter for version constraint.
     if (revision != "any") {
-      var version = parseInt(gRevisionsData[revision].version);
+      var version = parseInt(gRevisionsData[channel][revision].version);
       history = history.filter(m => {
         switch (version_constraint) {
           case "is_in":
-            var first_ver = parseInt(gRevisionsData[m.revisions.first].version);
-            var last_ver = parseInt(gRevisionsData[m.revisions.last].version);
+            var first_ver = parseInt(gRevisionsData[channel][m.revisions.first].version);
+            var last_ver = parseInt(gRevisionsData[channel][m.revisions.last].version);
             var expires = m.expiry_version;
             return (first_ver <= version) && (last_ver >= version) &&
                    ((expires == "never") || (parseInt(expires) >= version));
@@ -163,11 +165,15 @@ function filterMeasurements() {
 
 function renderVersions() {
   var select = $("#select_version");
+  var current_channel = $("#select_channel").val();
   var versions = new Set();
 
-  $.each(gRevisionsData, (rev, details) => {
-    versions.add(details.version);
+  $.each(gRevisionsData, (channel, revs) => {
+    $.each(gRevisionsData[channel], (rev, details) => {
+      versions.add(details.version);
+    });
   });
+
   versions = [...versions.values()].sort().reverse();
 
   for (var version of versions) {
@@ -205,8 +211,8 @@ function renderMeasurements(measurements) {
     items.push("<h4>" + data.name + "</h3>"); 
 
     var history = data.history[channel];
-    var first_version = h => gRevisionsData[h["revisions"]["first"]].version;
-    var last_version = h => gRevisionsData[h["revisions"]["last"]].version;
+    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
+    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
 
     items.push("<i>" + history[0].description + "</i>");
 

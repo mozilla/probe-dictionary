@@ -16,3 +16,9 @@ hg-data/Scalars.yaml
 hg-data/parse_scalars.py
 
 data/jquery-3.1.1.min.js
+
+data/general.json
+
+data/probes.json
+
+data/revisions.json
