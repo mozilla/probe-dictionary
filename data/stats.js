@@ -13,6 +13,7 @@ $(document).ready(function() {
   });
 
   var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/"
+
   $.getJSON(base_uri + "general.json", function(general) {
     $.getJSON(base_uri + "revisions.json", function(revisions) {
       $.getJSON(base_uri + "probes.json", function(probes) {
@@ -24,6 +25,8 @@ $(document).ready(function() {
 
         $("#select_channel").change(update);
         $("#select_constraint").change(update);
+
+        document.getElementById("overlay").style.display = "none";
       });
     });
   });
