@@ -8,37 +8,56 @@ var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
 
+function mark(marker) {
+  performance.mark(marker);
+  console.timeStamp(marker);
+}
+
+function promiseGetJSON(file) {
+  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+
+  return new Promise(resolve => {
+    $.getJSON(base_uri + file, data => {
+      mark("loaded " + file);
+      resolve(data);
+    });
+  });
+}
+
 $(document).ready(function() {
   $.ajaxSetup({
     cache:false
   });
 
-  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+  mark("request json");
 
-  $.getJSON(base_uri + "general.json", function(general) {
-    $.getJSON(base_uri + "revisions.json", function(revisions) {
-      $.getJSON(base_uri + "probes.json", function(probes) {
-        gGeneralData = general;
-        gRevisionsData = revisions;
-        gProbeData = probes;
+  var loads = [
+    promiseGetJSON("general.json"),
+    promiseGetJSON("revisions.json"),
+    promiseGetJSON("probes.json"),
+  ];
 
-        extractChannelInfo();
-        renderVersions();
-        update();
+  Promise.all(loads).then(values => {
+    [gGeneralData, gRevisionsData, gProbeData] = values;
 
-        $("#select_constraint").change(update);
-        $("#select_version").change(update);
-        $("#select_version").keyup(update);
-        $("#select_channel").change(update);
-        $("#optout").change(update);
-        $("#text_search").keyup(update);
-        $("#search_constraint").change(update);
+    extractChannelInfo();
+    renderVersions();
+    update();
 
-        $("#last_update").text(gGeneralData.lastUpdate);
+    mark("updated site");
 
-        document.getElementById("overlay").style.display = "none";
-      });
-    });
+    $("#select_constraint").change(update);
+    $("#select_version").change(update);
+    $("#select_version").keyup(update);
+    $("#select_channel").change(update);
+    $("#optout").change(update);
+    $("#text_search").keyup(update);
+    $("#search_constraint").change(update);
+
+    $("#last_update").text(gGeneralData.lastUpdate);
+
+    document.getElementById("overlay").style.display = "none";
+    mark("done");
   });
 });
 
