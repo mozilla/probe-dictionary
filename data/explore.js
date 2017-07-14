@@ -38,6 +38,7 @@ $(document).ready(function() {
   ];
 
   Promise.all(loads).then(values => {
+    mark("all json loaded");
     [gGeneralData, gRevisionsData, gProbeData] = values;
 
     extractChannelInfo();
