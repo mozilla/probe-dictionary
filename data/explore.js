@@ -17,9 +17,14 @@ function promiseGetJSON(file) {
   var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
 
   return new Promise(resolve => {
-    $.getJSON(base_uri + file, data => {
-      mark("loaded " + file);
-      resolve(data);
+    $.ajax({
+      url: base_uri + file,
+      cache: true,
+      dataType: "json",
+      complete: data => {
+        mark("loaded " + file);
+        resolve(data);
+      },
     });
   });
 }
