@@ -7,28 +7,45 @@ var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
 
-$(document).ready(function() {
-  $.ajaxSetup({
-    cache:false
-  });
+function mark(marker) {
+  performance.mark(marker);
+  console.timeStamp(marker);
+}
 
-  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/"
+function promiseGetJSON(file) {
+  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
 
-  $.getJSON(base_uri + "general.json", function(general) {
-    $.getJSON(base_uri + "revisions.json", function(revisions) {
-      $.getJSON(base_uri + "probes.json", function(probes) {
-        gGeneralData = general;
-        gRevisionsData = revisions;
-        gProbeData = probes;
-
-        update();
-
-        $("#select_channel").change(update);
-        $("#select_constraint").change(update);
-
-        document.getElementById("overlay").style.display = "none";
-      });
+  return new Promise(resolve => {
+    $.ajax({
+      url: base_uri + file,
+      cache: true,
+      dataType: "json",
+      complete: data => {
+        mark("loaded " + file);
+        resolve(data);
+      },
     });
+  });
+}
+
+$(document).ready(function() {
+    var loads = [
+    promiseGetJSON("general.json"),
+    promiseGetJSON("revisions.json"),
+    promiseGetJSON("probes.json"),
+  ];
+
+  Promise.all(loads).then(values => {
+    mark("all json loaded");
+    [gGeneralData, gRevisionsData, gProbeData] = values;
+
+    update();
+
+    $("#select_channel").change(update);
+    $("#select_constraint").change(update);
+
+    document.getElementById("overlay").style.display = "none";
+    mark("done");
   });
 });
 
