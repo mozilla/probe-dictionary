@@ -31,7 +31,7 @@ function promiseGetJSON(file) {
 }
 
 $(document).ready(function() {
-  mark("request json");
+  mark("document ready");
 
   var loads = [
     promiseGetJSON("general.json"),

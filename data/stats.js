@@ -29,6 +29,8 @@ function promiseGetJSON(file) {
 }
 
 $(document).ready(function() {
+  mark("document ready");
+
   var loads = [
     promiseGetJSON("general.json"),
     promiseGetJSON("revisions.json"),
