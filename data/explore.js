@@ -31,10 +31,6 @@ function promiseGetJSON(file) {
 }
 
 $(document).ready(function() {
-  $.ajaxSetup({
-    cache:false
-  });
-
   mark("request json");
 
   var loads = [
