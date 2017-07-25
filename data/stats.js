@@ -29,7 +29,7 @@ function promiseGetJSON(file) {
 }
 
 $(document).ready(function() {
-    var loads = [
+  var loads = [
     promiseGetJSON("general.json"),
     promiseGetJSON("revisions.json"),
     promiseGetJSON("probes.json"),

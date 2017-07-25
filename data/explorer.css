@@ -2,6 +2,7 @@
 body {
     margin: 0px;
     padding 0px;
+    min-height: 75rem;
 }
 
 #github-banner img {
@@ -32,6 +33,8 @@ body {
     left: 50%;
     margin: -9px 0 0 -110px;
 }
+
+/*
 
 #content {
     margin: 10px 10px 0px 20px;
@@ -113,3 +116,5 @@ body {
 .tabrow li.selected:after {
     box-shadow: -2px 2px 0 #FFF;
 }
+
+*/

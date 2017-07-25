@@ -15,6 +15,7 @@ function mark(marker) {
 
 function promiseGetJSON(file) {
   var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+  //var base_uri = "";
 
   return new Promise(resolve => {
     $.ajax({
