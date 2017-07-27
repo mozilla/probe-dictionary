@@ -45,6 +45,7 @@ $(document).ready(function() {
 
     extractChannelInfo();
     renderVersions();
+    loadURIData();
     update();
 
     mark("updated site");
@@ -84,6 +85,8 @@ function update() {
   var filtered = filterMeasurements();
   renderMeasurements(filtered);
   renderStats(filtered);
+
+  updateSearchParams();
 }
 
 function updateUI() {
@@ -269,3 +272,59 @@ function renderStats(filtered) {
   $("#stats").text("Found " + count + " probes.");
 }
 
+function loadURIData() {
+  let url = new URL(window.location.href.replace(/\/$/, ""));
+  let params = url.searchParams;
+
+  if (params.has("search")) {
+    $("#text_search").val(params.get("search"));
+  }
+
+  if (params.has("searchtype")) {
+    let val = params.get("searchtype");
+    if (["in_name", "in_description", "in_any"].includes(val)) {
+      $("#search_constraint").val(val);
+    }
+  }
+
+  if (params.has("optout")) {
+    let optout = params.get("optout");
+    if (["true", "false"].includes(optout)) {
+      $("#optout").prop("checked", optout == "true");
+    }
+  }
+
+  if (params.has("channel")) {
+    let channel = params.get("channel");
+    if (["release", "beta", "aurora", "nightly"].includes(channel)) {
+      $("#select_channel").val(channel);
+    }
+  }
+
+  if (params.has("constraint")) {
+    let val = params.get("constraint");
+    if (["is_in", "new_in"].includes(val)) {
+      $("#select_constraint").val(val);
+    }
+  }
+
+  if (params.has("version")) {
+    let val = params.get("version");
+    if (val == "any" || val.match(/^[0-9]+$/)) {
+      $("#select_version").val(val);
+    }
+  }
+}
+
+function updateSearchParams() {
+  let params = {
+    search: $("#text_search").val(),
+    searchtype: $("#search_constraint").val(),
+    optout: $("#optout").prop("checked"),
+    channel: $("#select_channel").val(),
+    constraint: $("#select_constraint").val(),
+    version: $("#select_version").val(),
+  };
+
+  window.history.replaceState("", "", "?" + $.param(params));
+}
