@@ -1,23 +1,17 @@
 # fx-data-explorer
-POC of extracting per-version metrics information for Firefox.  
+Prototype of how to make the Telemetry probe data in Firefox more discoverable and searchable.
 
-This data allows answering questions like *"which Firefox versions is this probe in anyway?"*.  
+This front-end allows answering questions like 
+* *"do we have any probes in Firefox 55 that tell us about [tab usage](http://georgf.github.io/fx-data-explorer/?search=tab&searchtype=in_name&optout=true&channel=release&constraint=is_in&version=55)?"*
+* *"which Firefox versions is this probe in anyway?"*
+
+To achieve this, it uses data extracted by the [probe-scraper](https://github.com/mozilla/probe-scraper) project.
+This pulls probe registry files (`Histograms.json`, `Scalars.yaml`, `Events.yaml`) from different Firefox versions together into one dataset.
 Also, probes outside of `Histograms.json` - like the CSS use counters - are included in the output data.
 
 Currently this is a prototype and supports:
-* release, beta & aurora channel
+* release, beta, aurora & nightly channel
 * major releases only
 * histograms
 * scalars
-
-To update the data run:
-```
-python extract.py --release <path> --beta <path> --aurora <path>
-```  
-... where `<path>` is a checkout of the corresponding hg repository:
-* [release](https://hg.mozilla.org/releases/mozilla-release/)
-* [beta](https://hg.mozilla.org/releases/mozilla-beta/)
-* [aurora](https://hg.mozilla.org/releases/mozilla-aurora/)
-
-The output is found in [`data/measurements.json`](https://github.com/georgf/fx-data-explorer/blob/master/data/measurements.json).  
-A simple web viewer is found under `data/index.html` or [here](http://georgf.github.io/fx-data-explorer/index.html).
+* events
