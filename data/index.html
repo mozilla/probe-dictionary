@@ -5,119 +5,114 @@
 <html>
 <head>
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Firefox data explorer - Find probes</title>
+  <title>Firefox data explorer - Find probes</title>
 
-
-
-<!-- CSS  -->
-<!-- CSS:Framework BS 4 alpha -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-<!-- CSS:Framework:Theme United -->
-<link rel="stylesheet" href="bootstrap.min.css">
-<!-- CSS:LoadingBar -->
-<link rel="stylesheet" href="explorer.css">
+  <!-- CSS  -->
+  <!-- CSS:Framework BS 4 alpha -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <!-- CSS:Framework:Theme United -->
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <!-- CSS:LoadingBar -->
+  <link rel="stylesheet" href="explorer.css">
 
 </head>
 
 <body>
 
-<!-- GitHub:Fork -->
-<!-- <a id="github-banner"
-   href="https://github.com/georgf/fx-data-explorer">
-   <img src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" />
-</a> -->
-
-<nav class="navbar navbar-toggleable-md navbar-inverse bg-primary mb-3">
-  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <a class="navbar-brand" href="#">Probe data</a>
-  <div class="collapse navbar-collapse" id="navbarCollapse">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="index.html">Find probes <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="stats.html">Stats</a>
-      </li>
-    </ul>
+  <!-- GitHub:Fork -->
+  <!-- <a id="github-banner"
+     href="https://github.com/georgf/fx-data-explorer">
+     <img src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" />
+  </a> -->
+  <div class="container-full">
+    <nav class="navbar navbar-toggleable-md navbar-inverse bg-primary">
+      <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">Probe data</a>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav">
+          <li class="nav-item active">
+            <a class="nav-link" href="index.html">Find probes <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="stats.html">Stats</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
   </div>
-</nav>
 
-
-
-<!-- Loading GIF, replace with bootstrap loadbar? -->
-<div id="overlay">
-  <img id="loading-anim" src="loading.gif">
-</div>
-
-<div class="container-fluid" id="content">
-
-<div class="alert alert-dismissible alert-warning mb-3" id="notice">
-  <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <h4>Notice!</h4>
-  <p>
-    Note: this data has not been validated properly yet and should be used with care.<br />
-    Last update: <span id="last_update"></span>
-  </p>
-</div>
-
-
-<form class="ml-1">
-  <div class="form-group form-inline">
-    Probe is
-    <select class="form-control ml-2 mr-2" id="select_constraint">
-      <option value="is_in" selected="selected">recorded</option>
-      <option value="new_in">new</option>
-    </select>
-    in version
-    <select class="form-control ml-2 mr-2" id="select_version">
-      <option id="version_any" value="any" selected="selected">any</option>
-    </select>
-    on channel
-    <select class="form-control ml-2 mr-2" id="select_channel">
-      <option value="release" selected="selected">release</option>
-      <option value="beta">beta</option>
-      <option value="aurora">aurora</option>
-      <option value="nightly">nightly</option>
-    </select>
-    .
+  <!-- Loading GIF, replace with bootstrap loadbar? -->
+  <div id="overlay">
+    <img id="loading-anim" src="loading.gif">
   </div>
-  <div class="form-group form-inline">
-    <input class="form-control mr-2" id="optout" type="checkbox" checked="checked">
-    <label for="optout">Show only opt-out measurements.</label>
+
+  <div class="container-full" id="alert">
+    <div class="alert alert-dismissible alert-warning" id="notice">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      <h4>Notice!</h4>
+      <p>
+        Note: this data has not been validated properly yet and should be used with care.<br />
+        Last update: <span id="last_update"></span>
+      </p>
+    </div>
   </div>
-  <div class="form-group form-inline">
-    Text search
-    <select class="form-control ml-2 mr-2" id="search_constraint">
-      <option value="in_any" selected="selected">in any text field</option>
-      <option value="in_name">in name</option>
-      <option value="in_description">in description</option>
-    </select>
-    for:
-    <input class="form-control ml-2 mr-2" id="text_search" name="text_search">
+
+  <div class="container-fluid">
+    <form class="ml-1 mt-3">
+      <div class="form-group form-inline">
+        Probe is
+        <select class="form-control ml-2 mr-2" id="select_constraint">
+          <option value="is_in" selected="selected">recorded</option>
+          <option value="new_in">new</option>
+        </select>
+        in version
+        <select class="form-control ml-2 mr-2" id="select_version">
+          <option id="version_any" value="any" selected="selected">any</option>
+        </select>
+        on channel
+        <select class="form-control ml-2 mr-2" id="select_channel">
+          <option value="release" selected="selected">release</option>
+          <option value="beta">beta</option>
+          <option value="aurora">aurora</option>
+          <option value="nightly">nightly</option>
+        </select>
+        .
+      </div>
+      <div class="form-group form-inline">
+        <input class="form-control mr-2" id="optout" type="checkbox" checked="checked">
+        <label for="optout">Show only opt-out measurements.</label>
+      </div>
+      <div class="form-group form-inline">
+        Text search
+        <select class="form-control ml-2 mr-2" id="search_constraint">
+          <option value="in_any" selected="selected">in any text field</option>
+          <option value="in_name">in name</option>
+          <option value="in_description">in description</option>
+        </select>
+        for:
+        <input class="form-control ml-2 mr-2" id="text_search" name="text_search">
+      </div>
+    </form>
   </div>
-</form>
+    <hr />
+  <div class="conainter-fluid">
+    <!-- I'm not sure what div tag is here for. -->
+    <div class="container ml-4" id="stats">
+    </div>
 
-<hr />
+    <!-- JS fills values into this container -->
+    <div class="container table table-sm table-striped table-hover table-bordered border-0 pl-5" id="measurements">
+    </div>
 
-</div>
+  </div>
 
-<!-- I'm not sure what div tag is here for. -->
-<div class="container ml-4" id="stats">
-</div>
-
-<!-- JS fills values into this container -->
-<div class="container table table-sm table-striped table-hover table-bordered border-0 pl-5" id="measurements">
-</div>
-
-
-
-<!-- JS Files -->
+  <!-- JS Files -->
   <!-- JS:jQuery 3.2.1 -->
   <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
   <!-- JS:Bootstrap -->
@@ -126,7 +121,6 @@
   <script type="text/javascript" src="explore.js"></script>
   <!-- JS:Latest compiled and minified JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
 
 </body>
 </html>
