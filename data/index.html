@@ -52,23 +52,23 @@
 
 <body>
 
-<a id="github-banner"
+<!-- <a id="github-banner"
    href="https://github.com/georgf/fx-data-explorer">
    <img src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" />
-</a>
+</a> -->
 
-<nav class="navbar navbar-expand-md navbar-inverse bg-inverse mb-4">
+<nav class="navbar navbar-toggleable-md navbar-inverse bg-primary mb-4">
   <a class="navbar-brand" href="#">Probe data</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarCollapse">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#probes">Find probes <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="index.html">Find probes <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#stats">Stats</a>
+        <a class="nav-link" href="stats.html">Stats</a>
       </li>
     </ul>
   </div>
@@ -78,57 +78,69 @@
   <img id="loading-anim" src="loading.gif">
 </div>
 
+<!--
 <ul class="tabrow">
   <li class="selected">find probes</li>
   <li><a href="stats.html">stats</a></li>
-</ul>
+</ul> -->
 
-<div id="content">
+<div class="container-fluid pull-left" id="content">
 
-<div id="notice">
-Note: this data has not been validated properly yet and should be used with care.<br />
-Last update: <span id="last_update"></span>
+<div class="alert alert-dismissible alert-warning mb-3 mt-1" id="notice">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <h4>Notice!</h4>
+  <p>
+    Note: this data has not been validated properly yet and should be used with care.<br />
+    Last update: <span id="last_update"></span>
+  </p>
 </div>
 
-<form>
-  Probe is
-  <select id="select_constraint">
-    <option value="is_in" selected="selected">recorded</option>
-    <option value="new_in">new</option>
-  </select>
-  in version
-  <select id="select_version">
-    <option id="version_any" value="any" selected="selected">any</option>
-  </select>
-  on channel
-  <select id="select_channel">
-    <option value="release" selected="selected">release</option>
-    <option value="beta">beta</option>
-    <option value="aurora">aurora</option>
-    <option value="nightly">nightly</option>
-  </select>
-  .
-  <br />
-  <input id="optout" type="checkbox" checked="checked">
-  <label for="optout">Show only opt-out measurements.</label>
-  <br />
-  Text search
-  <select id="search_constraint">
-    <option value="in_any" selected="selected">in any text field</option>
-    <option value="in_name">in name</option>
-    <option value="in_description">in description</option>
-  </select>
-  for:
-  <input id="text_search" name="text_search">
+
+<form class="ml-1">
+  <div class="form-group form-inline">
+    Probe is
+    <select class="form-control ml-2 mr-2" id="select_constraint">
+      <option value="is_in" selected="selected">recorded</option>
+      <option value="new_in">new</option>
+    </select>
+    in version
+    <select class="form-control ml-2 mr-2" id="select_version">
+      <option id="version_any" value="any" selected="selected">any</option>
+    </select>
+    on channel
+    <select class="form-control ml-2 mr-2" id="select_channel">
+      <option value="release" selected="selected">release</option>
+      <option value="beta">beta</option>
+      <option value="aurora">aurora</option>
+      <option value="nightly">nightly</option>
+    </select>
+    .
+  </div>
+  <div class="form-group form-inline">
+    <input class="form-control mr-2" id="optout" type="checkbox" checked="checked">
+    <label for="optout">Show only opt-out measurements.</label>
+  </div>
+  <div class="form-group form-inline">
+    Text search
+    <select class="form-control ml-2 mr-2" id="search_constraint">
+      <option value="in_any" selected="selected">in any text field</option>
+      <option value="in_name">in name</option>
+      <option value="in_description">in description</option>
+    </select>
+    for:
+    <input class="form-control ml-2 mr-2" id="text_search" name="text_search">
+  </div>
 </form>
 
-<div id="stats">
+<hr />
+
+</div>
+
+<div class="container ml-4" id="stats">
 </div>
 
 <!-- JS fills values into this container -->
 <div class="container ml-5 mr-5" id="measurements">
-</div>
-
 </div>
 
 <!-- JS Files -->
