@@ -13,10 +13,11 @@
 <meta charset="utf-8" />
 <link rel="stylesheet" href="explorer.css">
 <style type="text/css">
-/*
+
   table {
     border-collapse: collapse;
   }
+
   table, th, td {
     border: 1px solid black;
   }
@@ -34,16 +35,16 @@
   #measurements h4 {
     margin: 10px 5px 3px 0px;
   }
-*/
+
 </style>
 
 
+<!-- CSS  -->
+<!-- CSS:Framework BS 4 alpha -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+<!-- CSS:Framework:Theme United -->
+<link rel="stylesheet" href="bootstrap.min.css">
 
 
 </head>
@@ -123,7 +124,8 @@ Last update: <span id="last_update"></span>
 <div id="stats">
 </div>
 
-<div id="measurements">
+<!-- JS fills values into this container -->
+<div class="container ml-5 mr-5" id="measurements">
 </div>
 
 </div>
