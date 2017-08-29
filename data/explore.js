@@ -236,7 +236,7 @@ function renderMeasurements(measurements) {
                               .sort((a, b) => name(a).toLowerCase().localeCompare(name(b).toLowerCase()));
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
-    items.push("<h4>" + data.name + "</h3>"); 
+    items.push("<h4 class=\"mt-3 mb-0\">" + data.name + "</h3>");
 
     var history = data.history[channel];
     var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
