@@ -46,6 +46,8 @@ $(document).ready(function() {
     $("#select_channel").change(update);
     $("#select_constraint").change(update);
 
+    $("#last_update").text(gGeneralData.lastUpdate);
+
     document.getElementById("overlay").style.display = "none";
     mark("done");
   });
