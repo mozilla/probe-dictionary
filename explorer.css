@@ -13,7 +13,7 @@ body {
     z-index: 15;
 }
 
-#overlay {
+#loading-overlay {
     position: absolute;
     left: 0;
     top: 0;
