@@ -48,6 +48,31 @@
     <img id="loading-anim" src="loading.gif">
   </div>
 
+  <div id="detail-overlay">
+    <div id="detail-body">
+      <h2 id="detail-probe-name">Probe name</h2>
+      <table>
+        <tr><td>Type:</td><td id="detail-probe-type"></td></tr>
+        <tr><td>Population:</td><td id="detail-recording-type"></td></tr>
+      </table>
+      <br />
+      <div id="detail-description">...</div>
+      <br />
+      <table>
+        <tr><td>Kind:</td><td id="detail-kind"></td></tr>
+        <tr><td>Keyed:</td><td id="detail-keyed"></td></tr>
+        <tr><td>Recorded in processes:</td><td id="detail-processes"></td></tr>
+        <tr><td>C++ guard:</td><td id="detail-cpp-guard"></td></tr>
+        <tr><td>Bucket count:</td><td id="detail-histogram-bucket-count"></td></tr>
+        <tr><td>Low:</td><td id="detail-histogram-low"></td></tr>
+        <tr><td>High:</td><td id="detail-histogram-high"></td></tr>
+        <tr><td>Methods:</td><td id="detail-event-methods"></td></tr>
+        <tr><td>Objects:</td><td id="detail-event-objects"></td></tr>
+        <tr><td>Extra keys:</td><td id="detail-event-extra-keys"></td></tr>
+      </table>
+    </div>
+  </div>
+
   <!-- Notice Alert -->
   <div class="container-full" id="alert">
     <div class="alert alert-dismissible alert-warning" id="notice">

@@ -231,37 +231,52 @@ function renderMeasurements(measurements) {
   var container = $("#measurements");
   var items = [];
 
+  var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
+  var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
+  var friendly_recording_range = h => {
+    const first = first_version(h);
+    if (h.expiry_version == "never") {
+      return `from ${first}`;
+    }
+    return `${first} to ${h.expiry_version}`;
+  };
+
+  var columns = new Map([
+    ["", (d, h) => "+"],
+    ["name", (d, h) => d.name],
+    ["type", (d, h) => d.type],
+    ["population", (d, h) => h.optout ? "release" : "prerelease"],
+    ["recorded", (d, h) => friendly_recording_range(h)],
+    // TODO: overflow should cut off
+    ["description", (d, h) => h.description],
+
+    //["first seen", (d, h) => first_version(h)],
+    //["recorded", (d, h) => `${first_version(h)} to ${last_version(h)}`],
+    //["expiry", (d, h) => h.expiry_version],
+    //["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`],
+  ]);
+
+  var table = "<table>";
+  table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
+
   var name = probeId => probeId.split("/")[1];
   var sortedProbeKeys = Object.keys(measurements)
                               .sort((a, b) => name(a).toLowerCase().localeCompare(name(b).toLowerCase()));
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
-    items.push("<h4 class=\"text-truncate mt-3 mb-0\">" + data.name + "</h3>");
 
     var history = data.history[channel];
-    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
 
-    items.push("<i>" + history[0].description + "</i>");
-
-    var columns = new Map([
-      ["type", (d, h) => d.type],
-      ["optout", (d, h) => h.optout],
-      ["first", (d, h) => first_version(h)],
-      ["last", (d, h) => last_version(h)],
-      ["expiry", (d, h) => h.expiry_version],
-      ["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`]
-    ]);
-
-    var table = "<table>";
-    table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
     for (var h of history) {
       var cells = [...columns.values()].map(fn => fn(data, h));
-      table += "<tr><td>" + cells.join("</td><td>") + "</td></tr>";
+      table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
+      table += `<td>${cells.join("</td><td>")}</td>`
+      table += `</tr>`;
     }
-    table += "</table>";
-    items.push(table);
   });
+
+  table += "</table>";
+  items.push(table);
 
   container.empty();
   container.append(items.join(""));
@@ -327,4 +342,45 @@ function updateSearchParams() {
   };
 
   window.history.replaceState("", "", "?" + $.param(params));
+}
+
+function showDetailView(obj) {
+  const probeId = obj.getAttribute('probeid');
+  const channel = $("#select_channel").val();
+  //alert(probeId);
+
+  const probe = gProbeData[probeId];
+  $('#detail-probe-name').text(probe.name);
+  $('#detail-probe-type').text(probe.type);
+
+  const state = probe.history[channel][0];
+  $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
+  $('#detail-description').text(state.description);
+  $('#detail-cpp-guard').text(state.cpp_guard);
+
+  const detailsMap = new Map([
+    ['keyed', 'detail-keyed'],
+    ['kind', 'detail-kind'],
+    ['record_in_processes', 'detail-processes'],
+
+    ['low', 'detail-histogram-low'],
+    ['high', 'detail-histogram-high'],
+    ['n_buckets', 'detail-histogram-bucket-count'],
+
+    ['extra_keys', 'detail-kind'],
+    ['methods', 'detail-kind'],
+    ['objects', 'detail-kind'],
+  ]);
+
+  for (let [property, id] of detailsMap.entries()) {
+    const parent = document.getElementById(id).parentElement;
+    if (property in state.details) {
+      parent.style.display = 'block'
+      $('#' + id).text(state.details[property]);
+    } else {
+      parent.style.display = 'none';
+    }
+  }
+
+  document.getElementById("detail-overlay").style.display = "block";
 }
