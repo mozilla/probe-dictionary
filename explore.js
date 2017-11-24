@@ -209,7 +209,12 @@ function renderVersions() {
   }
 }
 
-function getTelemetryDashboardURL(name, type, channel, min_version="null", max_version="null") {
+function getTelemetryDashboardURL(dashType, name, type, channel, min_version="null", max_version="null") {
+  if (!['dist', 'evo'].includes(dashType)) {
+    console.log.error('wrong dashType');
+    return "";
+  }
+
   if (!["histogram", "scalar"].includes(type)) {
     return "";
   }
@@ -219,7 +224,7 @@ function getTelemetryDashboardURL(name, type, channel, min_version="null", max_v
     name = 'SCALARS_' + name.toUpperCase();
   }
 
-  return `https://telemetry.mozilla.org/new-pipeline/dist.html#!` +
+  return `https://telemetry.mozilla.org/new-pipeline/${dashType}.html#!` +
           `max_channel_version=${channel}%252F${max_version}&`+
           `min_channel_version=${channel}%252F${min_version}&` +
           `measure=${name}` +
@@ -356,6 +361,14 @@ function showDetailView(obj) {
   const state = probe.history[channel][0];
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
+
+  var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
+  var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
+  const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
+  document.getElementById('detail-distribution-dashboard').setAttribute('href', distURL);
+  const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
+  document.getElementById('detail-evolution-dashboard').setAttribute('href', evoURL);
+
   $('#detail-cpp-guard').text(state.cpp_guard);
 
   const detailsMap = new Map([
