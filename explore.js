@@ -103,6 +103,14 @@ function updateUI() {
   var version = $("#select_version").val();
   var channelInfo = gChannelInfo[channel];
 
+  // Pre-release measurements were never valuable for the release channel.
+  // Avoid mistakes by defaulting to only showing release probes.
+  const isRelease = channel == "release";
+  $("#optout").prop("enabled", !isRelease);
+  if (isRelease) {
+    $("#optout").prop("checked", true);
+  }
+
   // Show only versions available for this channel.
   $("#select_version > option").each(function() {
     $(this).toggle((this.value == "any") || (this.value in channelInfo.versions));
