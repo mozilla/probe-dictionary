@@ -48,38 +48,6 @@
     <img id="loading-anim" src="loading.gif">
   </div>
 
-  <div id="detail-overlay">
-    <div id="detail-body">
-      <h2 id="detail-probe-name">Probe name</h2>
-      <table>
-        <tr><td>Type:</td><td id="detail-probe-type"></td></tr>
-        <tr><td>Population:</td><td id="detail-recording-type"></td></tr>
-      </table>
-      <br />
-      <div id="detail-description">...</div>
-      <br />
-      <div>
-        Dashboards:
-        <a id="detail-distribution-dashboard" href="#" target="_blank">distribution</a>
-        |
-        <a id="detail-evolution-dashboard" href="#" target="_blank">evolution</a><br />
-      </div>
-      <br />
-      <table>
-        <tr><td>Kind:</td><td id="detail-kind"></td></tr>
-        <tr><td>Keyed:</td><td id="detail-keyed"></td></tr>
-        <tr><td>Recorded in processes:</td><td id="detail-processes"></td></tr>
-        <tr><td>C++ guard:</td><td id="detail-cpp-guard"></td></tr>
-        <tr><td>Bucket count:</td><td id="detail-histogram-bucket-count"></td></tr>
-        <tr><td>Low:</td><td id="detail-histogram-low"></td></tr>
-        <tr><td>High:</td><td id="detail-histogram-high"></td></tr>
-        <tr><td>Methods:</td><td id="detail-event-methods"></td></tr>
-        <tr><td>Objects:</td><td id="detail-event-objects"></td></tr>
-        <tr><td>Extra keys:</td><td id="detail-event-extra-keys"></td></tr>
-      </table>
-    </div>
-  </div>
-
   <!-- Notice Alert -->
   <div class="container-full" id="alert">
     <div class="alert alert-dismissible alert-warning" id="notice">
@@ -93,7 +61,7 @@
   </div>
 
   <!-- Form -->
-  <div class="container-fluid">
+  <div class="container-fluid" id="search-form">
     <form class="ml-1 mt-3">
       <div class="form-group form-inline">
         Probe is
@@ -134,10 +102,51 @@
   <hr />
 
   <!-- Placeholders filled by JS -->
-  <div class="conainter-fluid">
+  <div id="search-results-view" class="container-fluid">
     <div class="container ml-4" id="stats"></div>
     <div class="container table table-sm table-striped table-hover table-bordered border-0 pl-5" id="measurements"></div>
   </div>
+
+  <div id="probe-detail-view" class="container-fluid">
+    <div id="detail-body">
+      <h2 id="detail-probe-name">Probe name</h2>
+      <button type="button" class="close"
+              aria-label="Close" id="close-detail-view">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <br />
+      <br />
+      <table class="container table table-sm table-striped table-hover table-bordered border-0 pl-5">
+        <tr><td>Type:</td><td id="detail-probe-type"></td></tr>
+        <tr><td>Population:</td><td id="detail-recording-type"></td></tr>
+        <tr id="detail-dashboard-row">
+          <td>Dashboards:</td>
+          <td>
+            <a id="detail-distribution-dashboard" href="#" target="_blank">distribution</a>
+            |
+            <a id="detail-evolution-dashboard" href="#" target="_blank">evolution</a>
+          </td>
+        </tr>
+      </table>
+      <br />
+      <div id="detail-description">...</div>
+      <br />
+      <br />
+      <table class="container table table-sm table-striped table-hover table-bordered border-0 pl-5">
+        <tr><td>Kind:</td><td id="detail-kind"></td></tr>
+        <tr><td>Keyed:</td><td id="detail-keyed"></td></tr>
+        <tr><td>Recorded in processes:</td><td id="detail-processes"></td></tr>
+        <tr><td>C++ guard:</td><td id="detail-cpp-guard"></td></tr>
+        <tr><td>Bucket count:</td><td id="detail-histogram-bucket-count"></td></tr>
+        <tr><td>Low:</td><td id="detail-histogram-low"></td></tr>
+        <tr><td>High:</td><td id="detail-histogram-high"></td></tr>
+        <tr><td>Methods:</td><td id="detail-event-methods"></td></tr>
+        <tr><td>Objects:</td><td id="detail-event-objects"></td></tr>
+        <tr><td>Extra keys:</td><td id="detail-event-extra-keys"></td></tr>
+      </table>
+    </div>
+  </div>
+
 
   <!-- JS Files -->
   <!-- JS: jQuery 3.2.1 -->

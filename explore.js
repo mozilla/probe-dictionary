@@ -7,6 +7,7 @@ var gChannelInfo = null;
 var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
+var gDetailViewId = null;
 
 function mark(marker) {
   performance.mark(marker);
@@ -59,6 +60,13 @@ $(document).ready(function() {
     $("#search_constraint").change(update);
 
     $("#last_update").text(gGeneralData.lastUpdate);
+
+    $("#close-detail-view").click(() => {
+      document.getElementById("probe-detail-view").style.display = "none";
+      document.getElementById("search-form").style.display = "block";
+      document.getElementById("search-results-view").style.display = "block";
+      gDetailViewId = null;
+    });
 
     document.getElementById("loading-overlay").style.display = "none";
     mark("done");
@@ -334,6 +342,13 @@ function loadURIData() {
       $("#select_version").val(val);
     }
   }
+
+  if (params.has("detailView")) {
+    let val = params.get("detailView");
+    if (val in gProbeData) {
+      showDetailViewForId(val);
+    }
+  }
 }
 
 function updateSearchParams() {
@@ -346,15 +361,24 @@ function updateSearchParams() {
     version: $("#select_version").val(),
   };
 
+  if (gDetailViewId) {
+    params.detailView = gDetailViewId;
+  }
+
   window.history.replaceState("", "", "?" + $.param(params));
 }
 
 function showDetailView(obj) {
   const probeId = obj.getAttribute('probeid');
-  const channel = $("#select_channel").val();
-  //alert(probeId);
+  gDetailViewId = probeId;
+  updateSearchParams();
+  showDetailViewForId(probeId);
+}
 
+function showDetailViewForId(probeId) {
+  const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
+
   $('#detail-probe-name').text(probe.name);
   $('#detail-probe-type').text(probe.type);
 
@@ -362,38 +386,51 @@ function showDetailView(obj) {
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
 
-  var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-  var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
-  const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
-  document.getElementById('detail-distribution-dashboard').setAttribute('href', distURL);
-  const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
-  document.getElementById('detail-evolution-dashboard').setAttribute('href', evoURL);
+  if (["histogram", "scalar"].includes(probe.type)) {
+    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
+    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
+
+    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
+    const distLink = document.getElementById('detail-distribution-dashboard');
+    distLink.setAttribute('href', distURL);
+
+    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
+    const evoLink = document.getElementById('detail-evolution-dashboard');
+    evoLink.setAttribute('href', evoURL);
+
+    distLink.style.display = "inline";
+    evoLink.style.display = "inline";
+  } else {
+    document.getElementById('detail-distribution-dashboard').style.display = "none";
+    document.getElementById('detail-evolution-dashboard').style.display = "none";
+  }
 
   $('#detail-cpp-guard').text(state.cpp_guard);
 
-  const detailsMap = new Map([
-    ['keyed', 'detail-keyed'],
-    ['kind', 'detail-kind'],
-    ['record_in_processes', 'detail-processes'],
+  const detailsList = [
+    ['keyed', 'detail-keyed', ['histogram', 'scalar']],
+    ['kind', 'detail-kind', ['histogram', 'scalar']],
+    ['record_in_processes', 'detail-processes', ['all']],
 
-    ['low', 'detail-histogram-low'],
-    ['high', 'detail-histogram-high'],
-    ['n_buckets', 'detail-histogram-bucket-count'],
+    ['low', 'detail-histogram-low', ['histogram']],
+    ['high', 'detail-histogram-high', ['histogram']],
+    ['n_buckets', 'detail-histogram-bucket-count', ['histogram']],
 
-    ['extra_keys', 'detail-kind'],
-    ['methods', 'detail-kind'],
-    ['objects', 'detail-kind'],
-  ]);
+    ['extra_keys', 'detail-event-methods', ['event']],
+    ['methods', 'detail-event-objects', ['event']],
+    ['objects', 'detail-event-extra-keys', ['event']],
+  ];
 
-  for (let [property, id] of detailsMap.entries()) {
+  for (let [property, id, types] of detailsList) {
     const parent = document.getElementById(id).parentElement;
-    if (property in state.details) {
-      parent.style.display = 'block'
+    if ((types.includes('all')) || (types.includes(probe.type))) {
       $('#' + id).text(state.details[property]);
     } else {
-      parent.style.display = 'none';
+      $('#' + id).text("n/a");
     }
   }
 
-  document.getElementById("detail-overlay").style.display = "block";
+  document.getElementById("probe-detail-view").style.display = "block";
+  document.getElementById("search-form").style.display = "none";
+  document.getElementById("search-results-view").style.display = "none";
 }
