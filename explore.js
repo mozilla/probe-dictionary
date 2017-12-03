@@ -400,11 +400,9 @@ function showDetailViewForId(probeId) {
     const evoLink = document.getElementById('detail-evolution-dashboard');
     evoLink.setAttribute('href', evoURL);
 
-    distLink.classList.remove("hidden");
-    evoLink.classList.remove("hidden");
+    document.getElementById("detail-dashboard-row").classList.remove("hidden");
   } else {
-    document.getElementById('detail-distribution-dashboard').classList.add("hidden");
-    document.getElementById('detail-evolution-dashboard').classList.add("hidden");
+    document.getElementById("detail-dashboard-row").classList.add("hidden");
   }
 
   $('#detail-cpp-guard').text(state.cpp_guard);
@@ -425,11 +423,11 @@ function showDetailViewForId(probeId) {
 
   for (let [property, id, types] of detailsList) {
     const parent = document.getElementById(id).parentElement;
-    if ((types.includes('all')) || (types.includes(probe.type))) {
+    if (types.includes('all') || types.includes(probe.type)) {
       $('#' + id).text(state.details[property]);
       document.getElementById(id).parentElement.classList.remove("hidden");
     } else {
-      $('#' + id).text("n/a");
+      $('#' + id).text("");
       document.getElementById(id).parentElement.classList.add("hidden");
     }
   }
