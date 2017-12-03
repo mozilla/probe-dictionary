@@ -431,6 +431,5 @@ function showDetailViewForId(probeId) {
   }
 
   document.getElementById("probe-detail-view").style.display = "block";
-  document.getElementById("search-form").style.display = "none";
-  document.getElementById("search-results-view").style.display = "none";
+  document.getElementById("search-view").style.display = "none";
 }
