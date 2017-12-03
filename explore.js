@@ -281,9 +281,12 @@ function renderMeasurements(measurements) {
     var history = data.history[channel];
 
     for (var h of history) {
-      var cells = [...columns.values()].map(fn => fn(data, h));
+      var cells = [...columns.entries()].map(([field, fn]) => {
+        var d = fn(data, h);
+        return `<td class="search-results-field-${field}">${d}</td>`;
+      });
       table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
-      table += `<td>${cells.join("</td><td>")}</td>`
+      table += cells.join("");
       table += `</tr>`;
     }
   });
