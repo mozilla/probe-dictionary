@@ -428,8 +428,10 @@ function showDetailViewForId(probeId) {
     const parent = document.getElementById(id).parentElement;
     if ((types.includes('all')) || (types.includes(probe.type))) {
       $('#' + id).text(state.details[property]);
+      document.getElementById(id).parentElement.classList.remove("hidden");
     } else {
       $('#' + id).text("n/a");
+      document.getElementById(id).parentElement.classList.add("hidden");
     }
   }
 

@@ -42,3 +42,7 @@ body {
 #detail-probe-name {
     display: inline;
 }
+
+.hidden {
+    display: none;
+}
