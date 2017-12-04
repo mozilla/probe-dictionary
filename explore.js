@@ -51,6 +51,7 @@ $(document).ready(function() {
 
     mark("updated site");
 
+    // Search view events.
     $("#select_constraint").change(update);
     $("#select_version").change(update);
     $("#select_version").keyup(update);
@@ -59,13 +60,23 @@ $(document).ready(function() {
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
 
-    $("#last_update").text(gGeneralData.lastUpdate);
-
+    // Add detail view events.
+    $(document).keyup(e => {
+      // Catch Escape key presses.
+      if ((e.which == 27) && gDetailViewId) {
+        document.getElementById("probe-detail-view").classList.add("hidden");
+        document.getElementById("search-view").classList.remove("hidden");
+        gDetailViewId = null;
+      }
+    });
     $("#close-detail-view").click(() => {
       document.getElementById("probe-detail-view").classList.add("hidden");
       document.getElementById("search-view").classList.remove("hidden");
       gDetailViewId = null;
     });
+
+    // Add when the data was last updated.
+    $("#last_update").text(gGeneralData.lastUpdate);
 
     document.getElementById("loading-overlay").classList.add("hidden");
     mark("done");
