@@ -114,7 +114,7 @@ function updateUI() {
   // Pre-release measurements were never valuable for the release channel.
   // Avoid mistakes by defaulting to only showing release probes.
   const isRelease = channel == "release";
-  $("#optout").prop("enabled", !isRelease);
+  $("#optout").prop("disabled", isRelease);
   if (isRelease) {
     $("#optout").prop("checked", true);
   }
