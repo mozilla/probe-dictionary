@@ -259,14 +259,15 @@ function renderMeasurements(measurements) {
   var container = $("#measurements");
   var items = [];
 
-  var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-  var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
+  var short_version = v => v.split(".")[0];
+  var first_version = h => short_version(gRevisionsData[channel][h["revisions"]["first"]].version);
+  var last_version = h => short_version(gRevisionsData[channel][h["revisions"]["last"]].version);
   var friendly_recording_range = h => {
     const first = first_version(h);
     if (h.expiry_version == "never") {
       return `from ${first}`;
     }
-    return `${first} to ${h.expiry_version}`;
+    return `${first} to ${short_version(h.expiry_version)}`;
   };
 
   var columns = new Map([
