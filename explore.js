@@ -462,4 +462,5 @@ function hideDetailView() {
   document.getElementById("probe-detail-view").classList.add("hidden");
   document.getElementById("search-view").classList.remove("hidden");
   gDetailViewId = null;
+  updateSearchParams();
 }
