@@ -284,7 +284,7 @@ function renderMeasurements(measurements) {
     //["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`],
   ]);
 
-  var table = "<table>";
+  var table = '<table id="search-results-table">';
   table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
 
   var name = probeId => probeId.split("/")[1];
