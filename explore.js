@@ -270,7 +270,7 @@ function renderMeasurements(measurements) {
   };
 
   var columns = new Map([
-    ["", (d, h) => "+"],
+    ["", (d, h) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
     ["name", (d, h) => d.name],
     ["type", (d, h) => d.type],
     ["population", (d, h) => h.optout ? "release" : "prerelease"],

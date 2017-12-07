@@ -48,3 +48,13 @@ body {
 #search-results-table td {
     cursor: pointer;
 }
+
+#search-results-table tr th:first-child {
+    background-color: white;
+    border: none;
+}
+
+#search-results-table tr td:first-child {
+    background-color: white;
+    border: none;
+}
