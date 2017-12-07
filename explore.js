@@ -59,20 +59,17 @@ $(document).ready(function() {
     $("#optout").change(update);
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
+    $(window).on('popstate', loadURIData);
 
     // Add detail view events.
     $(document).keyup(e => {
       // Catch Escape key presses.
       if ((e.which == 27) && gDetailViewId) {
-        document.getElementById("probe-detail-view").classList.add("hidden");
-        document.getElementById("search-view").classList.remove("hidden");
-        gDetailViewId = null;
+        hideDetailView();
       }
     });
     $("#close-detail-view").click(() => {
-      document.getElementById("probe-detail-view").classList.add("hidden");
-      document.getElementById("search-view").classList.remove("hidden");
-      gDetailViewId = null;
+      hideDetailView();
     });
 
     // Add when the data was last updated.
@@ -369,10 +366,12 @@ function loadURIData() {
     if (val in gProbeData) {
       showDetailViewForId(val);
     }
+  } else {
+    hideDetailView();
   }
 }
 
-function updateSearchParams() {
+function updateSearchParams(pushState = false) {
   let params = {
     search: $("#text_search").val(),
     searchtype: $("#search_constraint").val(),
@@ -386,13 +385,17 @@ function updateSearchParams() {
     params.detailView = gDetailViewId;
   }
 
-  window.history.replaceState("", "", "?" + $.param(params));
+  if (!pushState) {
+    window.history.replaceState("", "", "?" + $.param(params));
+  } else {
+    window.history.pushState("", "", "?" + $.param(params));
+  }
 }
 
 function showDetailView(obj) {
   const probeId = obj.getAttribute('probeid');
   gDetailViewId = probeId;
-  updateSearchParams();
+  updateSearchParams(true);
   showDetailViewForId(probeId);
 }
 
@@ -453,4 +456,10 @@ function showDetailViewForId(probeId) {
 
   document.getElementById("probe-detail-view").classList.remove("hidden");
   document.getElementById("search-view").classList.add("hidden");
+}
+
+function hideDetailView() {
+  document.getElementById("probe-detail-view").classList.add("hidden");
+  document.getElementById("search-view").classList.remove("hidden");
+  gDetailViewId = null;
 }
