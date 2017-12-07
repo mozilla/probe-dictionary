@@ -45,6 +45,16 @@ body {
     display: none;
 }
 
+#stats {
+    font-style: italic;
+    font-size: 90%;
+    margin-bottom: 10px;
+}
+
+#measurements {
+    padding-left: 0px !important;
+}
+
 #search-results-table {
     width: 100%;
 }
