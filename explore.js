@@ -7,6 +7,7 @@ var gChannelInfo = null;
 var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
+var gDetailViewId = null;
 
 function mark(marker) {
   performance.mark(marker);
@@ -50,6 +51,7 @@ $(document).ready(function() {
 
     mark("updated site");
 
+    // Search view events.
     $("#select_constraint").change(update);
     $("#select_version").change(update);
     $("#select_version").keyup(update);
@@ -57,10 +59,23 @@ $(document).ready(function() {
     $("#optout").change(update);
     $("#text_search").keyup(update);
     $("#search_constraint").change(update);
+    $(window).on('popstate', loadURIData);
 
+    // Add detail view events.
+    $(document).keyup(e => {
+      // Catch Escape key presses.
+      if ((e.which == 27) && gDetailViewId) {
+        hideDetailView();
+      }
+    });
+    $("#close-detail-view").click(() => {
+      hideDetailView();
+    });
+
+    // Add when the data was last updated.
     $("#last_update").text(gGeneralData.lastUpdate);
 
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById("loading-overlay").classList.add("hidden");
     mark("done");
   });
 });
@@ -95,6 +110,14 @@ function updateUI() {
   var channel = $("#select_channel").val();
   var version = $("#select_version").val();
   var channelInfo = gChannelInfo[channel];
+
+  // Pre-release measurements were never valuable for the release channel.
+  // Avoid mistakes by defaulting to only showing release probes.
+  const isRelease = channel == "release";
+  $("#optout").prop("disabled", isRelease);
+  if (isRelease) {
+    $("#optout").prop("checked", true);
+  }
 
   // Show only versions available for this channel.
   $("#select_version > option").each(function() {
@@ -209,7 +232,12 @@ function renderVersions() {
   }
 }
 
-function getTelemetryDashboardURL(name, type, channel, min_version="null", max_version="null") {
+function getTelemetryDashboardURL(dashType, name, type, channel, min_version="null", max_version="null") {
+  if (!['dist', 'evo'].includes(dashType)) {
+    console.log.error('wrong dashType');
+    return "";
+  }
+
   if (!["histogram", "scalar"].includes(type)) {
     return "";
   }
@@ -219,7 +247,7 @@ function getTelemetryDashboardURL(name, type, channel, min_version="null", max_v
     name = 'SCALARS_' + name.toUpperCase();
   }
 
-  return `https://telemetry.mozilla.org/new-pipeline/dist.html#!` +
+  return `https://telemetry.mozilla.org/new-pipeline/${dashType}.html#!` +
           `max_channel_version=${channel}%252F${max_version}&`+
           `min_channel_version=${channel}%252F${min_version}&` +
           `measure=${name}` +
@@ -231,37 +259,56 @@ function renderMeasurements(measurements) {
   var container = $("#measurements");
   var items = [];
 
+  var short_version = v => v.split(".")[0];
+  var first_version = h => short_version(gRevisionsData[channel][h["revisions"]["first"]].version);
+  var last_version = h => short_version(gRevisionsData[channel][h["revisions"]["last"]].version);
+  var friendly_recording_range = h => {
+    const first = first_version(h);
+    if (h.expiry_version == "never") {
+      return `from ${first}`;
+    }
+    return `${first} to ${short_version(h.expiry_version)}`;
+  };
+
+  var columns = new Map([
+    ["", (d, h) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
+    ["name", (d, h) => d.name],
+    ["type", (d, h) => d.type],
+    ["population", (d, h) => h.optout ? "release" : "prerelease"],
+    ["recorded", (d, h) => friendly_recording_range(h)],
+    // TODO: overflow should cut off
+    ["description", (d, h) => h.description],
+
+    //["first seen", (d, h) => first_version(h)],
+    //["recorded", (d, h) => `${first_version(h)} to ${last_version(h)}`],
+    //["expiry", (d, h) => h.expiry_version],
+    //["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`],
+  ]);
+
+  var table = '<table id="search-results-table">';
+  table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
+
   var name = probeId => probeId.split("/")[1];
   var sortedProbeKeys = Object.keys(measurements)
                               .sort((a, b) => name(a).toLowerCase().localeCompare(name(b).toLowerCase()));
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
-    items.push("<h4 class=\"text-truncate mt-3 mb-0\">" + data.name + "</h3>");
 
     var history = data.history[channel];
-    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
 
-    items.push("<i>" + history[0].description + "</i>");
-
-    var columns = new Map([
-      ["type", (d, h) => d.type],
-      ["optout", (d, h) => h.optout],
-      ["first", (d, h) => first_version(h)],
-      ["last", (d, h) => last_version(h)],
-      ["expiry", (d, h) => h.expiry_version],
-      ["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`]
-    ]);
-
-    var table = "<table>";
-    table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
     for (var h of history) {
-      var cells = [...columns.values()].map(fn => fn(data, h));
-      table += "<tr><td>" + cells.join("</td><td>") + "</td></tr>";
+      var cells = [...columns.entries()].map(([field, fn]) => {
+        var d = fn(data, h);
+        return `<td class="search-results-field-${field}">${d}</td>`;
+      });
+      table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
+      table += cells.join("");
+      table += `</tr>`;
     }
-    table += "</table>";
-    items.push(table);
   });
+
+  table += "</table>";
+  items.push(table);
 
   container.empty();
   container.append(items.join(""));
@@ -314,9 +361,18 @@ function loadURIData() {
       $("#select_version").val(val);
     }
   }
+
+  if (params.has("detailView")) {
+    let val = params.get("detailView");
+    if (val in gProbeData) {
+      showDetailViewForId(val);
+    }
+  } else {
+    hideDetailView();
+  }
 }
 
-function updateSearchParams() {
+function updateSearchParams(pushState = false) {
   let params = {
     search: $("#text_search").val(),
     searchtype: $("#search_constraint").val(),
@@ -326,5 +382,86 @@ function updateSearchParams() {
     version: $("#select_version").val(),
   };
 
-  window.history.replaceState("", "", "?" + $.param(params));
+  if (gDetailViewId) {
+    params.detailView = gDetailViewId;
+  }
+
+  if (!pushState) {
+    window.history.replaceState("", "", "?" + $.param(params));
+  } else {
+    window.history.pushState("", "", "?" + $.param(params));
+  }
+}
+
+function showDetailView(obj) {
+  const probeId = obj.getAttribute('probeid');
+  gDetailViewId = probeId;
+  updateSearchParams(true);
+  showDetailViewForId(probeId);
+}
+
+function showDetailViewForId(probeId) {
+  const channel = $("#select_channel").val();
+  const probe = gProbeData[probeId];
+
+  $('#detail-probe-name').text(probe.name);
+  $('#detail-probe-type').text(probe.type);
+
+  const state = probe.history[channel][0];
+  $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
+  $('#detail-description').text(state.description);
+
+  if (["histogram", "scalar"].includes(probe.type)) {
+    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
+    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
+
+    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
+    const distLink = document.getElementById('detail-distribution-dashboard');
+    distLink.setAttribute('href', distURL);
+
+    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
+    const evoLink = document.getElementById('detail-evolution-dashboard');
+    evoLink.setAttribute('href', evoURL);
+
+    document.getElementById("detail-dashboard-row").classList.remove("hidden");
+  } else {
+    document.getElementById("detail-dashboard-row").classList.add("hidden");
+  }
+
+  $('#detail-cpp-guard').text(state.cpp_guard);
+
+  const detailsList = [
+    ['keyed', 'detail-keyed', ['histogram', 'scalar']],
+    ['kind', 'detail-kind', ['histogram', 'scalar']],
+    ['record_in_processes', 'detail-processes', ['scalar', 'event']],
+
+    ['low', 'detail-histogram-low', ['histogram']],
+    ['high', 'detail-histogram-high', ['histogram']],
+    ['n_buckets', 'detail-histogram-bucket-count', ['histogram']],
+
+    ['extra_keys', 'detail-event-methods', ['event']],
+    ['methods', 'detail-event-objects', ['event']],
+    ['objects', 'detail-event-extra-keys', ['event']],
+  ];
+
+  for (let [property, id, types] of detailsList) {
+    const parent = document.getElementById(id).parentElement;
+    if (types.includes('all') || types.includes(probe.type)) {
+      $('#' + id).text(state.details[property] || "");
+      document.getElementById(id).parentElement.classList.remove("hidden");
+    } else {
+      $('#' + id).text("");
+      document.getElementById(id).parentElement.classList.add("hidden");
+    }
+  }
+
+  document.getElementById("probe-detail-view").classList.remove("hidden");
+  document.getElementById("search-view").classList.add("hidden");
+}
+
+function hideDetailView() {
+  document.getElementById("probe-detail-view").classList.add("hidden");
+  document.getElementById("search-view").classList.remove("hidden");
+  gDetailViewId = null;
+  updateSearchParams();
 }

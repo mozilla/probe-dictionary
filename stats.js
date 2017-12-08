@@ -48,7 +48,7 @@ $(document).ready(function() {
 
     $("#last_update").text(gGeneralData.lastUpdate);
 
-    document.getElementById("overlay").style.display = "none";
+    document.getElementById("loading-overlay").style.display = "none";
     mark("done");
   });
 });
