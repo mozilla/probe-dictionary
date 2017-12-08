@@ -433,7 +433,7 @@ function showDetailViewForId(probeId) {
   const detailsList = [
     ['keyed', 'detail-keyed', ['histogram', 'scalar']],
     ['kind', 'detail-kind', ['histogram', 'scalar']],
-    ['record_in_processes', 'detail-processes', ['all']],
+    ['record_in_processes', 'detail-processes', ['scalar', 'event']],
 
     ['low', 'detail-histogram-low', ['histogram']],
     ['high', 'detail-histogram-high', ['histogram']],
@@ -447,7 +447,7 @@ function showDetailViewForId(probeId) {
   for (let [property, id, types] of detailsList) {
     const parent = document.getElementById(id).parentElement;
     if (types.includes('all') || types.includes(probe.type)) {
-      $('#' + id).text(state.details[property]);
+      $('#' + id).text(state.details[property] || "");
       document.getElementById(id).parentElement.classList.remove("hidden");
     } else {
       $('#' + id).text("");
