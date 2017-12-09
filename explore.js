@@ -3,10 +3,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var ANALYSIS_URI = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+
 var gChannelInfo = null;
 var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
+var gEnvironmentData = null;
 var gDetailViewId = null;
 
 function mark(marker) {
@@ -14,17 +17,17 @@ function mark(marker) {
   console.timeStamp(marker);
 }
 
-function promiseGetJSON(file) {
-  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
-  //var base_uri = "";
-
-  return new Promise(resolve => {
+function promiseGetJSON(file, base_uri = ANALYSIS_URI) {
+  return new Promise((resolve, reject) => {
     $.ajax({
       url: base_uri + file,
       cache: true,
       dataType: "json",
       complete: data => {
         mark("loaded " + file);
+        if (base_uri == "") {
+          //data = JSON.parse(data.responseText);
+        }
         resolve(data);
       },
     });
@@ -38,13 +41,15 @@ $(document).ready(function() {
     promiseGetJSON("general.json"),
     promiseGetJSON("revisions.json"),
     promiseGetJSON("probes.json"),
+    promiseGetJSON("environment.json", ""),
   ];
 
   Promise.all(loads).then(values => {
     mark("all json loaded");
-    [gGeneralData, gRevisionsData, gProbeData] = values;
+    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData] = values;
 
     extractChannelInfo();
+    processEnvironmentData();
     renderVersions();
     loadURIData();
     update();
@@ -77,6 +82,8 @@ $(document).ready(function() {
 
     document.getElementById("loading-overlay").classList.add("hidden");
     mark("done");
+  }, e => {
+    console.log("caught", e);
   });
 });
 
@@ -91,6 +98,18 @@ function extractChannelInfo() {
       }
       gChannelInfo[channel].versions[details.version] = rev;
     });
+  });
+}
+
+function processEnvironmentData() {
+  // Fix up revisions entry of "latest" to whatever the latest seen revision is.
+  $.each(gEnvironmentData, (id, data) => {
+    data.history["release"].forEach(entry => {
+      if (entry.revisions.last == "last") {
+        entry.revisions.last = "d47195ec274d20ed53ff0eb0ea2f72f7168f6ad9";
+      }
+    });
+    gProbeData[id] = data;
   });
 }
 

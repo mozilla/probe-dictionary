@@ -1,0 +1,254 @@
+{
+  "environment/system.cpu.count": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.count",
+    "type": "environment"
+  },
+  "environment/system.cpu.cores": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.cores",
+    "type": "environment"
+  },
+  "environment/system.cpu.vendor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.vendor",
+    "type": "environment"
+  },
+  "environment/system.cpu.family": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU family, `null` on failure. Desktop only.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.family",
+    "type": "environment"
+  },
+  "environment/system.cpu.model": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU model, `null` on failure. Desktop only.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.model",
+    "type": "environment"
+  },
+  "environment/system.cpu.stepping": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU stepping, `null` on failure. Desktop only.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.stepping",
+    "type": "environment"
+  },
+  "environment/system.cpu.l2cacheKB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.l2cacheKB",
+    "type": "environment"
+  },
+  "environment/system.cpu.l3cacheKB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.l3cacheKB",
+    "type": "environment"
+  },
+  "environment/system.cpu.speedMHz": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.speedMHz",
+    "type": "environment"
+  },
+  "environment/system.cpu.extensions": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
+          "details": {
+            "kind": "Array<string>"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.extensions",
+    "type": "environment"
+  },
+  "environment/system.memoryMB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The machines amount of RAM.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.memoryMB",
+    "type": "environment"
+  },
+  "environment/system.virtualMaxMB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "This is Windows only. <TODO>",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.virtualMaxMB",
+    "type": "environment"
+  }
+}
