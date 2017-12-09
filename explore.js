@@ -10,6 +10,8 @@ var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
 var gEnvironmentData = null;
+var gDatasetMappings = null;
+
 var gDetailViewId = null;
 
 function mark(marker) {
@@ -42,11 +44,12 @@ $(document).ready(function() {
     promiseGetJSON("revisions.json"),
     promiseGetJSON("probes.json"),
     promiseGetJSON("environment.json", ""),
+    promiseGetJSON("datasets.json", ""),
   ];
 
   Promise.all(loads).then(values => {
     mark("all json loaded");
-    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData] = values;
+    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData, gDatasetMappings] = values;
 
     extractChannelInfo();
     processEnvironmentData();
@@ -467,6 +470,28 @@ function showDetailViewForId(probeId) {
     document.getElementById("detail-dashboard-row").classList.remove("hidden");
   } else {
     document.getElementById("detail-dashboard-row").classList.add("hidden");
+  }
+
+  // Available datasets.
+  var datasetsRow = document.getElementById("detail-datasets-row");
+  if (!(probeId in gDatasetMappings)) {
+    datasetsRow.classList.add("hidden");
+  } else {
+    const docs = {
+      "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
+    };
+    var infos = [];
+    $.each(gDatasetMappings[probeId], (dataset, name) => {
+      var datasetText = dataset;
+      if (dataset in docs) {
+        datasetText = `<a href="${docs[dataset]}">${dataset}</a>`;
+      }
+      infos.push(datasetText + ` as ${name}`);
+    });
+
+    $("#detail-datasets-content").empty();
+    $("#detail-datasets-content").append(infos.join("<br>"));
+    datasetsRow.classList.remove("hidden");
   }
 
   // Bug numbers.
