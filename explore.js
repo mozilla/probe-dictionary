@@ -423,13 +423,14 @@ function showDetailViewForId(probeId) {
   const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
 
+  // Core probe data.
   $('#detail-probe-name').text(probe.name);
   $('#detail-probe-type').text(probe.type);
-
   const state = probe.history[channel][0];
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
 
+  // TMO dashboard links.
   if (["histogram", "scalar"].includes(probe.type)) {
     var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
     var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
@@ -447,6 +448,16 @@ function showDetailViewForId(probeId) {
     document.getElementById("detail-dashboard-row").classList.add("hidden");
   }
 
+  // Bug numbers.
+  $('#detail-bug-numbers').empty();
+  var bugs = state['bug_numbers'] || [];
+  var bugLinks = bugs.map(bugNo => {
+    var uri = `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugNo}`;
+    return `<a href="${uri}">bug ${bugNo}</a>`;
+  }).join(", ");
+  $('#detail-bug-numbers').append(bugLinks);
+
+  // Other probe details.
   const detailsList = [
     ['kind', 'detail-kind', ['histogram', 'scalar', 'environment']],
     ['keyed', 'detail-keyed', ['histogram', 'scalar']],
