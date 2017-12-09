@@ -447,12 +447,11 @@ function showDetailViewForId(probeId) {
     document.getElementById("detail-dashboard-row").classList.add("hidden");
   }
 
-  $('#detail-cpp-guard').text(state.cpp_guard);
-
   const detailsList = [
+    ['kind', 'detail-kind', ['histogram', 'scalar', 'environment']],
     ['keyed', 'detail-keyed', ['histogram', 'scalar']],
-    ['kind', 'detail-kind', ['histogram', 'scalar']],
     ['record_in_processes', 'detail-processes', ['scalar', 'event']],
+    ['cpp_guard', 'detail-cpp-guard', ['histogram', 'scalar', 'event']],
 
     ['low', 'detail-histogram-low', ['histogram']],
     ['high', 'detail-histogram-high', ['histogram']],
