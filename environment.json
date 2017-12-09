@@ -257,6 +257,7 @@
         {
           "cpp_guard": null,
           "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
+          "bug_numbers": [1122052],
           "details": {
             "kind": "string"
           },
@@ -278,6 +279,7 @@
         {
           "cpp_guard": null,
           "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
+          "bug_numbers": [1122052],
           "details": {
             "kind": "string"
           },
@@ -299,6 +301,7 @@
         {
           "cpp_guard": null,
           "description": "The kernel version of Android. This is Android only. `null` on failure.",
+          "bug_numbers": [1122052],
           "details": {
             "kind": "string"
           },
@@ -320,6 +323,7 @@
         {
           "cpp_guard": null,
           "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
           "details": {
             "kind": "number"
           },
@@ -341,6 +345,7 @@
         {
           "cpp_guard": null,
           "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
           "details": {
             "kind": "number"
           },
@@ -362,6 +367,7 @@
         {
           "cpp_guard": null,
           "description": "The Windows build number. This is Windows only. `null` on failure.",
+          "bug_numbers": [1255472, 1333043],
           "details": {
             "kind": "number"
           },
@@ -383,6 +389,7 @@
         {
           "cpp_guard": null,
           "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
+          "bug_numbers": [1255472],
           "details": {
             "kind": "number"
           },
@@ -404,6 +411,7 @@
         {
           "cpp_guard": null,
           "description": "The year Windows was installed. This is Windows only. `null` on failure.",
+          "bug_numbers": [1132558],
           "details": {
             "kind": "number"
           },
@@ -425,6 +433,7 @@
         {
           "cpp_guard": null,
           "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
+          "bug_numbers": [1122052],
           "details": {
             "kind": "string"
           },
