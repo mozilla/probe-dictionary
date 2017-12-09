@@ -250,5 +250,194 @@
     },
     "name": "system.virtualMaxMB",
     "type": "environment"
+  },
+  "environment/system.os.name": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.name",
+    "type": "environment"
+  },
+  "environment/system.os.version": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.version",
+    "type": "environment"
+  },
+  "environment/system.os.kernelVersion": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The kernel version of Android. This is Android only. `null` on failure.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.kernelVersion",
+    "type": "environment"
+  },
+  "environment/system.os.servicePackMajor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.servicePackMajor",
+    "type": "environment"
+  },
+  "environment/system.os.servicePackMinor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.servicePackMinor",
+    "type": "environment"
+  },
+  "environment/system.os.windowsBuildNumber": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows build number. This is Windows only. `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.windowsBuildNumber",
+    "type": "environment"
+  },
+  "environment/system.os.windowsUBR": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.windowsUBR",
+    "type": "environment"
+  },
+  "environment/system.os.installYear": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The year Windows was installed. This is Windows only. `null` on failure.",
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.installYear",
+    "type": "environment"
+  },
+  "environment/system.os.locale": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "first": "fc05d86dc3108bbe00b447f450b213b8a976e0f4",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.locale",
+    "type": "environment"
   }
 }
