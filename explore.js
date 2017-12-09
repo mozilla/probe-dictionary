@@ -161,6 +161,28 @@ function updateUI() {
   $("#select_version").val(version);
 }
 
+function getVersionRange(channel, revisionsRange) {
+  var range = {
+    first: null,
+    last: null,
+  };
+
+  if (revisionsRange.first) {
+    range.first = parseInt(gRevisionsData[channel][revisionsRange.first].version);
+  } else {
+    range.first = parseInt(revisionsRange.firstVersion);
+  }
+
+  var last = revisionsRange.last;
+  if (last == "latest") {
+    range.last = Math.max.apply(null, Object.keys(gChannelInfo[channel].versions));
+  } else {
+    range.last = parseInt(gRevisionsData[channel][revisionsRange.last].version);
+  }
+
+  return range;
+}
+
 function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
@@ -169,9 +191,6 @@ function filterMeasurements() {
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
   var measurements = gProbeData;
-
-  // Look up revision.
-  var revision = (version == "any") ? "any" : gChannelInfo[channel].versions[version];
 
   // Filter out by selected criteria.
   var filtered = {};
@@ -188,18 +207,18 @@ function filterMeasurements() {
     }
 
     // Filter for version constraint.
-    if (revision != "any") {
-      var version = parseInt(gRevisionsData[channel][revision].version);
+    if (version != "any") {
+      var versionNum = parseInt(version);
       history = history.filter(m => {
         switch (version_constraint) {
           case "is_in":
-            var first_ver = parseInt(gRevisionsData[channel][m.revisions.first].version);
-            var last_ver = parseInt(gRevisionsData[channel][m.revisions.last].version);
+            var versions = getVersionRange(channel, m.revisions);
             var expires = m.expiry_version;
-            return (first_ver <= version) && (last_ver >= version) &&
-                   ((expires == "never") || (parseInt(expires) >= version));
+            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                   ((expires == "never") || (parseInt(expires) >= versionNum));
           case "new_in":
-            return m.revisions.first == revision;
+            var versions = getVersionRange(channel, m.revisions);
+            return versions.first == versionNum;
           default:
             throw "Yuck, unknown selector.";
         }
@@ -279,10 +298,8 @@ function renderMeasurements(measurements) {
   var items = [];
 
   var short_version = v => v.split(".")[0];
-  var first_version = h => short_version(gRevisionsData[channel][h["revisions"]["first"]].version);
-  var last_version = h => short_version(gRevisionsData[channel][h["revisions"]["last"]].version);
   var friendly_recording_range = h => {
-    const first = first_version(h);
+    const first = getVersionRange(channel, h["revisions"]).first;
     if (h.expiry_version == "never") {
       return `from ${first}`;
     }
