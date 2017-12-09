@@ -454,43 +454,41 @@ function showDetailViewForId(probeId) {
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
 
+  // Available datasets infos.
+  var datasetInfos = [];
+
   // TMO dashboard links.
   if (["histogram", "scalar"].includes(probe.type)) {
-    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
-
-    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
-    const distLink = document.getElementById('detail-distribution-dashboard');
-    distLink.setAttribute('href', distURL);
-
-    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
-    const evoLink = document.getElementById('detail-evolution-dashboard');
-    evoLink.setAttribute('href', evoURL);
-
-    document.getElementById("detail-dashboard-row").classList.remove("hidden");
-  } else {
-    document.getElementById("detail-dashboard-row").classList.add("hidden");
+    var versions = getVersionRange(channel, state.revisions);
+    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
+    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
+    datasetInfos.push("TMO dashboard: "
+                      + `<a href="${distURL}" target="_blank">distribution</a>`
+                      + ", "
+                      + `<a href="${evoURL}" target="_blank">evolution</a>`);
   }
 
-  // Available datasets.
-  var datasetsRow = document.getElementById("detail-datasets-row");
-  if (!(probeId in gDatasetMappings)) {
-    datasetsRow.classList.add("hidden");
-  } else {
+  // Dataset mappings.
+  if (probeId in gDatasetMappings) {
     const docs = {
       "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
     };
-    var infos = [];
     $.each(gDatasetMappings[probeId], (dataset, name) => {
       var datasetText = dataset;
       if (dataset in docs) {
-        datasetText = `<a href="${docs[dataset]}">${dataset}</a>`;
+        datasetText = `<a href="${docs[dataset]}" target="_blank">${dataset}</a>`;
       }
-      infos.push(datasetText + ` as ${name}`);
+      datasetInfos.push(datasetText + ` as ${name}`);
     });
+  }
 
+  // Apply dataset infos.
+  var datasetsRow = document.getElementById("detail-datasets-row");
+  if (datasetInfos.length == 0) {
+    datasetsRow.classList.add("hidden");
+  } else {
     $("#detail-datasets-content").empty();
-    $("#detail-datasets-content").append(infos.join("<br>"));
+    $("#detail-datasets-content").append(datasetInfos.join("<br>"));
     datasetsRow.classList.remove("hidden");
   }
 
