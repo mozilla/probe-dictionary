@@ -292,6 +292,10 @@ function getTelemetryDashboardURL(dashType, name, type, channel, min_version="nu
           `&product=Firefox`;
 }
 
+function escapeHtml(text) {
+  return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function renderMeasurements(measurements) {
   var channel = $("#select_channel").val();
   var container = $("#measurements");
@@ -313,7 +317,7 @@ function renderMeasurements(measurements) {
     ["population", (d, h) => h.optout ? "release" : "prerelease"],
     ["recorded", (d, h) => friendly_recording_range(h)],
     // TODO: overflow should cut off
-    ["description", (d, h) => h.description],
+    ["description", (d, h) => escapeHtml(h.description)],
 
     //["first seen", (d, h) => first_version(h)],
     //["recorded", (d, h) => `${first_version(h)} to ${last_version(h)}`],
