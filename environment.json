@@ -1,0 +1,1136 @@
+{
+  "environment/system.cpu.count": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.count",
+    "type": "environment"
+  },
+  "environment/system.cpu.cores": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.cores",
+    "type": "environment"
+  },
+  "environment/system.cpu.vendor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.vendor",
+    "type": "environment"
+  },
+  "environment/system.cpu.family": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU family, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU family, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU family, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.family",
+    "type": "environment"
+  },
+  "environment/system.cpu.model": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU model, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU model, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU model, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.model",
+    "type": "environment"
+  },
+  "environment/system.cpu.stepping": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU stepping, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU stepping, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU stepping, `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.stepping",
+    "type": "environment"
+  },
+  "environment/system.cpu.l2cacheKB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.l2cacheKB",
+    "type": "environment"
+  },
+  "environment/system.cpu.l3cacheKB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.l3cacheKB",
+    "type": "environment"
+  },
+  "environment/system.cpu.speedMHz": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.speedMHz",
+    "type": "environment"
+  },
+  "environment/system.cpu.extensions": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "Array<string>"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "Array<string>"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "Array<string>"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.cpu.extensions",
+    "type": "environment"
+  },
+  "environment/system.memoryMB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The machines amount of RAM.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The machines amount of RAM.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The machines amount of RAM.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.memoryMB",
+    "type": "environment"
+  },
+  "environment/system.virtualMaxMB": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
+          "bug_numbers": [1128472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "43",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.virtualMaxMB",
+    "type": "environment"
+  },
+  "environment/system.os.name": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.name",
+    "type": "environment"
+  },
+  "environment/system.os.version": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.version",
+    "type": "environment"
+  },
+  "environment/system.os.kernelVersion": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The kernel version of Android. This is Android only. `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The kernel version of Android. This is Android only. `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The kernel version of Android. This is Android only. `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.kernelVersion",
+    "type": "environment"
+  },
+  "environment/system.os.servicePackMajor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.servicePackMajor",
+    "type": "environment"
+  },
+  "environment/system.os.servicePackMinor": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
+          "bug_numbers": [1122052, 1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.servicePackMinor",
+    "type": "environment"
+  },
+  "environment/system.os.windowsBuildNumber": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows build number. This is Windows only. `null` on failure.",
+          "bug_numbers": [1255472, 1333043],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "47",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows build number. This is Windows only. `null` on failure.",
+          "bug_numbers": [1255472, 1333043],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "47",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows build number. This is Windows only. `null` on failure.",
+          "bug_numbers": [1255472, 1333043],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "48",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.windowsBuildNumber",
+    "type": "environment"
+  },
+  "environment/system.os.windowsUBR": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
+          "bug_numbers": [1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "47",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
+          "bug_numbers": [1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "47",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
+          "bug_numbers": [1255472],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "48",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.windowsUBR",
+    "type": "environment"
+  },
+  "environment/system.os.installYear": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The year Windows was installed. This is Windows only. `null` on failure.",
+          "bug_numbers": [1132558],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The year Windows was installed. This is Windows only. `null` on failure.",
+          "bug_numbers": [1132558],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The year Windows was installed. This is Windows only. `null` on failure.",
+          "bug_numbers": [1132558],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.installYear",
+    "type": "environment"
+  },
+  "environment/system.os.locale": {
+    "history": {
+      "release": [
+        {
+          "cpp_guard": null,
+          "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "cpp_guard": null,
+          "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "cpp_guard": null,
+          "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.os.locale",
+    "type": "environment"
+  }
+}

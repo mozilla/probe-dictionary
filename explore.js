@@ -3,10 +3,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+var ANALYSIS_URI = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+
 var gChannelInfo = null;
 var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
+var gEnvironmentData = null;
+var gDatasetMappings = null;
+
 var gDetailViewId = null;
 
 function mark(marker) {
@@ -14,17 +19,17 @@ function mark(marker) {
   console.timeStamp(marker);
 }
 
-function promiseGetJSON(file) {
-  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
-  //var base_uri = "";
-
-  return new Promise(resolve => {
+function promiseGetJSON(file, base_uri = ANALYSIS_URI) {
+  return new Promise((resolve, reject) => {
     $.ajax({
       url: base_uri + file,
       cache: true,
       dataType: "json",
       complete: data => {
         mark("loaded " + file);
+        if (base_uri == "") {
+          //data = JSON.parse(data.responseText);
+        }
         resolve(data);
       },
     });
@@ -38,13 +43,16 @@ $(document).ready(function() {
     promiseGetJSON("general.json"),
     promiseGetJSON("revisions.json"),
     promiseGetJSON("probes.json"),
+    promiseGetJSON("environment.json", ""),
+    promiseGetJSON("datasets.json", ""),
   ];
 
   Promise.all(loads).then(values => {
     mark("all json loaded");
-    [gGeneralData, gRevisionsData, gProbeData] = values;
+    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData, gDatasetMappings] = values;
 
     extractChannelInfo();
+    processEnvironmentData();
     renderVersions();
     loadURIData();
     update();
@@ -77,6 +85,8 @@ $(document).ready(function() {
 
     document.getElementById("loading-overlay").classList.add("hidden");
     mark("done");
+  }, e => {
+    console.log("caught", e);
   });
 });
 
@@ -91,6 +101,18 @@ function extractChannelInfo() {
       }
       gChannelInfo[channel].versions[details.version] = rev;
     });
+  });
+}
+
+function processEnvironmentData() {
+  // Fix up revisions entry of "latest" to whatever the latest seen revision is.
+  $.each(gEnvironmentData, (id, data) => {
+    data.history["release"].forEach(entry => {
+      if (entry.revisions.last == "last") {
+        entry.revisions.last = "d47195ec274d20ed53ff0eb0ea2f72f7168f6ad9";
+      }
+    });
+    gProbeData[id] = data;
   });
 }
 
@@ -142,6 +164,28 @@ function updateUI() {
   $("#select_version").val(version);
 }
 
+function getVersionRange(channel, revisionsRange) {
+  var range = {
+    first: null,
+    last: null,
+  };
+
+  if (revisionsRange.first) {
+    range.first = parseInt(gRevisionsData[channel][revisionsRange.first].version);
+  } else {
+    range.first = parseInt(revisionsRange.firstVersion);
+  }
+
+  var last = revisionsRange.last;
+  if (last == "latest") {
+    range.last = Math.max.apply(null, Object.keys(gChannelInfo[channel].versions));
+  } else {
+    range.last = parseInt(gRevisionsData[channel][revisionsRange.last].version);
+  }
+
+  return range;
+}
+
 function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
@@ -150,9 +194,6 @@ function filterMeasurements() {
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
   var measurements = gProbeData;
-
-  // Look up revision.
-  var revision = (version == "any") ? "any" : gChannelInfo[channel].versions[version];
 
   // Filter out by selected criteria.
   var filtered = {};
@@ -169,18 +210,18 @@ function filterMeasurements() {
     }
 
     // Filter for version constraint.
-    if (revision != "any") {
-      var version = parseInt(gRevisionsData[channel][revision].version);
+    if (version != "any") {
+      var versionNum = parseInt(version);
       history = history.filter(m => {
         switch (version_constraint) {
           case "is_in":
-            var first_ver = parseInt(gRevisionsData[channel][m.revisions.first].version);
-            var last_ver = parseInt(gRevisionsData[channel][m.revisions.last].version);
+            var versions = getVersionRange(channel, m.revisions);
             var expires = m.expiry_version;
-            return (first_ver <= version) && (last_ver >= version) &&
-                   ((expires == "never") || (parseInt(expires) >= version));
+            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                   ((expires == "never") || (parseInt(expires) >= versionNum));
           case "new_in":
-            return m.revisions.first == revision;
+            var versions = getVersionRange(channel, m.revisions);
+            return versions.first == versionNum;
           default:
             throw "Yuck, unknown selector.";
         }
@@ -254,16 +295,18 @@ function getTelemetryDashboardURL(dashType, name, type, channel, min_version="nu
           `&product=Firefox`;
 }
 
+function escapeHtml(text) {
+  return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function renderMeasurements(measurements) {
   var channel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
 
   var short_version = v => v.split(".")[0];
-  var first_version = h => short_version(gRevisionsData[channel][h["revisions"]["first"]].version);
-  var last_version = h => short_version(gRevisionsData[channel][h["revisions"]["last"]].version);
   var friendly_recording_range = h => {
-    const first = first_version(h);
+    const first = getVersionRange(channel, h["revisions"]).first;
     if (h.expiry_version == "never") {
       return `from ${first}`;
     }
@@ -277,7 +320,7 @@ function renderMeasurements(measurements) {
     ["population", (d, h) => h.optout ? "release" : "prerelease"],
     ["recorded", (d, h) => friendly_recording_range(h)],
     // TODO: overflow should cut off
-    ["description", (d, h) => h.description],
+    ["description", (d, h) => escapeHtml(h.description)],
 
     //["first seen", (d, h) => first_version(h)],
     //["recorded", (d, h) => `${first_version(h)} to ${last_version(h)}`],
@@ -404,36 +447,66 @@ function showDetailViewForId(probeId) {
   const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
 
+  // Core probe data.
   $('#detail-probe-name').text(probe.name);
   $('#detail-probe-type').text(probe.type);
-
   const state = probe.history[channel][0];
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
 
+  // Available datasets infos.
+  var datasetInfos = [];
+
+  // TMO dashboard links.
   if (["histogram", "scalar"].includes(probe.type)) {
-    var first_version = h => gRevisionsData[channel][h["revisions"]["first"]].version;
-    var last_version = h => gRevisionsData[channel][h["revisions"]["last"]].version;
-
-    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, first_version(state), last_version(state));
-    const distLink = document.getElementById('detail-distribution-dashboard');
-    distLink.setAttribute('href', distURL);
-
-    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, first_version(state), last_version(state));
-    const evoLink = document.getElementById('detail-evolution-dashboard');
-    evoLink.setAttribute('href', evoURL);
-
-    document.getElementById("detail-dashboard-row").classList.remove("hidden");
-  } else {
-    document.getElementById("detail-dashboard-row").classList.add("hidden");
+    var versions = getVersionRange(channel, state.revisions);
+    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
+    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
+    datasetInfos.push("TMO dashboard: "
+                      + `<a href="${distURL}" target="_blank">distribution</a>`
+                      + ", "
+                      + `<a href="${evoURL}" target="_blank">evolution</a>`);
   }
 
-  $('#detail-cpp-guard').text(state.cpp_guard);
+  // Dataset mappings.
+  if (probeId in gDatasetMappings) {
+    const docs = {
+      "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
+    };
+    $.each(gDatasetMappings[probeId], (dataset, name) => {
+      var datasetText = dataset;
+      if (dataset in docs) {
+        datasetText = `<a href="${docs[dataset]}" target="_blank">${dataset}</a>`;
+      }
+      datasetInfos.push(datasetText + ` as ${name}`);
+    });
+  }
 
+  // Apply dataset infos.
+  var datasetsRow = document.getElementById("detail-datasets-row");
+  if (datasetInfos.length == 0) {
+    datasetsRow.classList.add("hidden");
+  } else {
+    $("#detail-datasets-content").empty();
+    $("#detail-datasets-content").append(datasetInfos.join("<br>"));
+    datasetsRow.classList.remove("hidden");
+  }
+
+  // Bug numbers.
+  $('#detail-bug-numbers').empty();
+  var bugs = state['bug_numbers'] || [];
+  var bugLinks = bugs.map(bugNo => {
+    var uri = `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugNo}`;
+    return `<a href="${uri}">bug ${bugNo}</a>`;
+  }).join(", ");
+  $('#detail-bug-numbers').append(bugLinks);
+
+  // Other probe details.
   const detailsList = [
+    ['kind', 'detail-kind', ['histogram', 'scalar', 'environment']],
     ['keyed', 'detail-keyed', ['histogram', 'scalar']],
-    ['kind', 'detail-kind', ['histogram', 'scalar']],
     ['record_in_processes', 'detail-processes', ['scalar', 'event']],
+    ['cpp_guard', 'detail-cpp-guard', ['histogram', 'scalar', 'event']],
 
     ['low', 'detail-histogram-low', ['histogram']],
     ['high', 'detail-histogram-high', ['histogram']],
