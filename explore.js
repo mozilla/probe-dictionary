@@ -469,17 +469,40 @@ function showDetailViewForId(probeId) {
   }
 
   // Dataset mappings.
+  const dataDocs = {
+    "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
+  };
+  var code = s => `<span class="code">${s}</span>`;
+
   if (probeId in gDatasetMappings) {
-    const docs = {
-      "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
-    };
     $.each(gDatasetMappings[probeId], (dataset, name) => {
       var datasetText = dataset;
-      if (dataset in docs) {
-        datasetText = `<a href="${docs[dataset]}" target="_blank">${dataset}</a>`;
+      if (dataset in dataDocs) {
+        datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
       }
-      datasetInfos.push(datasetText + ` as ${name}`);
+      datasetInfos.push(datasetText + ` as ${code(name)}`);
     });
+  }
+
+  if (probe.type == "scalar" && state.optout && state.details.record_in_processes.includes("main")) {
+    var dataset = "longitudinal";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = "scalar_parent_" + probe.name.toLowerCase().replace('.', '_');
+    datasetInfos.push(datasetText + ` as ${code(name)}`);
+  }
+
+  if (probe.type == "histogram" && state.optout) {
+    var dataset = "longitudinal";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = probe.name.toLowerCase().replace('.', '_');
+    var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
+    datasetInfos.push(datasetText + ` as ${names}`);
   }
 
   // Apply dataset infos.
