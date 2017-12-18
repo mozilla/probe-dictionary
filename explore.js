@@ -490,7 +490,7 @@ function showDetailViewForId(probeId) {
     if (dataset in dataDocs) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
-    var name = "scalar_parent_" + probe.name.toLowerCase().replace('.', '_');
+    var name = "scalar_parent_" + probe.name.toLowerCase().replace(/\./g, '_');
     datasetInfos.push(datasetText + ` as ${code(name)}`);
   }
 
@@ -500,7 +500,7 @@ function showDetailViewForId(probeId) {
     if (dataset in dataDocs) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
-    var name = probe.name.toLowerCase().replace('.', '_');
+    var name = probe.name.toLowerCase().replace(/\./g, '_');
     var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
     datasetInfos.push(datasetText + ` as ${names}`);
   }
