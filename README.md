@@ -1,4 +1,7 @@
-# fx-data-explorer
+
+# **This project moved to [mozilla/probe-dictionary](https://github.com/mozilla/probe-dictionary).**
+
+## fx-data-explorer
 Prototype of how to make the Telemetry probe data in Firefox more discoverable and searchable.
 
 This front-end allows answering questions like 
