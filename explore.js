@@ -458,6 +458,21 @@ function showDetailView(obj) {
   showDetailViewForId(probeId);
 }
 
+function linkedProbeType(type) {
+  const sourceDocs = "https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/";
+  const links = {
+    environment: sourceDocs + "data/environment.html",
+    histogram: sourceDocs + "collection/histograms.html",
+    scalar: sourceDocs + "collection/scalars.html",
+    event: sourceDocs + "collection/events.html",
+  };
+
+  if (type in links) {
+    return `<a href="${links[type]}">${type}</a>`;
+  }
+  return type;
+}
+
 function showDetailViewForId(probeId) {
   const last = array => array[array.length - 1];
 
@@ -466,7 +481,7 @@ function showDetailViewForId(probeId) {
 
   // Core probe data.
   $('#detail-probe-name').text(probe.name);
-  $('#detail-probe-type').text(probe.type);
+  $('#detail-probe-type').html(linkedProbeType(probe.type));
   const state = probe.history[channel][0];
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
