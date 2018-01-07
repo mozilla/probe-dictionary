@@ -299,26 +299,41 @@ function escapeHtml(text) {
   return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+function shortVersion(v) {
+  return v.split(".")[0];
+}
+
+function friendlyRecordingRange(firstVersion, expiry) {
+  if (expiry == "never") {
+    return `from ${firstVersion}`;
+  }
+  return `${firstVersion} to ${shortVersion(expiry)}`;
+}
+
+function friendlyRecordingRangeForState(state, channel) {
+  const firstVersion = getVersionRange(channel, state["revisions"]).first;
+  const expiry = state.expiry_version;
+  return friendlyRecordingRange(firstVersion, expiry);
+}
+
+function friendlyRecordingRangeForHistory(history, channel) {
+  const last = array => array[array.length - 1];
+  const firstVersion = getVersionRange(channel, history[0]["revisions"]).first;
+  const expiry = last(history).expiry_version;
+  return friendlyRecordingRange(firstVersion, expiry);
+}
+
 function renderMeasurements(measurements) {
   var channel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
-
-  var short_version = v => v.split(".")[0];
-  var friendly_recording_range = h => {
-    const first = getVersionRange(channel, h["revisions"]).first;
-    if (h.expiry_version == "never") {
-      return `from ${first}`;
-    }
-    return `${first} to ${short_version(h.expiry_version)}`;
-  };
 
   var columns = new Map([
     ["", (d, h) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
     ["name", (d, h) => d.name],
     ["type", (d, h) => d.type],
     ["population", (d, h) => h.optout ? "release" : "prerelease"],
-    ["recorded", (d, h) => friendly_recording_range(h)],
+    ["recorded", (d, h) => friendlyRecordingRangeForState(h, channel)],
     // TODO: overflow should cut off
     ["description", (d, h) => escapeHtml(h.description)],
 
@@ -444,6 +459,8 @@ function showDetailView(obj) {
 }
 
 function showDetailViewForId(probeId) {
+  const last = array => array[array.length - 1];
+
   const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
 
@@ -467,6 +484,13 @@ function showDetailViewForId(probeId) {
                       + ", "
                       + `<a href="${evoURL}" target="_blank">evolution</a>`);
   }
+
+  // Recording range
+  let rangeText = [];
+  for (let [ch, history] of Object.entries(probe.history)) {
+    rangeText.push(`${ch} ${friendlyRecordingRangeForHistory(history, ch)}`);
+  }
+  $('#detail-recording-range').html(rangeText.join("<br/>"));
 
   // Dataset mappings.
   const dataDocs = {
