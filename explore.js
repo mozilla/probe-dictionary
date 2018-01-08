@@ -314,7 +314,7 @@ function friendlyRecordingRange(firstVersion, expiry) {
   if (expiry == "never") {
     return `from ${firstVersion}`;
   }
-  return `${firstVersion} to ${shortVersion(expiry)}`;
+  return `${firstVersion} to ${parseInt(shortVersion(expiry)) - 1}`;
 }
 
 function friendlyRecordingRangeForState(state, channel) {
