@@ -222,10 +222,17 @@ function filterMeasurements() {
           case "new_in":
             var versions = getVersionRange(channel, m.revisions);
             return versions.first == versionNum;
+          case "is_expired":
+            var versions = getVersionRange(channel, m.revisions);
+            var expires = m.expiry_version;
+            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                   (expires != "never") && (parseInt(expires) <= versionNum);
           default:
             throw "Yuck, unknown selector.";
         }
       });
+    } else if (version_constraint == "is_expired") {
+      history = history.filter(m => m.expiry_version != "never");
     }
 
     // Filter for text search.
@@ -307,7 +314,7 @@ function friendlyRecordingRange(firstVersion, expiry) {
   if (expiry == "never") {
     return `from ${firstVersion}`;
   }
-  return `${firstVersion} to ${shortVersion(expiry)}`;
+  return `${firstVersion} to ${parseInt(shortVersion(expiry)) - 1}`;
 }
 
 function friendlyRecordingRangeForState(state, channel) {
@@ -408,7 +415,7 @@ function loadURIData() {
 
   if (params.has("constraint")) {
     let val = params.get("constraint");
-    if (["is_in", "new_in"].includes(val)) {
+    if (["is_in", "new_in", "is_expired"].includes(val)) {
       $("#select_constraint").val(val);
     }
   }
