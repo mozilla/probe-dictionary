@@ -222,10 +222,17 @@ function filterMeasurements() {
           case "new_in":
             var versions = getVersionRange(channel, m.revisions);
             return versions.first == versionNum;
+          case "is_expired":
+            var versions = getVersionRange(channel, m.revisions);
+            var expires = m.expiry_version;
+            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                   (expires != "never") && (parseInt(expires) <= versionNum);
           default:
             throw "Yuck, unknown selector.";
         }
       });
+    } else if (version_constraint == "is_expired") {
+      history = history.filter(m => m.expiry_version != "never");
     }
 
     // Filter for text search.
@@ -299,26 +306,41 @@ function escapeHtml(text) {
   return text.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
+function shortVersion(v) {
+  return v.split(".")[0];
+}
+
+function friendlyRecordingRange(firstVersion, expiry) {
+  if (expiry == "never") {
+    return `from ${firstVersion}`;
+  }
+  return `${firstVersion} to ${parseInt(shortVersion(expiry)) - 1}`;
+}
+
+function friendlyRecordingRangeForState(state, channel) {
+  const firstVersion = getVersionRange(channel, state["revisions"]).first;
+  const expiry = state.expiry_version;
+  return friendlyRecordingRange(firstVersion, expiry);
+}
+
+function friendlyRecordingRangeForHistory(history, channel) {
+  const last = array => array[array.length - 1];
+  const firstVersion = getVersionRange(channel, history[0]["revisions"]).first;
+  const expiry = last(history).expiry_version;
+  return friendlyRecordingRange(firstVersion, expiry);
+}
+
 function renderMeasurements(measurements) {
   var channel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
-
-  var short_version = v => v.split(".")[0];
-  var friendly_recording_range = h => {
-    const first = getVersionRange(channel, h["revisions"]).first;
-    if (h.expiry_version == "never") {
-      return `from ${first}`;
-    }
-    return `${first} to ${short_version(h.expiry_version)}`;
-  };
 
   var columns = new Map([
     ["", (d, h) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
     ["name", (d, h) => d.name],
     ["type", (d, h) => d.type],
     ["population", (d, h) => h.optout ? "release" : "prerelease"],
-    ["recorded", (d, h) => friendly_recording_range(h)],
+    ["recorded", (d, h) => friendlyRecordingRangeForState(h, channel)],
     // TODO: overflow should cut off
     ["description", (d, h) => escapeHtml(h.description)],
 
@@ -393,7 +415,7 @@ function loadURIData() {
 
   if (params.has("constraint")) {
     let val = params.get("constraint");
-    if (["is_in", "new_in"].includes(val)) {
+    if (["is_in", "new_in", "is_expired"].includes(val)) {
       $("#select_constraint").val(val);
     }
   }
@@ -443,13 +465,30 @@ function showDetailView(obj) {
   showDetailViewForId(probeId);
 }
 
+function linkedProbeType(type) {
+  const sourceDocs = "https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/";
+  const links = {
+    environment: sourceDocs + "data/environment.html",
+    histogram: sourceDocs + "collection/histograms.html",
+    scalar: sourceDocs + "collection/scalars.html",
+    event: sourceDocs + "collection/events.html",
+  };
+
+  if (type in links) {
+    return `<a href="${links[type]}">${type}</a>`;
+  }
+  return type;
+}
+
 function showDetailViewForId(probeId) {
+  const last = array => array[array.length - 1];
+
   const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
 
   // Core probe data.
   $('#detail-probe-name').text(probe.name);
-  $('#detail-probe-type').text(probe.type);
+  $('#detail-probe-type').html(linkedProbeType(probe.type));
   const state = probe.history[channel][0];
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
@@ -467,6 +506,13 @@ function showDetailViewForId(probeId) {
                       + ", "
                       + `<a href="${evoURL}" target="_blank">evolution</a>`);
   }
+
+  // Recording range
+  let rangeText = [];
+  for (let [ch, history] of Object.entries(probe.history)) {
+    rangeText.push(`${ch} ${friendlyRecordingRangeForHistory(history, ch)}`);
+  }
+  $('#detail-recording-range').html(rangeText.join("<br/>"));
 
   // Dataset mappings.
   const dataDocs = {
