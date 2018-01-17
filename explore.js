@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var ANALYSIS_URI = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+var ANALYSIS_URI = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data-rest/";
 
 var gChannelInfo = null;
 var gGeneralData = null;
@@ -40,9 +40,9 @@ $(document).ready(function() {
   mark("document ready");
 
   var loads = [
-    promiseGetJSON("general.json"),
-    promiseGetJSON("revisions.json"),
-    promiseGetJSON("probes.json"),
+    promiseGetJSON("firefox/general.json"),
+    promiseGetJSON("firefox/revisions.json"),
+    promiseGetJSON("firefox/all/main/all_probes"),
     promiseGetJSON("environment.json", ""),
     promiseGetJSON("datasets.json", ""),
   ];
