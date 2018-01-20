@@ -551,6 +551,17 @@ function showDetailViewForId(probeId) {
     datasetInfos.push(datasetText + ` as ${names}`);
   }
 
+  // Use counter dashboard links.
+  if ((probe.type == "histogram") && probe.name.startsWith("USE_COUNTER2_")) {
+    const base = "https://georgf.github.io/usecounters/";
+    const params = {
+      "group": probe.name.split("_")[2],
+      "kind": last(probe.name.split("_")).toLowerCase(),
+    };
+    const url = base + "#" + $.param(params);
+    datasetInfos.push(`<a href="${url}" target="_blank">Use counter dashboard</a>`);
+  }
+
   // Apply dataset infos.
   var datasetsRow = document.getElementById("detail-datasets-row");
   if (datasetInfos.length == 0) {
