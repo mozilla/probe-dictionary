@@ -3,7 +3,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -19,7 +18,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -35,7 +33,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The number of logical CPUs. Desktop only, e.g. 8, or `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -57,7 +54,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -73,7 +69,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -89,7 +84,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The number of physical CPU cores. Desktop only, e.g. 4, or `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -111,7 +105,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -127,7 +120,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -143,7 +135,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU vendor, e.g. 'GenuineIntel', or `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -165,7 +156,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU family, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -181,7 +171,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU family, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -197,7 +186,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU family, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -219,7 +207,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU model, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -235,7 +222,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU model, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -251,7 +237,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU model, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -273,7 +258,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU stepping, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -289,7 +273,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU stepping, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -305,7 +288,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU stepping, `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -327,7 +309,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -343,7 +324,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -359,7 +339,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU L2 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -381,7 +360,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -397,7 +375,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -413,7 +390,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The CPU L3 cache size in KB. `null` on failure. Desktop only.",
           "bug_numbers": [1128472],
           "details": {
@@ -435,7 +411,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
           "bug_numbers": [1128472],
           "details": {
@@ -451,7 +426,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
           "bug_numbers": [1128472],
           "details": {
@@ -467,7 +441,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "Only available on Firefox desktop. The CPU clock speed in MHz.",
           "bug_numbers": [1128472],
           "details": {
@@ -489,7 +462,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
           "bug_numbers": [1122052],
           "details": {
@@ -505,7 +477,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
           "bug_numbers": [1122052],
           "details": {
@@ -521,7 +492,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "This lists the avaible CPU extensions as strings. E.g.: 'hasMMX', 'hasSSE', 'hasSSE2', 'hasSSE3', 'hasSSSE3', 'hasSSE4A', 'hasSSE4_1', 'hasSSE4_2', 'hasAVX', 'hasAVX2', 'hasAES', 'hasEDSP', 'hasARMv6', 'hasARMv7', 'hasNEON'.",
           "bug_numbers": [1122052],
           "details": {
@@ -543,7 +513,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The machines amount of RAM.",
           "bug_numbers": [1122052],
           "details": {
@@ -559,7 +528,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The machines amount of RAM.",
           "bug_numbers": [1122052],
           "details": {
@@ -575,7 +543,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The machines amount of RAM.",
           "bug_numbers": [1122052],
           "details": {
@@ -597,7 +564,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -613,7 +579,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -629,7 +594,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "Total virtual memory size in MB. This is Windows only. `null` on failure.",
           "bug_numbers": [1128472],
           "details": {
@@ -651,7 +615,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -667,7 +630,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -683,7 +645,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The name of the OS, e.g. 'Windows_NT'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -705,7 +666,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -721,7 +681,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -737,7 +696,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The version of the OS, e.g. '6.1'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -759,7 +717,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The kernel version of Android. This is Android only. `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -775,7 +732,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The kernel version of Android. This is Android only. `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -791,7 +747,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The kernel version of Android. This is Android only. `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -813,7 +768,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -829,7 +783,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -845,7 +798,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack major version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -867,7 +819,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -883,7 +834,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -899,7 +849,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The Windows service pack minor version. This is Windows only. `null` on failure.",
           "bug_numbers": [1122052, 1255472],
           "details": {
@@ -921,7 +870,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The Windows build number. This is Windows only. `null` on failure.",
           "bug_numbers": [1255472, 1333043],
           "details": {
@@ -937,7 +885,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The Windows build number. This is Windows only. `null` on failure.",
           "bug_numbers": [1255472, 1333043],
           "details": {
@@ -953,7 +900,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The Windows build number. This is Windows only. `null` on failure.",
           "bug_numbers": [1255472, 1333043],
           "details": {
@@ -975,7 +921,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
           "bug_numbers": [1255472],
           "details": {
@@ -991,7 +936,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
           "bug_numbers": [1255472],
           "details": {
@@ -1007,7 +951,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The Windows UBR. This is Windows 10 only. `null` on failure.",
           "bug_numbers": [1255472],
           "details": {
@@ -1029,7 +972,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The year Windows was installed. This is Windows only. `null` on failure.",
           "bug_numbers": [1132558],
           "details": {
@@ -1045,7 +987,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The year Windows was installed. This is Windows only. `null` on failure.",
           "bug_numbers": [1132558],
           "details": {
@@ -1061,7 +1002,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The year Windows was installed. This is Windows only. `null` on failure.",
           "bug_numbers": [1132558],
           "details": {
@@ -1083,7 +1023,6 @@
     "history": {
       "release": [
         {
-          "cpp_guard": null,
           "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -1099,7 +1038,6 @@
       ],
       "beta": [
         {
-          "cpp_guard": null,
           "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
@@ -1115,7 +1053,6 @@
       ],
       "nightly": [
         {
-          "cpp_guard": null,
           "description": "The locale of the OS, e.g. 'en'. This is `null` on failure.",
           "bug_numbers": [1122052],
           "details": {
