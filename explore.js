@@ -10,6 +10,7 @@ var gGeneralData = null;
 var gRevisionsData = null;
 var gProbeData = null;
 var gEnvironmentData = null;
+var gSimpleMeasurementsData = null;
 var gDatasetMappings = null;
 
 var gDetailViewId = null;
@@ -44,15 +45,17 @@ $(document).ready(function() {
     promiseGetJSON("firefox/revisions.json"),
     promiseGetJSON("firefox/all/main/all_probes"),
     promiseGetJSON("environment.json", ""),
+    promiseGetJSON("other_fields.json", ""),
     promiseGetJSON("datasets.json", ""),
   ];
 
   Promise.all(loads).then(values => {
     mark("all json loaded");
-    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData, gDatasetMappings] = values;
+    [gGeneralData, gRevisionsData, gProbeData, gEnvironmentData, gSimpleMeasurementsData, gDatasetMappings] = values;
 
     extractChannelInfo();
-    processEnvironmentData();
+    processOtherFieldData(gEnvironmentData);
+    processOtherFieldData(gSimpleMeasurementsData);
     renderVersions();
     loadURIData();
     update();
@@ -104,14 +107,16 @@ function extractChannelInfo() {
   });
 }
 
-function processEnvironmentData() {
-  // Fix up revisions entry of "latest" to whatever the latest seen revision is.
-  $.each(gEnvironmentData, (id, data) => {
-    data.history["release"].forEach(entry => {
-      if (entry.revisions.last == "last") {
-        entry.revisions.last = "d47195ec274d20ed53ff0eb0ea2f72f7168f6ad9";
+function processOtherFieldData(otherData) {
+  $.each(otherData, (id, data) => {
+    // Explode data that's common between all channels.
+    if ("all" in data.history) {
+      for (let channel of ["release", "beta", "nightly"]) {
+        data.history[channel] = data.history["all"];
       }
-    });
+      delete data.history["all"];
+    }
+
     gProbeData[id] = data;
   });
 }
@@ -286,13 +291,15 @@ function getTelemetryDashboardURL(dashType, name, type, channel, min_version="nu
     return "";
   }
 
-  if (!["histogram", "scalar"].includes(type)) {
+  if (!["histogram", "scalar", "simpleMeasurements"].includes(type)) {
     return "";
   }
 
-  // The aggregator/TMO data uses this naming scheme for scalars.
+  // The aggregator/TMO data uses different naming schemes for non-histograms probes.
   if (type == "scalar") {
     name = 'SCALARS_' + name.toUpperCase();
+  } else if (type == "simpleMeasurements") {
+    name = 'SIMPLE_MEASURES_' + name.toUpperCase();
   }
 
   return `https://telemetry.mozilla.org/new-pipeline/${dashType}.html#!` +
@@ -497,7 +504,8 @@ function showDetailViewForId(probeId) {
   var datasetInfos = [];
 
   // TMO dashboard links.
-  if (["histogram", "scalar"].includes(probe.type)) {
+  if (["histogram", "scalar"].includes(probe.type) ||
+      (probe.type == "simpleMeasurements" && ["number", "bool"].includes(state.details.kind))) {
     var versions = getVersionRange(channel, state.revisions);
     const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
     const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
@@ -551,6 +559,17 @@ function showDetailViewForId(probeId) {
     datasetInfos.push(datasetText + ` as ${names}`);
   }
 
+  // Use counter dashboard links.
+  if ((probe.type == "histogram") && probe.name.startsWith("USE_COUNTER2_")) {
+    const base = "https://georgf.github.io/usecounters/";
+    const params = {
+      "group": probe.name.split("_")[2],
+      "kind": last(probe.name.split("_")).toLowerCase(),
+    };
+    const url = base + "#" + $.param(params);
+    datasetInfos.push(`<a href="${url}" target="_blank">Use counter dashboard</a>`);
+  }
+
   // Apply dataset infos.
   var datasetsRow = document.getElementById("detail-datasets-row");
   if (datasetInfos.length == 0) {
@@ -572,7 +591,7 @@ function showDetailViewForId(probeId) {
 
   // Other probe details.
   const detailsList = [
-    ['kind', 'detail-kind', ['histogram', 'scalar', 'environment']],
+    ['kind', 'detail-kind', ['histogram', 'scalar', 'environment', 'info', 'simpleMeasurements']],
     ['keyed', 'detail-keyed', ['histogram', 'scalar']],
     ['record_in_processes', 'detail-processes', ['scalar', 'event']],
     ['cpp_guard', 'detail-cpp-guard', ['histogram', 'scalar', 'event']],
