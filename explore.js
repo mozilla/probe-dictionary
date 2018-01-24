@@ -436,8 +436,9 @@ function loadURIData() {
 
   if (params.has("detailView")) {
     let val = params.get("detailView");
-    if (val in gProbeData) {
-      showDetailViewForId(val);
+    let id = findProbeIdFromCaseInsensitive(val);
+    if (id) {
+      showDetailViewForId(id);
     }
   } else {
     hideDetailView();
@@ -485,6 +486,15 @@ function linkedProbeType(type) {
     return `<a href="${links[type]}">${type}</a>`;
   }
   return type;
+}
+
+function findProbeIdFromCaseInsensitive(probeid) {
+  for (var id of Object.keys(gProbeData)) {
+    if (probeid.toLowerCase() == id.toLowerCase()) {
+      return id;
+    }
+  }
+  return null;
 }
 
 function showDetailViewForId(probeId) {
