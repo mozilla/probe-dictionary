@@ -46,7 +46,9 @@ $(document).ready(function() {
     $("#select_channel").change(update);
     $("#select_constraint").change(update);
 
-    $("#last_update").text(gGeneralData.lastUpdate);
+    // Add when the data was last updated.
+    let date = new Date(gGeneralData.lastUpdate);
+    $("#last-updated-date").text(date.toDateString());
 
     document.getElementById("loading-overlay").style.display = "none";
     mark("done");

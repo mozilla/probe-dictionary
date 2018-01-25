@@ -84,7 +84,8 @@ $(document).ready(function() {
     });
 
     // Add when the data was last updated.
-    $("#last_update").text(gGeneralData.lastUpdate);
+    let date = new Date(gGeneralData.lastUpdate);
+    $("#last-updated-date").text(date.toDateString());
 
     document.getElementById("loading-overlay").classList.add("hidden");
     mark("done");
