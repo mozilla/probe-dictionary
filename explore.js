@@ -98,7 +98,11 @@ $(document).ready(function() {
 
 function extractChannelInfo() {
   var result = {};
-  gChannelInfo = {};
+  gChannelInfo = {
+    "any": {
+      versions: {}
+    }
+  };
 
   $.each(gRevisionsData, (channel, revs) => {
     $.each(revs, (rev, details) => {
@@ -239,72 +243,78 @@ function filterMeasurements() {
   var version_constraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var version = $("#select_version").val();
-  var channel = $("#select_channel").val();
+  var selected_channel = $("#select_channel").val();
   var text_search = $("#text_search").val();
   var text_constraint = $("#search_constraint").val();
   var measurements = gProbeData;
 
   // Filter out by selected criteria.
   var filtered = {};
+  var channels = [selected_channel];
+  if (selected_channel == "any") {
+    channels = ["nightly", "beta", "release"];
+  }
 
   $.each(measurements, (id, data) => {
-    if (!(channel in data.history)) {
-      return;
-    }
-    var history = data.history[channel];
-
-    // Filter by optout.
-    if (optout) {
-      history = history.filter(m => m.optout);
-    }
-
-    // Filter for version constraint.
-    if (version != "any") {
-      var versionNum = parseInt(version);
-      history = history.filter(m => {
-        switch (version_constraint) {
-          case "is_in":
-            var versions = getVersionRange(channel, m.revisions);
-            var expires = m.expiry_version;
-            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
-                   ((expires == "never") || (parseInt(expires) >= versionNum));
-          case "new_in":
-            var versions = getVersionRange(channel, m.revisions);
-            return versions.first == versionNum;
-          case "is_expired":
-            var versions = getVersionRange(channel, m.revisions);
-            var expires = m.expiry_version;
-            return (versions.first <= versionNum) && (versions.last >= versionNum) &&
-                   (expires != "never") && (parseInt(expires) <= versionNum);
-          default:
-            throw "Yuck, unknown selector.";
-        }
-      });
-    } else if (version_constraint == "is_expired") {
-      history = history.filter(m => m.expiry_version != "never");
-    }
-
-    // Filter for text search.
-    if (text_search != "") {
-      var s = text_search.toLowerCase();
-      var test = (str) => str.toLowerCase().includes(s);
-      history = history.filter(h => {
-        switch (text_constraint) {
-          case "in_name": return test(data.name);
-          case "in_description": return test(h.description);
-          case "in_any": return test(data.name) || test(h.description);
-          default: throw "Yuck, unsupported text search constraint.";
-        }
-      });
-    }
-
-    // Extract properties
-    if (history.length > 0) {
-      filtered[id] = {};
-      for (var p of Object.keys(measurements[id])) {
-        filtered[id][p] = measurements[id][p];
+    for (let channel of channels) {
+      if (!(channel in data.history)) {
+        return;
       }
-      filtered[id]["history"][channel] = history;
+      var history = data.history[channel];
+
+      // Filter by optout.
+      if (optout) {
+        history = history.filter(m => m.optout);
+      }
+
+      // Filter for version constraint.
+      if (version != "any") {
+        var versionNum = parseInt(version);
+        history = history.filter(m => {
+          switch (version_constraint) {
+            case "is_in":
+              var versions = getVersionRange(channel, m.revisions);
+              var expires = m.expiry_version;
+              return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                     ((expires == "never") || (parseInt(expires) >= versionNum));
+            case "new_in":
+              var versions = getVersionRange(channel, m.revisions);
+              return versions.first == versionNum;
+            case "is_expired":
+              var versions = getVersionRange(channel, m.revisions);
+              var expires = m.expiry_version;
+              return (versions.first <= versionNum) && (versions.last >= versionNum) &&
+                     (expires != "never") && (parseInt(expires) <= versionNum);
+            default:
+              throw "Yuck, unknown selector.";
+          }
+        });
+      } else if (version_constraint == "is_expired") {
+        history = history.filter(m => m.expiry_version != "never");
+      }
+
+      // Filter for text search.
+      if (text_search != "") {
+        var s = text_search.toLowerCase();
+        var test = (str) => str.toLowerCase().includes(s);
+        history = history.filter(h => {
+          switch (text_constraint) {
+            case "in_name": return test(data.name);
+            case "in_description": return test(h.description);
+            case "in_any": return test(data.name) || test(h.description);
+            default: throw "Yuck, unsupported text search constraint.";
+          }
+        });
+      }
+
+      // Extract properties
+      if (history.length > 0) {
+        filtered[id] = {};
+        for (var p of Object.keys(measurements[id])) {
+          filtered[id][p] = measurements[id][p];
+        }
+        filtered[id]["history"][channel] = history;
+      }
     }
   });
 
@@ -382,24 +392,25 @@ function friendlyRecordingRangeForHistory(history, channel) {
 }
 
 function renderMeasurements(measurements) {
-  var channel = $("#select_channel").val();
+  var selected_channel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
 
-  var columns = new Map([
-    ["", (d, h) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
-    ["name", (d, h) => d.name],
-    ["type", (d, h) => d.type],
-    ["population", (d, h) => h.optout ? "release" : "prerelease"],
-    ["recorded", (d, h) => friendlyRecordingRangeForState(h, channel)],
+  var rawColumns = [
+    ["", (d, h, c) => '<span class="btn btn-outline-secondary btn-sm">+<span>'],
+    ["name", (d, h, c) => d.name],
+    ["type", (d, h, c) => d.type],
+    ["population", (d, h, c) => h.optout ? "release" : "prerelease"],
+    ["recorded", (d, h, c) => friendlyRecordingRangeForState(h, c)],
     // TODO: overflow should cut off
-    ["description", (d, h) => escapeHtml(h.description)],
+    ["description", (d, h, c) => escapeHtml(h.description)],
+  ];
 
-    //["first seen", (d, h) => first_version(h)],
-    //["recorded", (d, h) => `${first_version(h)} to ${last_version(h)}`],
-    //["expiry", (d, h) => h.expiry_version],
-    //["dash", (d, h) => `<a href="${getTelemetryDashboardURL(d.name, d.type, channel, first_version(h), last_version(h))}">#</a>`],
-  ]);
+  if (selected_channel == "any") {
+    rawColumns.splice(3, 0, ["channel", (d, h, c) => c]);
+  }
+
+  var columns = new Map(rawColumns);
 
   var table = '<table id="search-results-table">';
   table += ("<tr><th>" + [...columns.keys()].join("</th><th>") + "</th></tr>");
@@ -409,17 +420,16 @@ function renderMeasurements(measurements) {
                               .sort((a, b) => name(a).toLowerCase().localeCompare(name(b).toLowerCase()));
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
-
-    var history = data.history[channel];
-
-    for (var h of history) {
-      var cells = [...columns.entries()].map(([field, fn]) => {
-        var d = fn(data, h);
-        return `<td class="search-results-field-${field}">${d}</td>`;
-      });
-      table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
-      table += cells.join("");
-      table += `</tr>`;
+    for (let [channel, history] of Object.entries(data.history)) {
+      for (var h of history) {
+        var cells = [...columns.entries()].map(([field, fn]) => {
+          var d = fn(data, h, channel);
+          return `<td class="search-results-field-${field}">${d}</td>`;
+        });
+        table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
+        table += cells.join("");
+        table += `</tr>`;
+      }
     }
   });
 
@@ -464,7 +474,7 @@ function loadURIData() {
 
   if (params.has("channel")) {
     let channel = params.get("channel");
-    if (["release", "beta", "aurora", "nightly"].includes(channel)) {
+    if (["release", "beta", "aurora", "nightly", "any"].includes(channel)) {
       $("#select_channel").val(channel);
     }
   }
