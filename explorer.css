@@ -4,6 +4,10 @@ body {
     padding 0px;
 }
 
+.navbar i.fa {
+    margin-right: 2px;
+}
+
 #github-banner img {
     position: absolute;
     top: 0;
