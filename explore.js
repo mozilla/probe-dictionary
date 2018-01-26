@@ -13,6 +13,7 @@ var gEnvironmentData = null;
 var gSimpleMeasurementsData = null;
 var gDatasetMappings = null;
 
+var gView = null;
 var gDetailViewId = null;
 
 function mark(marker) {
@@ -28,9 +29,6 @@ function promiseGetJSON(file, base_uri = ANALYSIS_URI) {
       dataType: "json",
       complete: data => {
         mark("loaded " + file);
-        if (base_uri == "") {
-          //data = JSON.parse(data.responseText);
-        }
         resolve(data);
       },
     });
@@ -61,6 +59,10 @@ $(document).ready(function() {
     update();
 
     mark("updated site");
+
+    // Tab change events.
+    $('a[data-toggle="tab"]').on('show.bs.tab', tabChange);
+    $('a[data-toggle="tab"]').on('shown.bs.tab', updateSearchParams);
 
     // Search view events.
     $("#select_constraint").change(update);
@@ -125,11 +127,46 @@ function processOtherFieldData(otherData) {
 function update() {
   updateUI();
 
-  var filtered = filterMeasurements();
-  renderMeasurements(filtered);
-  renderStats(filtered);
+  if ($("#search-results-view").hasClass("active")) {
+    renderProbeSearch();
+    showSearchOnlyFilters(true);
+  } else if ($("#stats-view").hasClass("active")) {
+    renderProbeStats();
+    showSearchOnlyFilters(false);
+  }
 
   updateSearchParams();
+}
+
+function tabChange(target, relatedTarget) {
+  switch (target.currentTarget.hash) {
+    case "#stats-view":
+      renderProbeStats();
+      showSearchOnlyFilters(false);
+      break;
+    case "#search-results-view":
+      renderProbeSearch();
+      showSearchOnlyFilters(true);
+      break;
+  }
+}
+
+function showSearchOnlyFilters(show) {
+  let searchOnlyElements = [
+    "#version-selection-element",
+    "#optout-selection-element",
+    "#text-search-element",
+  ];
+
+  if (show) {
+    for (let id of searchOnlyElements) {
+      $(id).removeClass("hidden");
+    }
+  } else {
+    for (let id of searchOnlyElements) {
+      $(id).addClass("hidden");
+    }
+  }
 }
 
 function updateUI() {
@@ -190,6 +227,12 @@ function getVersionRange(channel, revisionsRange) {
   }
 
   return range;
+}
+
+function renderProbeSearch() {
+  var filtered = filterMeasurements();
+  renderMeasurements(filtered);
+  renderSearchStats(filtered);
 }
 
 function filterMeasurements() {
@@ -387,7 +430,7 @@ function renderMeasurements(measurements) {
   container.append(items.join(""));
 }
 
-function renderStats(filtered) {
+function renderSearchStats(filtered) {
   var count = Object.keys(filtered).length;
   $("#stats").text("Found " + count + " probes.");
 }
@@ -398,6 +441,11 @@ function loadURIData() {
 
   if (params.has("search")) {
     $("#text_search").val(params.get("search"));
+  }
+
+  if (params.has("view")) {
+    //$("#" + params.get("view")).tab("show");
+    $('a[href="#' + params.get("view") + '"]').tab("show");
   }
 
   if (params.has("searchtype")) {
@@ -454,6 +502,7 @@ function updateSearchParams(pushState = false) {
     channel: $("#select_channel").val(),
     constraint: $("#select_constraint").val(),
     version: $("#select_version").val(),
+    view: $("#main-tab-holder div.active").attr("id"),
   };
 
   if (gDetailViewId) {
@@ -628,12 +677,198 @@ function showDetailViewForId(probeId) {
   }
 
   document.getElementById("probe-detail-view").classList.remove("hidden");
+  document.getElementById("main-tab-holder").classList.add("hidden");
   document.getElementById("search-view").classList.add("hidden");
 }
 
 function hideDetailView() {
   document.getElementById("probe-detail-view").classList.add("hidden");
+  document.getElementById("main-tab-holder").classList.remove("hidden");
   document.getElementById("search-view").classList.remove("hidden");
   gDetailViewId = null;
   updateSearchParams();
+}
+
+
+function getMeasurementCountsPerVersion() {
+  let first = array => array[0];
+  let last = array => array[array.length - 1];
+
+  let channel = $("#select_channel").val();
+  let version_constraint = $("#select_constraint").val();
+
+  let perVersionCounts = {};
+  for (let v of Object.keys(gChannelInfo[channel].versions)) {
+    perVersionCounts[v] = {
+      optin: 0,
+      optout: 0,
+      total: 0,
+    };
+  }
+
+  $.each(gProbeData, (id, data) => {
+    let history = data.history[channel];
+    if (!history) {
+      return;
+    }
+
+    switch (version_constraint) {
+      case "new_in": {
+        let oldest = last(history);
+        let versions = getVersionRange(channel, oldest.revisions);
+        let k = oldest.optout ? "optout" : "optin";
+        perVersionCounts[versions.first][k] += 1;
+        break;
+      }
+      case "is_in":
+      {
+        $.each(perVersionCounts, (version, data) => {
+          // Is this measurement recording for this revision?
+          let recording = history.find(h => {
+            let ver = parseInt(version);
+            let versions = getVersionRange(channel, h.revisions);
+            let expires = h.expiry_version;
+            return ((ver >= versions.first) && (ver <= versions.last) &&
+                    ((expires == "never") || (parseInt(expires) >= ver)));
+          });
+          // If so, increase the count.
+          if (recording) {
+            let k = recording.optout ? "optout" : "optin";
+            data[k] += 1;
+          }
+        });
+        break;
+      }
+      case "is_expired":
+        $.each(perVersionCounts, (version, data) => {
+          let newest = first(history);
+          let versions = getVersionRange(channel, newest.revisions);
+          let expires = newest.expiry_version;
+          let versionNum = parseInt(version);
+          if ((versions.first <= versionNum) && (versions.last >= versionNum) &&
+              (expires != "never") && (parseInt(expires) <= versionNum)) {
+            let k = newest.optout ? "optout" : "optin";
+            data[k] += 1;
+          }
+        });
+        break;
+      default:
+          throw "Yuck, unknown selector.";
+    }
+  });
+
+  let counts = [];
+  $.each(perVersionCounts, (version, data) => {
+    data.total = data.optin + data.optout;
+    data.version = version;
+    counts.push(data);
+  });
+
+  return counts;
+}
+
+function renderProbeStats() {
+  var data = getMeasurementCountsPerVersion();
+
+  let last = array => array[array.length - 1];
+  let version_constraint = $("#select_constraint").val();
+
+  // Prepare data.
+  var columns = ["optin", "optout"];
+  data.sort(function(a, b) { return parseInt(a.version) - parseInt(b.version); });
+
+  // Remove leading & trailing 0 entries.
+  while (data[0].total == 0) {
+    data = data.slice(1);
+  }
+  while (last(data).total == 0) {
+    data = data.slice(0, -1);
+  }
+
+  // Remove the first non-0 entry. All probes would be new in that first version,
+  // which changes the scale of the diagram significantly.
+  data = data.slice(1);
+
+  // Render.
+  var svg = d3.select("#stats-content");
+  svg.selectAll("*").remove();
+
+  var margin = {top: 20, right: 20, bottom: 30, left: 40};
+  var width = +svg.attr("width") - margin.left - margin.right;
+  var height = +svg.attr("height") - margin.top - margin.bottom;
+  var g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var x = d3.scaleBand()
+      .rangeRound([0, width])
+      .padding(0.1)
+      .align(0.1);
+
+  var y = d3.scaleLinear()
+      .rangeRound([height, 0]);
+
+  var z = d3.scaleOrdinal()
+      .range(["#98abc5", "#d0743c"]);
+
+  var stack = d3.stack();
+
+  x.domain(data.map(function(d) { return d.version; }));
+  y.domain([0, d3.max(data, function(d) { return d.total; })]).nice();
+  z.domain(columns);
+
+  g.selectAll(".serie")
+    .data(stack.keys(columns)(data))
+    .enter().append("g")
+      .attr("class", "serie")
+      .attr("fill", function(d) { return z(d.key); })
+    .selectAll("rect")
+    .data(function(d) { return d; })
+    .enter().append("rect")
+      .attr("x", function(d) { return x(d.data.version); })
+      .attr("y", function(d) { return y(d[1]); })
+      .attr("height", function(d) { return y(d[0]) - y(d[1]); })
+      .attr("width", x.bandwidth());
+
+  g.append("g")
+      .attr("class", "axis axis--x")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+
+  var constraintText;
+  switch (version_constraint) {
+    case "new_in": constraintText = "new"; break;
+    case "is_in": constraintText = "recorded"; break;
+    case "is_expired": constraintText = "expired"; break;
+    default: throw "Yuck, unknown constraint.";
+  }
+
+  g.append("g")
+      .attr("class", "axis axis--y")
+      .call(d3.axisLeft(y).ticks(10, "s"))
+    .append("text")
+      .attr("x", 2)
+      .attr("y", y(y.ticks(10).pop()))
+      .attr("dy", "0.35em")
+      .attr("text-anchor", "start")
+      .attr("fill", "#000")
+      .text("Count of " + constraintText + " probes");
+
+  var legend = g.selectAll(".legend")
+    .data(columns.reverse())
+    .enter().append("g")
+      .attr("class", "legend")
+      .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })
+      .style("font", "10px sans-serif");
+
+  legend.append("rect")
+      .attr("x", width - 18)
+      .attr("width", 18)
+      .attr("height", 18)
+      .attr("fill", z);
+
+  legend.append("text")
+      .attr("x", width - 24)
+      .attr("y", 9)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "end")
+      .text(function(d) { return d; });
 }
