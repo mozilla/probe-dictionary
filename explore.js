@@ -145,12 +145,12 @@ function update() {
 function tabChange(target, relatedTarget) {
   switch (target.currentTarget.hash) {
     case "#stats-view":
-      renderProbeStats();
       showSearchOnlyFilters(false);
+      renderProbeStats();
       break;
     case "#search-results-view":
-      renderProbeSearch();
       showSearchOnlyFilters(true);
+      renderProbeSearch();
       break;
   }
 }
@@ -160,6 +160,7 @@ function showSearchOnlyFilters(show) {
     "#version-selection-element",
     "#optout-selection-element",
     "#text-search-element",
+    "#select_channel option[value=any]"
   ];
 
   if (show) {
@@ -169,6 +170,11 @@ function showSearchOnlyFilters(show) {
   } else {
     for (let id of searchOnlyElements) {
       $(id).addClass("hidden");
+    }
+
+    var channel = $("#select_channel").val();
+    if (!["release", "beta", "nightly"].includes(channel)) {
+      $("#select_channel").val("release");
     }
   }
 }
