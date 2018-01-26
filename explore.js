@@ -87,7 +87,7 @@ $(document).ready(function() {
     let date = new Date(gGeneralData.lastUpdate);
     $("#last-updated-date").text(date.toDateString());
 
-    document.getElementById("loading-overlay").classList.add("hidden");
+    $("#loading-overlay").addClass("hidden");
     mark("done");
   }, e => {
     console.log("caught", e);
