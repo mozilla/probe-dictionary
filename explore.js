@@ -17,7 +17,9 @@ var gView = null;
 var gDetailViewId = null;
 
 function mark(marker) {
-  performance.mark(marker);
+  if (performance.mark) {
+    performance.mark(marker);
+  }
   console.timeStamp(marker);
 }
 
