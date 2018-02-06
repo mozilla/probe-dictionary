@@ -64,10 +64,6 @@ body {
     display: inline;
 }
 
-.hidden {
-    display: none;
-}
-
 #stats {
     font-style: italic;
     font-size: 90%;
@@ -109,4 +105,20 @@ body {
 .code {
     font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
     font-size: 85%;
+}
+
+.table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.table td.grow,
+.table th.grow {
+    white-space: nowrap;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
 }
