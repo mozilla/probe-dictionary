@@ -577,6 +577,10 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   const last = array => array[array.length - 1];
 
   const probe = gProbeData[probeId];
+  if (channel == "any") {
+    // Default to showing the most current probe description.
+    channel = "nightly";
+  }
 
   // Core probe data.
   $('#detail-probe-name').text(probe.name);
