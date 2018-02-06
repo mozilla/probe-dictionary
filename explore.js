@@ -427,12 +427,15 @@ function renderMeasurements(measurements) {
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
     for (let [channel, history] of Object.entries(data.history)) {
+      if ((selected_channel !== "any") && (channel !== selected_channel)) {
+        continue;
+      }
       for (var h of history) {
         var cells = [...columns.entries()].map(([field, fn]) => {
           var d = fn(data, h, channel);
           return `<td class="search-results-field-${field}">${d}</td>`;
         });
-        table += `<tr onclick="showDetailView(this); return false;" probeid="${id}">`;
+        table += `<tr onclick="showDetailView(this); return false;" probeid="${id}" channel="${channel}">`;
         table += cells.join("");
         table += `</tr>`;
       }
@@ -502,8 +505,9 @@ function loadURIData() {
   if (params.has("detailView")) {
     let val = params.get("detailView");
     let id = findProbeIdFromCaseInsensitive(val);
+    let channel = params.has("channel") ? params.get("channel") : undefined;
     if (id) {
-      showDetailViewForId(id);
+      showDetailViewForId(id, channel);
     }
   } else {
     hideDetailView();
@@ -534,9 +538,10 @@ function updateSearchParams(pushState = false) {
 
 function showDetailView(obj) {
   const probeId = obj.getAttribute('probeid');
+  const channel = obj.getAttribute('channel');
   gDetailViewId = probeId;
   updateSearchParams(true);
-  showDetailViewForId(probeId);
+  showDetailViewForId(probeId, channel);
 }
 
 function linkedProbeType(type) {
@@ -563,10 +568,9 @@ function findProbeIdFromCaseInsensitive(probeid) {
   return null;
 }
 
-function showDetailViewForId(probeId) {
+function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   const last = array => array[array.length - 1];
 
-  const channel = $("#select_channel").val();
   const probe = gProbeData[probeId];
 
   // Core probe data.
