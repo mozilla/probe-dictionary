@@ -48,6 +48,14 @@ body {
     font-size: 80%;
 }
 
+#probe-filters {
+    font-size: 90%;
+}
+
+#probe-filters .form-control {
+    font-size: 90%;
+}
+
 #probe-detail-view {
     padding-top: 20px;
 }
