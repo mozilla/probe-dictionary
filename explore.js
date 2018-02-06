@@ -428,8 +428,11 @@ function renderMeasurements(measurements) {
     var data = measurements[id];
     for (let [channel, history] of Object.entries(data.history)) {
       // TODO: Why do we include the following in the filtering stage? Fix this.
-      // Only show channels that we are should show now.
+      // Only show channels that we should show now.
       if ((selected_channel !== "any") && (channel !== selected_channel)) {
+        continue;
+      }
+      if (channel == "aurora") {
         continue;
       }
       // Don't show pre-release measurements for the release channel.
