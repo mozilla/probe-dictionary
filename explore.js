@@ -407,7 +407,7 @@ function renderMeasurements(measurements) {
     ["name", (d, h, c) => d.name],
     ["type", (d, h, c) => d.type],
     ["population", (d, h, c) => h.optout ? "release" : "prerelease"],
-    ["recorded", (d, h, c) => friendlyRecordingRangeForState(h, c)],
+    ["recorded", (d, h, c, history) => friendlyRecordingRangeForHistory(history, c)],
     // TODO: overflow should cut off
     ["description", (d, h, c) => escapeHtml(h.description)],
   ];
@@ -427,18 +427,23 @@ function renderMeasurements(measurements) {
   sortedProbeKeys.forEach(id => {
     var data = measurements[id];
     for (let [channel, history] of Object.entries(data.history)) {
+      // TODO: Why do we include the following in the filtering stage? Fix this.
+      // Only show channels that we are should show now.
       if ((selected_channel !== "any") && (channel !== selected_channel)) {
         continue;
       }
-      for (var h of history) {
-        var cells = [...columns.entries()].map(([field, fn]) => {
-          var d = fn(data, h, channel);
-          return `<td class="search-results-field-${field}">${d}</td>`;
-        });
-        table += `<tr onclick="showDetailView(this); return false;" probeid="${id}" channel="${channel}">`;
-        table += cells.join("");
-        table += `</tr>`;
+      // Don't show pre-release measurements for the release channel.
+      if (!history[0].optout && (channel == "release")) {
+        continue;
       }
+
+      var cells = [...columns.entries()].map(([field, fn]) => {
+        var d = fn(data, history[0], channel, history);
+        return `<td class="search-results-field-${field}">${d}</td>`;
+      });
+      table += `<tr onclick="showDetailView(this); return false;" probeid="${id}" channel="${channel}">`;
+      table += cells.join("");
+      table += `</tr>`;
     }
   });
 
