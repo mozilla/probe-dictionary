@@ -612,7 +612,7 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   // Recording range
   let rangeText = [];
   for (let [ch, history] of Object.entries(probe.history)) {
-    if (!history[0].optout && (ch == "release")) {
+    if ((!history[0].optout && (ch == "release")) || (ch == "aurora")) {
       continue;
     }
     rangeText.push(`${ch} ${friendlyRecordingRangeForHistory(history, ch)}`);
