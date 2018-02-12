@@ -69,5 +69,49 @@
   },
   "environment/system.os.locale": {
     "longitudinal": "system_os.locale"
+  },
+
+
+
+  "simpleMeasurements/activeTicks": {
+    "main_summary": "active_ticks",
+    "longitudinal": "active_ticks"
+  },
+  "simpleMeasurements/main": {
+    "main_summary": "main",
+    "longitudinal": "main"
+  },
+  "simpleMeasurements/firstPaint": {
+    "main_summary": "first_paint",
+    "longitudinal": "first_paint"
+  },
+  "simpleMeasurements/sessionRestored": {
+    "main_summary": "session_restored",
+    "longitudinal": "session_restored"
+  },
+  "simpleMeasurements/totalTime": {
+    "main_summary": "total_time",
+    "longitudinal": "total_time"
+  },
+  "simpleMeasurements/uptime": {
+    "longitudinal": "uptime"
+  },
+  "simpleMeasurements/startupInterrupted": {
+    "longitudinal": "startup_interrupted"
+  },
+  "simpleMeasurements/maximalNumberOfConcurrentThreads": {
+    "longitudinal": "maximal_number_of_concurrent_threads"
+  },
+  "simpleMeasurements/startupSessionRestoreReadBytes": {
+    "longitudinal": "startup_session_restore_read_bytes"
+  },
+  "simpleMeasurements/startupSessionRestoreWriteBytes": {
+    "longitudinal": "startup_session_restore_write_bytes"
+  },
+  "simpleMeasurements/startupWindowVisibleReadBytes": {
+    "longitudinal": "startup_window_visible_read_bytes"
+  },
+  "simpleMeasurements/startupWindowVisibleWriteBytes": {
+    "longitudinal": "startup_window_visible_write_bytes"
   }
 }
