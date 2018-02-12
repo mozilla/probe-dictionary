@@ -583,6 +583,7 @@ function getDatasetInfos(probeId, channel, state) {
   const dataDocs = {
     "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
     "main_summary": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#mainsummary",
+    "events": "https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html",
   };
   // Helper for code markup.
   var code = s => `<span class="code">${s}</span>`;
@@ -651,6 +652,25 @@ function getDatasetInfos(probeId, channel, state) {
     var name = probe.name.toLowerCase().replace(/\./g, '_');
     var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
     datasetInfos.push(datasetText + ` as ${names}`);
+  }
+
+  // All events are available in main_summary and the events table.
+  if (probe.type == "event") {
+    var dataset = "main_summary";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    datasetInfos.push(datasetText + ` in the ${code("events")} column`);
+  }
+
+  if (probe.type == "event") {
+    var dataset = "events";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    datasetInfos.push(`in the ${code(datasetText)} table`);
   }
 
   // main_summary includes all scalars.
