@@ -582,6 +582,7 @@ function getDatasetInfos(probeId, channel, state) {
   // Available documentation.
   const dataDocs = {
     "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
+    "main_summary": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#mainsummary",
   };
   // Helper for code markup.
   var code = s => `<span class="code">${s}</span>`;
@@ -650,6 +651,72 @@ function getDatasetInfos(probeId, channel, state) {
     var name = probe.name.toLowerCase().replace(/\./g, '_');
     var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
     datasetInfos.push(datasetText + ` as ${names}`);
+  }
+
+  // main_summary includes all scalars.
+  if (probe.type == "scalar") {
+    var dataset = "main_summary";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = code("scalar_<i>&lt;process&gt;</i>_" + probe.name.toLowerCase().replace(/\./g, '_'));
+    datasetInfos.push(datasetText + ` as ${name}`);
+  }
+
+  // main_summary includes a whitelist of histograms dynamically.
+  const mainSummaryHistogramWhitelist = [
+    "A11Y_INSTANTIATED_FLAG",
+    "A11Y_CONSUMERS",
+    "CERT_VALIDATION_SUCCESS_BY_CA",
+    "CYCLE_COLLECTOR_MAX_PAUSE",
+    "FX_SEARCHBAR_SELECTED_RESULT_METHOD",
+    "FX_URLBAR_SELECTED_RESULT_INDEX",
+    "FX_URLBAR_SELECTED_RESULT_INDEX_BY_TYPE",
+    "FX_URLBAR_SELECTED_RESULT_METHOD",
+    "FX_URLBAR_SELECTED_RESULT_TYPE",
+    "GC_MAX_PAUSE_MS",
+    "GC_MAX_PAUSE_MS_2",
+    "GHOST_WINDOWS",
+    "HTTP_CHANNEL_DISPOSITION",
+    "HTTP_PAGELOAD_IS_SSL",
+    "INPUT_EVENT_RESPONSE_COALESCED_MS",
+    "SEARCH_RESET_RESULT",
+    "SSL_HANDSHAKE_RESULT",
+    "SSL_HANDSHAKE_VERSION",
+    "SSL_TLS12_INTOLERANCE_REASON_PRE",
+    "SSL_TLS13_INTOLERANCE_REASON_PRE",
+    "TIME_TO_DOM_COMPLETE_MS",
+    "TIME_TO_DOM_CONTENT_LOADED_END_MS",
+    "TIME_TO_DOM_CONTENT_LOADED_START_MS",
+    "TIME_TO_DOM_INTERACTIVE_MS",
+    "TIME_TO_DOM_LOADING_MS",
+    "TIME_TO_FIRST_CLICK_MS",
+    "TIME_TO_FIRST_INTERACTION_MS",
+    "TIME_TO_FIRST_KEY_INPUT_MS",
+    "TIME_TO_FIRST_MOUSE_MOVE_MS",
+    "TIME_TO_FIRST_SCROLL_MS",
+    "TIME_TO_LOAD_EVENT_END_MS",
+    "TIME_TO_LOAD_EVENT_START_MS",
+    "TIME_TO_NON_BLANK_PAINT_MS",
+    "TIME_TO_RESPONSE_START_MS",
+    "TOUCH_ENABLED_DEVICE",
+    "TRACKING_PROTECTION_ENABLED",
+    "UPTAKE_REMOTE_CONTENT_RESULT_1",
+    "WEBVR_TIME_SPENT_VIEWING_IN_2D",
+    "WEBVR_TIME_SPENT_VIEWING_IN_OCULUS",
+    "WEBVR_TIME_SPENT_VIEWING_IN_OPENVR",
+    "WEBVR_USERS_VIEW_IN",
+  ];
+
+  if ((probe.type == "histogram") && mainSummaryHistogramWhitelist.includes(probe.name)) {
+    var dataset = "main_summary";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = code("histogram_<i>&lt;process&gt;</i>_" + probe.name.toLowerCase());
+    datasetInfos.push(datasetText + ` as ${name}`);
   }
 
   return datasetInfos;
