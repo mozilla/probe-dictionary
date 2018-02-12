@@ -612,6 +612,12 @@ function getDatasetInfos(probeId, channel, state) {
     datasetInfos.push(`<a href="${url}" target="_blank">Use counter dashboard</a>`);
   }
 
+  // Link to the hardware report for all hardware & OS related probes.
+  if (probeId.startsWith("environment/system.")) {
+    const url = "https://hardware.metrics.mozilla.com/";
+    datasetInfos.push(`<a href="${url}">hardware report</a> - view what hardware and operating systems Firefox users have.`);
+  }
+
   // Lookup in mappings from datasets.json.
   if (probeId in gDatasetMappings) {
     $.each(gDatasetMappings[probeId], (dataset, name) => {
