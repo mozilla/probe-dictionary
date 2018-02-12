@@ -578,6 +578,77 @@ function findProbeIdFromCaseInsensitive(probeid) {
   return null;
 }
 
+function getDatasetInfos(probeId, channel, state) {
+  // Available documentation.
+  const dataDocs = {
+    "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
+  };
+  // Helper for code markup.
+  var code = s => `<span class="code">${s}</span>`;
+
+  const probe = gProbeData[probeId];
+  var datasetInfos = [];
+
+  // TMO dashboard links.
+  if (["histogram", "scalar"].includes(probe.type) ||
+      (probe.type == "simpleMeasurements" && ["number", "bool"].includes(state.details.kind))) {
+    var versions = getVersionRange(channel, state.revisions);
+    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
+    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
+    datasetInfos.push("TMO dashboard: "
+                      + `<a href="${distURL}" target="_blank">distribution</a>`
+                      + ", "
+                      + `<a href="${evoURL}" target="_blank">evolution</a>`);
+  }
+
+  // Use counter dashboard links.
+  if ((probe.type == "histogram") && probe.name.startsWith("USE_COUNTER2_")) {
+    const base = "https://georgf.github.io/usecounters/";
+    const params = {
+      "group": probe.name.split("_")[2],
+      "kind": last(probe.name.split("_")).toLowerCase(),
+    };
+    const url = base + "#" + $.param(params);
+    datasetInfos.push(`<a href="${url}" target="_blank">Use counter dashboard</a>`);
+  }
+
+  // Lookup in mappings from datasets.json.
+  if (probeId in gDatasetMappings) {
+    $.each(gDatasetMappings[probeId], (dataset, name) => {
+      var datasetText = dataset;
+      if (dataset in dataDocs) {
+        datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+      }
+      datasetInfos.push(datasetText + ` as ${code(name)}`);
+    });
+  }
+
+  // Longitudinal includes all release parent process scalars.
+  if (probe.type == "scalar" && state.optout && state.details.record_in_processes.includes("main")) {
+    var dataset = "longitudinal";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = "scalar_parent_" + probe.name.toLowerCase().replace(/\./g, '_');
+    datasetInfos.push(datasetText + ` as ${code(name)}`);
+  }
+
+  // Longitudinal includes all release histograms.
+  if (probe.type == "histogram" && state.optout) {
+    var dataset = "longitudinal";
+    var datasetText = dataset;
+    if (dataset in dataDocs) {
+      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+    }
+    var name = probe.name.toLowerCase().replace(/\./g, '_');
+    var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
+    datasetInfos.push(datasetText + ` as ${names}`);
+  }
+
+  return datasetInfos;
+}
+
 function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   const last = array => array[array.length - 1];
 
@@ -594,21 +665,6 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   $('#detail-recording-type').text(state.optout ? "release" : "prerelease");
   $('#detail-description').text(state.description);
 
-  // Available datasets infos.
-  var datasetInfos = [];
-
-  // TMO dashboard links.
-  if (["histogram", "scalar"].includes(probe.type) ||
-      (probe.type == "simpleMeasurements" && ["number", "bool"].includes(state.details.kind))) {
-    var versions = getVersionRange(channel, state.revisions);
-    const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
-    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
-    datasetInfos.push("TMO dashboard: "
-                      + `<a href="${distURL}" target="_blank">distribution</a>`
-                      + ", "
-                      + `<a href="${evoURL}" target="_blank">evolution</a>`);
-  }
-
   // Recording range
   let rangeText = [];
   for (let [ch, history] of Object.entries(probe.history)) {
@@ -619,55 +675,8 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
   }
   $('#detail-recording-range').html(rangeText.join("<br/>"));
 
-  // Dataset mappings.
-  const dataDocs = {
-    "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
-  };
-  var code = s => `<span class="code">${s}</span>`;
-
-  if (probeId in gDatasetMappings) {
-    $.each(gDatasetMappings[probeId], (dataset, name) => {
-      var datasetText = dataset;
-      if (dataset in dataDocs) {
-        datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
-      }
-      datasetInfos.push(datasetText + ` as ${code(name)}`);
-    });
-  }
-
-  if (probe.type == "scalar" && state.optout && state.details.record_in_processes.includes("main")) {
-    var dataset = "longitudinal";
-    var datasetText = dataset;
-    if (dataset in dataDocs) {
-      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
-    }
-    var name = "scalar_parent_" + probe.name.toLowerCase().replace(/\./g, '_');
-    datasetInfos.push(datasetText + ` as ${code(name)}`);
-  }
-
-  if (probe.type == "histogram" && state.optout) {
-    var dataset = "longitudinal";
-    var datasetText = dataset;
-    if (dataset in dataDocs) {
-      datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
-    }
-    var name = probe.name.toLowerCase().replace(/\./g, '_');
-    var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
-    datasetInfos.push(datasetText + ` as ${names}`);
-  }
-
-  // Use counter dashboard links.
-  if ((probe.type == "histogram") && probe.name.startsWith("USE_COUNTER2_")) {
-    const base = "https://georgf.github.io/usecounters/";
-    const params = {
-      "group": probe.name.split("_")[2],
-      "kind": last(probe.name.split("_")).toLowerCase(),
-    };
-    const url = base + "#" + $.param(params);
-    datasetInfos.push(`<a href="${url}" target="_blank">Use counter dashboard</a>`);
-  }
-
   // Apply dataset infos.
+  var datasetInfos = getDatasetInfos(probeId, channel, state);
   var datasetsRow = document.getElementById("detail-datasets-row");
   if (datasetInfos.length == 0) {
     datasetsRow.classList.add("hidden");
