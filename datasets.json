@@ -30,34 +30,42 @@
     "longitudinal": "system_cpu.extensions"
   },
   "environment/system.memoryMB": {
-    "longitudinal": "system.memory_mb"
+    "longitudinal": "system.memory_mb",
+    "main_summary": "memory_mb"
   },
   "environment/system.virtualMaxMB": {
     "longitudinal": "system.virtual_max_mb"
   },
   "environment/system.os.name": {
-    "longitudinal": "system_os.name"
+    "longitudinal": "system_os.name",
+    "main_summary": "os"
   },
   "environment/system.os.version": {
-    "longitudinal": "system_os.version"
+    "longitudinal": "system_os.version",
+    "main_summary": "os_version"
   },
   "environment/system.os.kernelVersion": {
     "longitudinal": "system_os.kernel_version"
   },
   "environment/system.os.servicePackMajor": {
-    "longitudinal": "system_os.service_pack_major"
+    "longitudinal": "system_os.service_pack_major",
+    "main_summary": "os_service_pack_major"
   },
   "environment/system.os.servicePackMinor": {
-    "longitudinal": "system_os.service_pack_minor"
+    "longitudinal": "system_os.service_pack_minor",
+    "main_summary": "os_service_pack_minor"
   },
   "environment/system.os.windowsBuildNumber": {
-    "longitudinal": "system_os.windows_build_number"
+    "longitudinal": "system_os.windows_build_number",
+    "main_summary": "windows_build_number"
   },
   "environment/system.os.windowsUBR": {
-    "longitudinal": "system_os.windows_ubr"
+    "longitudinal": "system_os.windows_ubr",
+    "main_summary": "windows_ubr"
   },
   "environment/system.os.installYear": {
-    "longitudinal": "system_os.install_year"
+    "longitudinal": "system_os.install_year",
+    "main_summary": "install_year"
   },
   "environment/system.os.locale": {
     "longitudinal": "system_os.locale"
