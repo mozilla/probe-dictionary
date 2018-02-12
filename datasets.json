@@ -113,5 +113,56 @@
   },
   "simpleMeasurements/startupWindowVisibleWriteBytes": {
     "longitudinal": "startup_window_visible_write_bytes"
+  },
+
+
+
+  "histogram/WEAVE_CONFIGURED": {
+    "main_summary": "sync_configured"
+  },
+  "histogram/WEAVE_DEVICE_COUNT_DESKTOP": {
+    "main_summary": "sync_count_desktop"
+  },
+  "histogram/WEAVE_DEVICE_COUNT_MOBILE": {
+    "main_summary": "sync_count_mobile"
+  },
+  "histogram/SUBPROCESS_CRASHES_WITH_DUMP": {
+    "main_summary": "crashes_detected_<process>, plugin_hangs"
+  },
+  "histogram/SUBPROCESS_ABNORMAL_ABORT": {
+    "main_summary": "aborts_<process>"
+  },
+  "histogram/PROCESS_CRASH_SUBMIT_ATTEMPT": {
+    "main_summary": "crash_submit_attempt_<process>"
+  },
+  "histogram/PROCESS_CRASH_SUBMIT_SUCCESS": {
+    "main_summary": "crash_submit_success_<process>"
+  },
+  "histogram/SUBPROCESS_KILL_HARD": {
+    "main_summary": "shutdown_kill"
+  },
+  "histogram/SEARCH_COUNTS": {
+    "main_summary": "search_counts"
+  },
+  "histogram/DEVTOOLS_TOOLBOX_OPENED_COUNT": {
+    "main_summary": "devtools_toolbox_opened_count"
+  },
+  "histogram/PLACES_BOOKMARKS_COUNT": {
+    "main_summary": "places_bookmarks_count"
+  },
+  "histogram/PLACES_PAGES_COUNT": {
+    "main_summary": "places_pages_count"
+  },
+  "histogram/PUSH_API_NOTIFY": {
+    "main_summary": "push_api_notify"
+  },
+  "histogram/WEB_NOTIFICATION_SHOWN": {
+    "main_summary": "web_notification_shown"
+  },
+  "histogram/POPUP_NOTIFICATION_STATS": {
+    "main_summary": "popup_notification_stats"
+  },
+  "histogram/SSL_HANDSHAKE_RESULT": {
+    "main_summary": "ssl_handshake_result"
   }
 }
