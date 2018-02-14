@@ -13,7 +13,7 @@ function mark(marker) {
 }
 
 function promiseGetJSON(file) {
-  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data/";
+  var base_uri = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data-rest/";
 
   return new Promise(resolve => {
     $.ajax({
@@ -32,9 +32,9 @@ $(document).ready(function() {
   mark("document ready");
 
   var loads = [
-    promiseGetJSON("general.json"),
-    promiseGetJSON("revisions.json"),
-    promiseGetJSON("probes.json"),
+    promiseGetJSON("firefox/general"),
+    promiseGetJSON("firefox/revisions"),
+    promiseGetJSON("firefox/all/main/all_probes"),
   ];
 
   Promise.all(loads).then(values => {

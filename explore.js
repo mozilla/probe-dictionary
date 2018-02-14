@@ -41,8 +41,8 @@ $(document).ready(function() {
   mark("document ready");
 
   var loads = [
-    promiseGetJSON("firefox/general.json"),
-    promiseGetJSON("firefox/revisions.json"),
+    promiseGetJSON("firefox/general"),
+    promiseGetJSON("firefox/revisions"),
     promiseGetJSON("firefox/all/main/all_probes"),
     promiseGetJSON("environment.json", ""),
     promiseGetJSON("other_fields.json", ""),
