@@ -588,6 +588,7 @@ function getDatasetInfos(probeId, channel, state) {
   // Helper for code markup.
   var code = s => `<span class="code">${s}</span>`;
 
+  const stmoLink = `<a href="https://sql.telemetry.mozilla.org">STMO</a>`;
   const probe = gProbeData[probeId];
   var datasetInfos = [];
 
@@ -625,9 +626,9 @@ function getDatasetInfos(probeId, channel, state) {
     $.each(gDatasetMappings[probeId], (dataset, name) => {
       var datasetText = dataset;
       if (dataset in dataDocs) {
-        datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
+        datasetText = `${stmoLink}: in <a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
       }
-      datasetInfos.push(datasetText + ` as ${code(name)}`);
+      datasetInfos.push(`${datasetText} as ${code(name)}`);
     });
   }
 
@@ -639,7 +640,7 @@ function getDatasetInfos(probeId, channel, state) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
     var name = "scalar_parent_" + probe.name.toLowerCase().replace(/\./g, '_');
-    datasetInfos.push(datasetText + ` as ${code(name)}`);
+    datasetInfos.push(`${stmoLink}: in ${datasetText} as ${code(name)}`);
   }
 
   // Longitudinal includes all release histograms.
@@ -651,7 +652,7 @@ function getDatasetInfos(probeId, channel, state) {
     }
     var name = probe.name.toLowerCase().replace(/\./g, '_');
     var names = code(name) + ", " + code(name + "_<i>&lt;process&gt;</i>");
-    datasetInfos.push(datasetText + ` as ${names}`);
+    datasetInfos.push(`${stmoLink}: in ${datasetText} as ${names}`);
   }
 
   // All events are available in main_summary and the events table.
@@ -661,7 +662,7 @@ function getDatasetInfos(probeId, channel, state) {
     if (dataset in dataDocs) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
-    datasetInfos.push(datasetText + ` in the ${code("events")} column`);
+    datasetInfos.push(`${stmoLink}: in ${datasetText} in the ${code("events")} column`);
   }
 
   if (probe.type == "event") {
@@ -670,7 +671,7 @@ function getDatasetInfos(probeId, channel, state) {
     if (dataset in dataDocs) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
-    datasetInfos.push(`in the ${code(datasetText)} table`);
+    datasetInfos.push(`${stmoLink}: in the ${code(datasetText)} table`);
   }
 
   // main_summary includes all scalars.
@@ -681,7 +682,7 @@ function getDatasetInfos(probeId, channel, state) {
       datasetText = `<a href="${dataDocs[dataset]}" target="_blank">${dataset}</a>`;
     }
     var name = code("scalar_<i>&lt;process&gt;</i>_" + probe.name.toLowerCase().replace(/\./g, '_'));
-    datasetInfos.push(datasetText + ` as ${name}`);
+    datasetInfos.push(`${stmoLink}: in ${datasetText} as ${name}`);
   }
 
   // main_summary includes a whitelist of histograms dynamically.
