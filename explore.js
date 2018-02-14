@@ -804,10 +804,21 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
     ['objects', 'detail-event-extra-keys', ['event']],
   ];
 
+  var pretty = (prop) => {
+    if (prop === undefined) {
+      return "";
+    }
+    if (Array.isArray(prop)) {
+      return prop.join(", ");
+    }
+    return new String(prop);
+  };
+
   for (let [property, id, types] of detailsList) {
     const parent = document.getElementById(id).parentElement;
     if (types.includes('all') || types.includes(probe.type)) {
-      $('#' + id).text(state.details[property] || "");
+      var prop = pretty(state.details[property]);
+      $('#' + id).text(pretty(prop));
       document.getElementById(id).parentElement.classList.remove("hidden");
     } else {
       $('#' + id).text("");
