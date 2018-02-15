@@ -1,7 +1,11 @@
 
 body {
     margin: 0px;
-    padding 0px;
+    padding: 0px;
+}
+
+.navbar i.fa {
+    margin-right: 2px;
 }
 
 #github-banner img {
@@ -24,13 +28,32 @@ body {
     z-index: 14;
 }
 
-#loading-anim {
-    width: 220px;
-    height: 19px;
+#loading-overlay .progress {
+    width: 76%;
+    /*height: 10%;*/
+    height: 30px;
     position: absolute;
     top: 50%;
-    left: 50%;
-    margin: -9px 0 0 -110px;
+    left: 12%;
+    border: 6px solid grey;
+}
+
+#loading-overlay .progress-bar {
+    width: 100%;
+    height: 100%;
+}
+
+#last-updated {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 80%;
+}
+
+#probe-filters {
+    font-size: 90%;
+}
+
+#probe-filters .form-control {
+    font-size: 90%;
 }
 
 #probe-detail-view {
@@ -39,10 +62,6 @@ body {
 
 #detail-probe-name {
     display: inline;
-}
-
-.hidden {
-    display: none;
 }
 
 #stats {
@@ -86,4 +105,20 @@ body {
 .code {
     font-family: Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New;
     font-size: 85%;
+}
+
+.table td.fit,
+.table th.fit {
+    white-space: nowrap;
+    width: 1%;
+}
+
+.table td.grow,
+.table th.grow {
+    white-space: nowrap;
+    width: 100%;
+}
+
+.hidden {
+    display: none;
 }
