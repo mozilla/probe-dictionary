@@ -1,4 +1,514 @@
 {
+  "environment/build.applicationId": {
+    "history": {
+      "release": [
+        {
+          "description": "The application UUID.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The application UUID.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The application UUID.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.applicationId",
+    "type": "environment"
+  },
+  "environment/build.applicationName": {
+    "history": {
+      "release": [
+        {
+          "description": "The application name.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The application name.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The application name.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.applicationName",
+    "type": "environment"
+  },
+  "environment/build.architecture": {
+    "history": {
+      "release": [
+        {
+          "description": "The build architecture for the active build.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The build architecture for the active build.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The build architecture for the active build.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.architecture",
+    "type": "environment"
+  },
+  "environment/build.architecturesInBinary": {
+    "history": {
+      "release": [
+        {
+          "description": "For Mac universal builds, this is a string containing a list of architectures delimited by '-'. Architecture sets are always in the same order: ppc > i386 > ppc64 > x86_64 > (future additions). This is only available on Mac.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "For Mac universal builds, this is a string containing a list of architectures delimited by '-'. Architecture sets are always in the same order: ppc > i386 > ppc64 > x86_64 > (future additions). This is only available on Mac.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "For Mac universal builds, this is a string containing a list of architectures delimited by '-'. Architecture sets are always in the same order: ppc > i386 > ppc64 > x86_64 > (future additions). This is only available on Mac.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.architecturesInBinary",
+    "type": "environment"
+  },
+  "environment/build.buildId": {
+    "history": {
+      "release": [
+        {
+          "description": "The build ID/date of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The build ID/date of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The build ID/date of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.buildId",
+    "type": "environment"
+  },
+  "environment/build.version": {
+    "history": {
+      "release": [
+        {
+          "description": "The version of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The version of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The version of the application.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.version",
+    "type": "environment"
+  },
+  "environment/build.vendor": {
+    "history": {
+      "release": [
+        {
+          "description": "The application vendor.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The application vendor.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The application vendor.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.vendor",
+    "type": "environment"
+  },
+  "environment/build.platformVersion": {
+    "history": {
+      "release": [
+        {
+          "description": "The version of the XULRunner platform.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The version of the XULRunner platform.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The version of the XULRunner platform.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.platformVersion",
+    "type": "environment"
+  },
+  "environment/build.xpcomAbi": {
+    "history": {
+      "release": [
+        {
+          "description": "A string tag identifying the binary ABI of the current processor and compiler vtable. This is taken from the TARGET_XPCOM_ABI configure variable. It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>, for example: x86-msvc, ppc-gcc3, ... . This value should almost always be used in combination with  the 'OS'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "A string tag identifying the binary ABI of the current processor and compiler vtable. This is taken from the TARGET_XPCOM_ABI configure variable. It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>, for example: x86-msvc, ppc-gcc3, ... . This value should almost always be used in combination with  the 'OS'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "A string tag identifying the binary ABI of the current processor and compiler vtable. This is taken from the TARGET_XPCOM_ABI configure variable. It may not be available on all platforms, especially unusual processor or compiler combinations. The result takes the form <processor>-<compilerABI>, for example: x86-msvc, ppc-gcc3, ... . This value should almost always be used in combination with  the 'OS'.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.xpcomAbi",
+    "type": "environment"
+  },
+  "environment/build.updaterAvailable": {
+    "history": {
+      "release": [
+        {
+          "description": "True if the application was built with the support for the updater component.",
+          "bug_numbers": [1393601],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "57",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "True if the application was built with the support for the updater component.",
+          "bug_numbers": [1393601],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "57",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "True if the application was built with the support for the updater component.",
+          "bug_numbers": [1393601],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "57",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "build.updaterAvailable",
+    "type": "environment"
+  },
   "environment/system.cpu.count": {
     "history": {
       "release": [
