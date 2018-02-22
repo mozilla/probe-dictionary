@@ -1631,6 +1631,312 @@
     "name": "profile.resetDate",
     "type": "environment"
   },
+  "environment/partner.distributionId": {
+    "history": {
+      "release": [
+        {
+          "description": "The value of the `distribution.id` pref that identifies the Firefox distribution.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The value of the `distribution.id` pref that identifies the Firefox distribution.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The value of the `distribution.id` pref that identifies the Firefox distribution.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.distributionId",
+    "type": "environment"
+  },
+  "environment/partner.distributionVersion": {
+    "history": {
+      "release": [
+        {
+          "description": "The value of the `distribution.version` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The value of the `distribution.version` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The value of the `distribution.version` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.distributionVersion",
+    "type": "environment"
+  },
+  "environment/partner.partnerId": {
+    "history": {
+      "release": [
+        {
+          "description": "The value of the `mozilla.partner.id` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The value of the `mozilla.partner.id` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The value of the `mozilla.partner.id` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.partnerId",
+    "type": "environment"
+  },
+  "environment/partner.distributor": {
+    "history": {
+      "release": [
+        {
+          "description": "The value of the `app.distributor` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The value of the `app.distributor` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The value of the `app.distributor` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.distributor",
+    "type": "environment"
+  },
+  "environment/partner.distributorChannel": {
+    "history": {
+      "release": [
+        {
+          "description": "The value of the `app.distributor.channel` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The value of the `app.distributor.channel` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The value of the `app.distributor.channel` pref.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.distributorChannel",
+    "type": "environment"
+  },
+  "environment/partner.partnerNames": {
+    "history": {
+      "release": [
+        {
+          "description": "The list of names from the `app.partner` children prefs, as `app.partner.<name>=<name>`.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "object"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The list of names from the `app.partner` children prefs, as `app.partner.<name>=<name>`.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "object"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The list of names from the `app.partner` children prefs, as `app.partner.<name>=<name>`.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "object"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "partner.partnerNames",
+    "type": "environment"
+  },
   "environment/system.cpu.count": {
     "history": {
       "release": [
