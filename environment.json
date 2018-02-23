@@ -2549,6 +2549,57 @@
     "name": "system.virtualMaxMB",
     "type": "environment"
   },
+  "environment/system.isWow64": {
+    "history": {
+      "release": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.isWow64",
+    "type": "environment"
+  },
   "environment/system.os.name": {
     "history": {
       "release": [
