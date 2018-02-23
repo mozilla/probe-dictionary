@@ -37,6 +37,14 @@ function promiseGetJSON(file, base_uri = ANALYSIS_URI) {
   });
 }
 
+function makeDelay(ms) {
+  var timer = 0;
+  return (callback) => {
+    clearTimeout(timer);
+    timer = setTimeout(callback, ms);
+  };
+};
+
 $(document).ready(function() {
   mark("document ready");
 
@@ -72,9 +80,17 @@ $(document).ready(function() {
     $("#select_version").keyup(update);
     $("#select_channel").change(update);
     $("#optout").change(update);
-    $("#text_search").keyup(update);
     $("#search_constraint").change(update);
     $(window).on('popstate', loadURIData);
+
+    var delaySearch = makeDelay(50);
+    $("#text_search").keyup(() => {
+      console.log("text keyup")
+      delaySearch(() => {
+        console.log("... delayed search")
+        update();
+      });
+    });
 
     // Add detail view events.
     $(document).keyup(e => {
