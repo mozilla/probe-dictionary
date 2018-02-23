@@ -84,13 +84,7 @@ $(document).ready(function() {
     $(window).on('popstate', loadURIData);
 
     var delaySearch = makeDelay(50);
-    $("#text_search").keyup(() => {
-      console.log("text keyup")
-      delaySearch(() => {
-        console.log("... delayed search")
-        update();
-      });
-    });
+    $("#text_search").keyup(() => delaySearch(update));
 
     // Add detail view events.
     $(document).keyup(e => {
