@@ -2549,6 +2549,57 @@
     "name": "system.virtualMaxMB",
     "type": "environment"
   },
+  "environment/system.isWow64": {
+    "history": {
+      "release": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The availability of the WoW64 subsystem. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "boolean"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.isWow64",
+    "type": "environment"
+  },
   "environment/system.os.name": {
     "history": {
       "release": [
@@ -3006,6 +3057,312 @@
       ]
     },
     "name": "system.os.locale",
+    "type": "environment"
+  },
+  "environment/system.hdd.profile.model": {
+    "history": {
+      "release": [
+        {
+          "description": "The model of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The model of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The model of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.profile.model",
+    "type": "environment"
+  },
+  "environment/system.hdd.profile.revision": {
+    "history": {
+      "release": [
+        {
+          "description": "The revision of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The revision of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The revision of the hdd where the profile directory is located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.profile.revision",
+    "type": "environment"
+  },
+  "environment/system.hdd.binary.model": {
+    "history": {
+      "release": [
+        {
+          "description": "The model of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The model of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The model of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.binary.model",
+    "type": "environment"
+  },
+  "environment/system.hdd.binary.revision": {
+    "history": {
+      "release": [
+        {
+          "description": "The revision of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The revision of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The revision of the hdd where the application binaries are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.binary.revision",
+    "type": "environment"
+  },
+  "environment/system.hdd.system.model": {
+    "history": {
+      "release": [
+        {
+          "description": "The model of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The model of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The model of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.system.model",
+    "type": "environment"
+  },
+  "environment/system.hdd.system.revision": {
+    "history": {
+      "release": [
+        {
+          "description": "The revision of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The revision of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The revision of the hdd where the system files are located. This is Windows only.",
+          "bug_numbers": [1122052],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.hdd.system.revision",
     "type": "environment"
   }
 }
