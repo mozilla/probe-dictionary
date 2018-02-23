@@ -414,10 +414,6 @@ function renderMeasurements(measurements) {
     ["description", (d, h, c) => escapeHtml(h.description)],
   ];
 
-  if (selected_channel == "any") {
-    rawColumns.splice(3, 0, ["channel", (d, h, c) => c]);
-  }
-
   var columns = new Map(rawColumns);
 
   var table = '<table id="search-results-table">';
@@ -437,8 +433,14 @@ function renderMeasurements(measurements) {
       if (channel == "aurora") {
         continue;
       }
+      // When not filtering by channel, it's confusing to show multiple rows for each probe (one for each channel).
+      // The short-term hack here to improve this is to only show the release channel state.
+      // TODO: solve this better.
+      if ((selected_channel === "any") && (channel !== "release")) {
+        continue;
+      }
       // Don't show pre-release measurements for the release channel.
-      if (!history[0].optout && (channel == "release")) {
+      if (!history[0].optout && (channel == "release") && (selected_channel !== "any")) {
         continue;
       }
 
