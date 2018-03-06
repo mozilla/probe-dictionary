@@ -524,48 +524,6 @@
       ]
     }
   },
-  "simpleMeasurements/maximalNumberOfConcurrentThreads": {
-    "name": "maximalNumberOfConcurrentThreads",
-    "type": "simpleMeasurements",
-    "history": {
-      "all": [
-        {
-          "description": "An integer representing the highest number of threads encountered so far during the session.",
-          "bug_numbers": [],
-          "details": {
-            "kind": "number"
-          },
-          "expiry_version": "never",
-          "optout": true,
-          "revisions": {
-            "firstVersion": "42",
-            "last": "latest"
-          }
-        }
-      ]
-    }
-  },
-  "simpleMeasurements/maximalNumberOfConcurrentThreads": {
-    "name": "maximalNumberOfConcurrentThreads",
-    "type": "simpleMeasurements",
-    "history": {
-      "all": [
-        {
-          "description": "An integer representing the highest number of threads encountered so far during the session.",
-          "bug_numbers": [],
-          "details": {
-            "kind": "number"
-          },
-          "expiry_version": "never",
-          "optout": true,
-          "revisions": {
-            "firstVersion": "42",
-            "last": "latest"
-          }
-        }
-      ]
-    }
-  },
   "simpleMeasurements/startupSessionRestoreReadBytes": {
     "name": "startupSessionRestoreReadBytes",
     "type": "simpleMeasurements",
@@ -762,6 +720,69 @@
       "all": [
         {
           "description": "Integer count of pending Telemetry pings that are overdue.",
+          "bug_numbers": [],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    }
+  },
+  "simpleMeasurements/firstPaint": {
+    "name": "firstPaint",
+    "type": "simpleMeasurements",
+    "history": {
+      "all": [
+        {
+          "description": "Timestamp of 'first paint' event.",
+          "bug_numbers": [],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    }
+  },
+  "simpleMeasurements/sessionRestored": {
+    "name": "sessionRestored",
+    "type": "simpleMeasurements",
+    "history": {
+      "all": [
+        {
+          "description": "Timestamp of 'session restored' event.",
+          "bug_numbers": [],
+          "details": {
+            "kind": "number"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "42",
+            "last": "latest"
+          }
+        }
+      ]
+    }
+  },
+  "simpleMeasurements/main": {
+    "name": "main",
+    "type": "simpleMeasurements",
+    "history": {
+      "all": [
+        {
+          "description": "Timestamp of 'main' event.",
           "bug_numbers": [],
           "details": {
             "kind": "number"
