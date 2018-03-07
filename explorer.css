@@ -122,3 +122,7 @@ body {
 .hidden {
     display: none;
 }
+
+.navbar-nav > li > a:hover {
+    color: #c0c0c0;
+}
