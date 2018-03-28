@@ -2600,6 +2600,57 @@
     "name": "system.isWow64",
     "type": "environment"
   },
+  "environment/system.appleModelId": {
+    "history": {
+      "release": [
+        {
+          "description": "The model IDs for Apple desktop devices. This is Mac only.",
+          "bug_numbers": [1409468],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "57",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The model IDs for Apple desktop devices. This is Mac only.",
+          "bug_numbers": [1409468],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "57",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The model IDs for Apple desktop devices. This is Mac only.",
+          "bug_numbers": [1409468],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "58",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.appleModelId",
+    "type": "environment"
+  },
   "environment/system.os.name": {
     "history": {
       "release": [
@@ -4287,7 +4338,7 @@
     "history": {
       "release": [
         {
-          "description": "The name feature's version.",
+          "description": "The feature's version.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "number"
@@ -4302,7 +4353,7 @@
       ],
       "beta": [
         {
-          "description": "The name feature's version.",
+          "description": "The feature's version.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "number"
@@ -4317,7 +4368,7 @@
       ],
       "nightly": [
         {
-          "description": "The name feature's version.",
+          "description": "The feature's version.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "number"
@@ -4338,7 +4389,7 @@
     "history": {
       "release": [
         {
-          "description": "The name feature's warp status. Only valid for D2D11.",
+          "description": "The feature's warp status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4353,7 +4404,7 @@
       ],
       "beta": [
         {
-          "description": "The name feature's warp status. Only valid for D2D11.",
+          "description": "The feature's warp status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4368,7 +4419,7 @@
       ],
       "nightly": [
         {
-          "description": "The name feature's warp status. Only valid for D2D11.",
+          "description": "The feature's warp status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4389,7 +4440,7 @@
     "history": {
       "release": [
         {
-          "description": "The name feature's texture sharing status. Only valid for D2D11.",
+          "description": "The feature's texture sharing status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4404,7 +4455,7 @@
       ],
       "beta": [
         {
-          "description": "The name feature's texture sharing status. Only valid for D2D11.",
+          "description": "The feature's texture sharing status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4419,7 +4470,7 @@
       ],
       "nightly": [
         {
-          "description": "The name feature's texture sharing status. Only valid for D2D11.",
+          "description": "The feature's texture sharing status. Only valid for D2D11.",
           "bug_numbers": [1179051],
           "details": {
             "kind": "boolean"
@@ -4434,6 +4485,159 @@
       ]
     },
     "name": "system.gfx.features.*.textureSharing",
+    "type": "environment"
+  },
+  "environment/system.sec.antivirus": {
+    "history": {
+      "release": [
+        {
+          "description": "The name of the registered antivirus software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The name of the registered antivirus software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The name of the registered antivirus software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.sec.antivirus",
+    "type": "environment"
+  },
+  "environment/system.sec.antispyware": {
+    "history": {
+      "release": [
+        {
+          "description": "The name of the registered antispyware software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The name of the registered antispyware software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The name of the registered antispyware software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.sec.antispyware",
+    "type": "environment"
+  },
+  "environment/system.sec.firewall": {
+    "history": {
+      "release": [
+        {
+          "description": "The name of the registered firewall software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "beta": [
+        {
+          "description": "The name of the registered firewall software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ],
+      "nightly": [
+        {
+          "description": "The name of the registered firewall software. Windows only.",
+          "bug_numbers": [1418131],
+          "details": {
+            "kind": "string"
+          },
+          "expiry_version": "never",
+          "optout": true,
+          "revisions": {
+            "firstVersion": "59",
+            "last": "latest"
+          }
+        }
+      ]
+    },
+    "name": "system.sec.firewall",
     "type": "environment"
   }
 }
