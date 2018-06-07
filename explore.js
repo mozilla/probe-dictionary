@@ -3,7 +3,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var ANALYSIS_URI = "https://analysis-output.telemetry.mozilla.org/probe-scraper/data-rest/";
+var ANALYSIS_URI = "https://probeinfo.telemetry.mozilla.org/";
 
 var gChannelInfo = null;
 var gGeneralData = null;
