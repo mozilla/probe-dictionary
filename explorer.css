@@ -8,6 +8,10 @@ body {
     margin-right: 2px;
 }
 
+.navbar-brand {
+    font-weight: bold;
+}
+
 .permalink-control button {
     background: none;
     cursor: pointer;
@@ -135,4 +139,23 @@ body {
 
 .hidden {
     display: none;
+}
+
+#detail-cpp-guard:empty:after, #detail-bug-numbers:empty:after {
+    content: "none";
+    font-style: italic;
+}
+
+.nav-item {
+    font-weight: bold;
+}
+
+th {
+    position: sticky;
+    top: -1px;
+    background-color: #ECECEC;
+}
+
+#detail-probe-name {
+    overflow-wrap: break-word;
 }
