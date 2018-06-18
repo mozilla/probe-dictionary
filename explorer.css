@@ -8,6 +8,24 @@ body {
     margin-right: 2px;
 }
 
+.navbar-brand {
+    font-weight: bold;
+}
+
+.permalink-control button {
+    background: none;
+    cursor: pointer;
+    padding: 7.5px 8px;
+    line-height: 1.5;
+    color:rgba(255,255,255,.75);
+    font-weight: bold;
+    font-family: "Segoe UI", "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+}
+
+.permalink-control button:hover {
+    color : white;
+}
+
 #github-banner img {
     position: absolute;
     top: 0;
@@ -121,4 +139,23 @@ body {
 
 .hidden {
     display: none;
+}
+
+#detail-cpp-guard:empty:after, #detail-bug-numbers:empty:after {
+    content: "none";
+    font-style: italic;
+}
+
+.nav-item {
+    font-weight: bold;
+}
+
+th {
+    position: sticky;
+    top: -1px;
+    background-color: #ECECEC;
+}
+
+#detail-probe-name {
+    overflow-wrap: break-word;
 }

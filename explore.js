@@ -16,6 +16,48 @@ var gDatasetMappings = null;
 var gView = null;
 var gDetailViewId = null;
 
+$(document)
+  .ready(function () {
+    // Permalink control
+    $(".permalink-control input")
+      .hide()
+      .focus(function () {
+        // Workaround for broken selection: http://stackoverflow.com/questions/5797539
+        var $this = $(this);
+        $this.select()
+          .mouseup(function () {
+            $this.unbind("mouseup");
+            return false;
+          });
+      });
+    $(".permalink-control button")
+      .click(function () {
+        var $this = $(this);
+        $.ajax({
+          url: "https://api-ssl.bitly.com/v3/shorten",
+          dataType: "json",
+          data: {
+            longUrl: window.location.href,
+            access_token: "48ecf90304d70f30729abe82dfea1dd8a11c4584",
+            format: "json"
+          },
+          success: function (response) {
+            var shortUrl = response.data.url;
+            if (shortUrl.indexOf(":") === 4) {
+              shortUrl = "https" + shortUrl.substring(4);
+            }
+            $this.parents(".permalink-control")
+              .find("input")
+              .show()
+              .val(shortUrl)
+              .focus();
+          },
+          async:false
+        });
+        document.execCommand('copy');
+      });
+  });
+
 function mark(marker) {
   if (performance.mark) {
     performance.mark(marker);
@@ -185,8 +227,8 @@ function showSearchOnlyFilters(show) {
     }
 
     var channel = $("#select_channel").val();
-    if (!["release", "beta", "nightly", "any"].includes(channel)) {
-      $("#select_channel").val("any");
+    if (!["release", "beta", "nightly"].includes(channel)) {
+      $("#select_channel").val("release");
     }
   }
 }
@@ -258,18 +300,18 @@ function renderProbeSearch() {
 }
 
 function filterMeasurements() {
-  var version_constraint = $("#select_constraint").val();
+  var versionConstraint = $("#select_constraint").val();
   var optout = $("#optout").prop("checked");
   var version = $("#select_version").val();
-  var selected_channel = $("#select_channel").val();
-  var text_search = $("#text_search").val();
-  var text_constraint = $("#search_constraint").val();
+  var selectedChannel = $("#select_channel").val();
+  var textSearch = $("#text_search").val();
+  var textConstraint = $("#search_constraint").val();
   var measurements = gProbeData;
 
   // Filter out by selected criteria.
   var filtered = {};
-  var channels = [selected_channel];
-  if (selected_channel == "any") {
+  var channels = [selectedChannel];
+  if (selectedChannel == "any") {
     channels = ["nightly", "beta", "release"];
   }
 
@@ -289,7 +331,7 @@ function filterMeasurements() {
       if (version != "any") {
         var versionNum = parseInt(version);
         history = history.filter(m => {
-          switch (version_constraint) {
+          switch (versionConstraint) {
             case "is_in":
               var versions = getVersionRange(channel, m.revisions);
               var expires = m.expiry_version;
@@ -307,16 +349,16 @@ function filterMeasurements() {
               throw "Yuck, unknown selector.";
           }
         });
-      } else if (version_constraint == "is_expired") {
+      } else if (versionConstraint == "is_expired") {
         history = history.filter(m => m.expiry_version != "never");
       }
 
       // Filter for text search.
-      if (text_search != "") {
-        var s = text_search.toLowerCase();
+      if (textSearch != "") {
+        var s = textSearch.toLowerCase();
         var test = (str) => str.toLowerCase().includes(s);
         history = history.filter(h => {
-          switch (text_constraint) {
+          switch (textConstraint) {
             case "in_name": return test(data.name);
             case "in_description": return test(h.description);
             case "in_any": return test(data.name) || test(h.description);
@@ -341,7 +383,7 @@ function filterMeasurements() {
 
 function renderVersions() {
   var select = $("#select_version");
-  var current_channel = $("#select_channel").val();
+  var currentChannel = $("#select_channel").val();
   var versions = new Set();
 
   $.each(gRevisionsData, (channel, revs) => {
@@ -389,28 +431,50 @@ function shortVersion(v) {
   return v.split(".")[0];
 }
 
-function friendlyRecordingRange(firstVersion, expiry) {
-  if (expiry == "never") {
+/**
+ * Return a human readable description of from when to when a probe is recorded.
+ * This can return "never", "from X to Y" or "from X" for non-expiring probes.
+ *
+ * @param history The history array of a probe for a channel.
+ * @param channel The Firefox channel this history is for.
+ * @param filterPrerelease Whether to filter out prerelease probes on the release channel.
+ */
+function friendlyRecordingRangeForHistory(history, channel, filterPrerelease) {
+  const last = array => array[array.length - 1];
+
+  // Optionally filter out prerelease probes on the release channel.
+  // This is used for the detail view, but not for the search results view.
+  if ((channel == "release") && filterPrerelease) {
+    history = history.filter(h => h.optout);
+  }
+
+  // The filtering might have left us with an empty recording history.
+  // This means we never recorded anything on this channel.
+  if (history.length == 0) {
+    return "never";
+  }
+
+  const expiry = last(history).expiry_version;
+  const latestVersion = Math.max.apply(null, Object.keys(gChannelInfo[channel].versions));
+  const firstVersion = getVersionRange(channel, last(history).revisions).first;
+  let lastVersion = getVersionRange(channel, history[0].revisions).last;
+
+  if (expiry == "never" && (lastVersion >= latestVersion)) {
     return `from ${firstVersion}`;
   }
-  return `${firstVersion} to ${parseInt(shortVersion(expiry)) - 1}`;
-}
 
-function friendlyRecordingRangeForState(state, channel) {
-  const firstVersion = getVersionRange(channel, state["revisions"]).first;
-  const expiry = state.expiry_version;
-  return friendlyRecordingRange(firstVersion, expiry);
-}
+  if (expiry != "never") {
+    const expiryVersion = parseInt(shortVersion(expiry));
+    if (lastVersion >= expiryVersion) {
+      lastVersion = expiryVersion - 1;
+    }
+  }
 
-function friendlyRecordingRangeForHistory(history, channel) {
-  const last = array => array[array.length - 1];
-  const firstVersion = getVersionRange(channel, history[0]["revisions"]).first;
-  const expiry = last(history).expiry_version;
-  return friendlyRecordingRange(firstVersion, expiry);
+  return `${firstVersion} to ${lastVersion}`;
 }
 
 function renderMeasurements(measurements) {
-  var selected_channel = $("#select_channel").val();
+  var selectedChannel = $("#select_channel").val();
   var container = $("#measurements");
   var items = [];
 
@@ -419,7 +483,7 @@ function renderMeasurements(measurements) {
     ["name", (d, h, c) => d.name],
     ["type", (d, h, c) => d.type],
     ["population", (d, h, c) => h.optout ? "release" : "prerelease"],
-    ["recorded", (d, h, c, history) => friendlyRecordingRangeForHistory(history, c)],
+    ["recorded", (d, h, c, history) => friendlyRecordingRangeForHistory(history, c, false)],
     // TODO: overflow should cut off
     ["description", (d, h, c) => escapeHtml(h.description)],
   ];
@@ -437,7 +501,7 @@ function renderMeasurements(measurements) {
     for (let [channel, history] of Object.entries(data.history)) {
       // TODO: Why do we include the following in the filtering stage? Fix this.
       // Only show channels that we should show now.
-      if ((selected_channel !== "any") && (channel !== selected_channel)) {
+      if ((selectedChannel !== "any") && (channel !== selectedChannel)) {
         continue;
       }
       if (channel == "aurora") {
@@ -446,11 +510,11 @@ function renderMeasurements(measurements) {
       // When not filtering by channel, it's confusing to show multiple rows for each probe (one for each channel).
       // The short-term hack here to improve this is to only show the release channel state.
       // TODO: solve this better.
-      if ((selected_channel === "any") && (channel !== "release")) {
+      if ((selectedChannel === "any") && (channel !== "release")) {
         continue;
       }
       // Don't show pre-release measurements for the release channel.
-      if (!history[0].optout && (channel == "release") && (selected_channel !== "any")) {
+      if (!history[0].optout && (channel == "release") && (selectedChannel !== "any")) {
         continue;
       }
 
@@ -551,10 +615,37 @@ function updateSearchParams(pushState = false) {
     params.detailView = gDetailViewId;
   }
 
+  if (params['search']=="") {
+    delete params.search;
+  }
+  if (params['searchtype']=="in_any") {
+    delete params.searchtype;
+  }
+  if (params['optout']==false) {
+    delete params.optout;
+  }
+  if (params['channel']=="any") {
+    delete params.channel;
+  }
+  if (params['constraint']=="is_in") {
+    delete params.constraint;
+  }
+  if (params['version']=="any") {
+    delete params.version;
+  }
+  if (params['view']=="search-results-view") {
+    delete params.view;
+  }
+
+  let queryString = "";
+  if (Object.keys(params).length) {
+    queryString = "?" + $.param(params);
+  }
+
   if (!pushState) {
-    window.history.replaceState("", "", "?" + $.param(params));
+    window.history.replaceState({}, "", queryString);
   } else {
-    window.history.pushState("", "", "?" + $.param(params));
+    window.history.pushState({}, "", queryString);
   }
 }
 
@@ -591,6 +682,7 @@ function findProbeIdFromCaseInsensitive(probeid) {
 }
 
 function getDatasetInfos(probeId, channel, state) {
+  const last = array => array[array.length - 1];
   // Available documentation.
   const dataDocs = {
     "longitudinal": "https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal",
@@ -609,11 +701,7 @@ function getDatasetInfos(probeId, channel, state) {
       (probe.type == "simpleMeasurements" && ["number", "bool"].includes(state.details.kind))) {
     var versions = getVersionRange(channel, state.revisions);
     const distURL = getTelemetryDashboardURL('dist', probe.name, probe.type, channel, versions.first, versions.last);
-    const evoURL = getTelemetryDashboardURL('evo', probe.name, probe.type, channel, versions.first, versions.last);
-    datasetInfos.push("TMO dashboard: "
-                      + `<a href="${distURL}" target="_blank">distribution</a>`
-                      + ", "
-                      + `<a href="${evoURL}" target="_blank">evolution</a>`);
+    datasetInfos.push(`<a href="${distURL}" target="_blank">Measurements dashboard</a>`);
   }
 
   // Use counter dashboard links.
@@ -777,7 +865,7 @@ function showDetailViewForId(probeId, channel=$("#select_channel").val()) {
     if ((!history[0].optout && (ch == "release")) || (ch == "aurora")) {
       continue;
     }
-    rangeText.push(`${ch} ${friendlyRecordingRangeForHistory(history, ch)}`);
+    rangeText.push(`${ch} ${friendlyRecordingRangeForHistory(history, ch, true)}`);
   }
   $('#detail-recording-range').html(rangeText.join("<br/>"));
 
@@ -858,7 +946,7 @@ function getMeasurementCountsPerVersion() {
   let last = array => array[array.length - 1];
 
   let channel = $("#select_channel").val();
-  let version_constraint = $("#select_constraint").val();
+  let versionConstraint = $("#select_constraint").val();
 
   let perVersionCounts = {};
   for (let v of Object.keys(gChannelInfo[channel].versions)) {
@@ -869,18 +957,33 @@ function getMeasurementCountsPerVersion() {
     };
   }
 
+  function countProbe(data, k) {
+    if ((channel !== "release") || (k === "optout")) {
+      data[k] += 1;
+    }
+  }
+
   $.each(gProbeData, (id, data) => {
     let history = data.history[channel];
     if (!history) {
       return;
     }
 
-    switch (version_constraint) {
-      case "new_in": {
-        let oldest = last(history);
-        let versions = getVersionRange(channel, oldest.revisions);
-        let k = oldest.optout ? "optout" : "optin";
-        perVersionCounts[versions.first][k] += 1;
+    switch (versionConstraint) {
+      case "new_in": 
+      {
+        $.each(perVersionCounts, (version, data) => {
+          let recording = history.find(h => {
+            let ver = parseInt(version);
+            let versions = getVersionRange(channel, h.revisions);
+            return (ver == versions.first);
+          });
+          // If so, increase the count.
+          if (recording) {
+            let k = recording.optout ? "optout" : "optin";
+            countProbe(data, k);
+          }
+        });
         break;
       }
       case "is_in":
@@ -897,7 +1000,7 @@ function getMeasurementCountsPerVersion() {
           // If so, increase the count.
           if (recording) {
             let k = recording.optout ? "optout" : "optin";
-            data[k] += 1;
+            countProbe(data, k);
           }
         });
         break;
@@ -911,7 +1014,7 @@ function getMeasurementCountsPerVersion() {
           if ((versions.first <= versionNum) && (versions.last >= versionNum) &&
               (expires != "never") && (parseInt(expires) <= versionNum)) {
             let k = newest.optout ? "optout" : "optin";
-            data[k] += 1;
+            countProbe(data, k);
           }
         });
         break;
@@ -932,9 +1035,12 @@ function getMeasurementCountsPerVersion() {
 
 function renderProbeStats() {
   var data = getMeasurementCountsPerVersion();
+  var hasOptoutData = (data.find(item => item.optout > 0) !== undefined);
+  var hasOptinData = (data.find(item => item.optin > 0) !== undefined);
+
 
   let last = array => array[array.length - 1];
-  let version_constraint = $("#select_constraint").val();
+  let versionConstraint = $("#select_constraint").val();
 
   // Prepare data.
   var columns = ["optin", "optout"];
@@ -970,7 +1076,7 @@ function renderProbeStats() {
       .rangeRound([height, 0]);
 
   var z = d3.scaleOrdinal()
-      .range(["#98abc5", "#d0743c"]);
+      .range(["#d0743c", "#98abc5"]);
 
   var stack = d3.stack();
 
@@ -997,7 +1103,7 @@ function renderProbeStats() {
       .call(d3.axisBottom(x));
 
   var constraintText;
-  switch (version_constraint) {
+  switch (versionConstraint) {
     case "new_in": constraintText = "new"; break;
     case "is_in": constraintText = "recorded"; break;
     case "is_expired": constraintText = "expired"; break;
@@ -1015,8 +1121,16 @@ function renderProbeStats() {
       .attr("fill", "#000")
       .text("Count of " + constraintText + " probes");
 
+  var legendLabels = [];
+  if (hasOptinData) {
+    legendLabels.push("optin");
+  }
+  if (hasOptoutData) {
+    legendLabels.push("optout");
+  }
+  
   var legend = g.selectAll(".legend")
-    .data(columns.reverse())
+    .data(legendLabels.reverse())
     .enter().append("g")
       .attr("class", "legend")
       .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; })

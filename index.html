@@ -21,6 +21,7 @@
   <!-- Font Awesome -->
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
 
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-49796218-2"></script>
 </head>
 
 <body>
@@ -31,11 +32,11 @@
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">Probe dictionary</a>
+      <a class="navbar-brand" href="#">Probe Dictionary</a>
 
       <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
+          <li class="nav-item">
             <a class="nav-link" data-toggle="tab" href="#search-results-view" role="tab" aria-controls="search-results-view">
               <i class="fa fa-search"></i> Find probes <span class="sr-only">(current)</span>
             </a>
@@ -48,8 +49,16 @@
           <li class="nav-item">
             <a class="nav-link" href="https://github.com/mozilla/probe-dictionary/issues/new" target="_blank"><i class="fa fa-bug"></i> File a bug</a>
           </li>
-          <li>
+          <li class="nav-item">
             <a class="nav-link" href="https://telemetry.mozilla.org/"><i class="fa fa-home"></i> Telemetry portal</a>
+          </li>
+          <li>
+            <div class="permalink-control">
+              <div class="input-group">
+                <span class="input-group-btn"><button type="button" class="btn btn-default" title="Get Shortlink"><i class="fa fa-link"></i> Get Shortlink</button></span>
+                <input type="text" class="form-control">
+              </div>
+            </div>
           </li>
         </ul>
         <div class="navbar-text my-lg-0" id="last-updated">
@@ -138,11 +147,11 @@
 
   <div class="container-fluid hidden" id="probe-detail-view">
     <div id="detail-body">
-      <h2 id="detail-probe-name">Probe name</h2>
       <button type="button" class="close"
               aria-label="Close" id="close-detail-view">
         <span aria-hidden="true">&times;</span>
       </button>
+      <h2 id="detail-probe-name">Probe name</h2>
       <br />
       <br />
       <table class="table table-sm table-striped table-hover table-bordered border-0">
@@ -161,13 +170,13 @@
         <tr><td class="fit pr-2">Bug numbers:</td><td id="detail-bug-numbers" class="grow"></td></tr>
         <tr><td class="fit pr-2">Recorded in versions:</td><td id="detail-recording-range" class="grow"></td></tr>
         <tr><td class="fit pr-2">Recorded in processes:</td><td id="detail-processes" class="grow"></td></tr>
-        <tr><td class="fit pr-2">C++ guard:</td><td id="detail-cpp-guard" class="grow"></td></tr>
         <tr><td class="fit pr-2">Bucket count:</td><td id="detail-histogram-bucket-count" class="grow"></td></tr>
         <tr><td class="fit pr-2">Low:</td><td id="detail-histogram-low" class="grow"></td></tr>
         <tr><td class="fit pr-2">High:</td><td id="detail-histogram-high" class="grow"></td></tr>
         <tr><td class="fit pr-2">Methods:</td><td id="detail-event-methods" class="grow"></td></tr>
         <tr><td class="fit pr-2">Objects:</td><td id="detail-event-objects" class="grow"></td></tr>
         <tr><td class="fit pr-2">Extra keys:</td><td id="detail-event-extra-keys" class="grow"></td></tr>
+        <tr><td class="fit pr-2">C++ guard:</td><td id="detail-cpp-guard" class="grow"></td></tr>
       </table>
     </div>
   </div>
@@ -185,5 +194,6 @@
   <!-- JS: D3 Visualization -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
 
+  <script src="../analytics/analytics.js"></script>
 </body>
 </html>
