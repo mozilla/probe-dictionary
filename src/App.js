@@ -1,13 +1,74 @@
 import React, { Component } from 'react';
 import { connect } from 'react-refetch';
-import SearchResultsTable from './components/searchResultsTable';
+import SearchResults from './components/searchResults';
 import SearchForm from './components/searchForm';
 
 import './App.css';
 
 
+// ported from explore.js
+function extractChannelInfo(revisions) {
+  const result = {
+    any: {
+      versions: {}
+    }
+  };
+
+  for (let channel in revisions) {
+    for (let revision in revisions[channel]) {
+      if (!(channel in result)) {
+        result[channel] = {versions: {}};
+      }
+      result[channel].versions[revisions[channel][revision].version] = revision;
+    }
+  }
+
+  return result;
+}
+
+// ported from explore.js (was processOtherFieldData())
+function processOtherFields(probes, data) {
+  let result = {};
+
+  for (let field in data) {
+    if ('all' in data[field]) {
+      ['release', 'beta', 'nightly'].forEach(channel => {
+        data[field].history[channel] = data[field].history.all;
+      });
+      delete data[field].history.all;
+    }
+    const currentProbes = probes;
+    currentProbes[field] = data[field];
+
+    result = currentProbes;
+  }
+
+  return result;
+}
+
+// ported from explore.js (was renderVersions())
+function getVersions(revisions) {
+  const result = new Set();
+
+  for (let channel in revisions) {
+    Object.keys(revisions[channel].versions).forEach(version => {
+      result.add(version);
+    });
+  }
+
+  return [...result.values()].sort().reverse();
+}
+
 class App extends Component {
-  didDataFetchesComplete() {
+  state = {
+    probes: {},
+    channelInfo: {},
+    versions: [],
+    selectedChannel: 'any',
+    dataInitialized: false
+  }
+
+  areDataFetchesComplete() {
     return (
       this.props.generalFetch.fulfilled &&
       this.props.probesFetch.fulfilled &&
@@ -16,6 +77,23 @@ class App extends Component {
       this.props.otherFieldsFetch.fulfilled &&
       this.props.datasetsFetch.fulfilled
     );
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.areDataFetchesComplete() && !this.state.dataInitialized) {
+      let probes = this.props.probesFetch.value;
+      probes = processOtherFields(probes, this.props.environmentFetch.value);
+      probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
+      const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
+      const versions = getVersions(channelInfo);
+
+      this.setState({
+        probes,
+        channelInfo,
+        versions,
+        dataInitialized: true
+      });
+    }
   }
 
   render() {
@@ -60,15 +138,16 @@ class App extends Component {
           </div>
         </nav>
 
-        <SearchForm {...this.props} />
+        <SearchForm {...this.props} versions={this.state.versions} channels={this.state.channelInfo} />
 
         <div className="tab-content" id="main-tab-holder">
-          <div className="tab-pane active" id="search-results-view">
-            <div className="container ml-4" id="stats" />
-            <div className="container table table-sm table-striped table-hover table-bordered border-0 pl-5" id="measurements">
-              {this.didDataFetchesComplete() ? <SearchResultsTable otherFields={this.props.otherFieldsFetch.value} environment={this.props.environmentFetch.value} revisions={this.props.revisionsFetch.value} probes={this.props.probesFetch.value} /> : <p>fetching...</p>}
-            </div>
-          </div>
+          <SearchResults
+            channelInfo={this.state.channelInfo}
+            probes={this.state.probes}
+            revisions={this.props.revisionsFetch.value}
+            selectedChannel={this.state.selectedChannel}
+            dataInitialized={this.state.dataInitialized}
+          />
         </div>
       </div>
     );

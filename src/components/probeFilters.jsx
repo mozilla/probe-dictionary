@@ -1,5 +1,6 @@
 import React from 'react';
 import SelectElement from './selectElement';
+import SelectVersionElement from './selectVersionElement';
 
 
 const ProbeFilters = props => {
@@ -18,17 +19,17 @@ const ProbeFilters = props => {
         />
         <div id="version-selection-element">
           in version
-          <SelectElement
+          <SelectVersionElement
             defaultValue="any"
             elementId="select_version"
-            items={[{label: 'any', value: 'any'}]}
+            items={props.versions}
           />
         </div>
         on channel
         <SelectElement
           defaultValue="any"
           elementId="select_channel"
-          items={[{label: 'any', value: 'any'}]}
+          items={Object.keys(props.channels).map(channel => {return {label: channel, value: channel};})}
         />
         .
       </div>

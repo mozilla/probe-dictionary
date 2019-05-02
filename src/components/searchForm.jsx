@@ -1,5 +1,6 @@
 import React from 'react';
 import ProbeFilters from './probeFilters';
+import SelectElement from './selectElement';
 
 
 const SearchForm = props => {
@@ -14,11 +15,15 @@ const SearchForm = props => {
               <div className="input-group-addon" ><i className="fa fa-search" /></div>
             </div>
             in
-            <select className="form-control ml-2 mr-1" defaultValue="in_any" id="search_constraint">
-              <option value="in_any">any text field</option>
-              <option value="in_name">name</option>
-              <option value="in_description">description</option>
-            </select>
+            <SelectElement
+              defaultValue="in_any"
+              elementId="search_constraint"
+              items={[
+                {label: 'any text field', value: 'in_any'},
+                {label: 'name', value: 'in_name'},
+                {label: 'description', value: 'in_description'}
+              ]}
+            />
             .
           </div>
           <ProbeFilters {...props} />

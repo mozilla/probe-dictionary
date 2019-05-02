@@ -1,54 +1,9 @@
 import React, { Component } from 'react';
 import SearchResultsRow from './searchResultsRow';
 
-
-// ported from explore.js
-function extractChannelInfo(revisions) {
-  const result = {
-    any: {
-      versions: {}
-    }
-  };
-
-  for (let channel in revisions) {
-    for (let revision in revisions[channel]) {
-      if (!(channel in result)) {
-        result[channel] = {versions: {}};
-      }
-      result[channel].versions[revisions[channel][revision].version] = revision;
-    }
-  }
-
-  return result;
-}
-
+// Should probably be SFC
+// TODO: This is a behemoth. In urgent need of pagination.
 class SearchResultsTable extends Component {
-  state = {
-    probes: this.props.probes,
-    channelInfo: extractChannelInfo(this.props.revisions)
-  }
-
-  componentDidMount() {
-    this.processOtherFields(this.props.environment);
-    this.processOtherFields(this.props.otherFields);
-  }
-
-  // ported from explore.js
-  processOtherFields(data) {
-    for (let field in data) {
-      if ('all' in data[field]) {
-        ['release', 'beta', 'nightly'].forEach(channel => {
-          data[field].history[channel] = data[field].history.all;
-        });
-        delete data[field].history.all;
-      }
-      const currentProbes = this.state.probes;
-      currentProbes[field] = data[field];
-
-      this.setState({probes: currentProbes});
-    }
-  }
-
   render() {
     return (
       <table id="search-results-table">
@@ -63,7 +18,17 @@ class SearchResultsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(this.state.probes).map(row => <SearchResultsRow key={row} rowData={this.state.probes[row]} />)}
+          {Object.keys(this.props.probes).map(row => {
+            return (
+              <SearchResultsRow
+                key={row}
+                channelInfo={this.props.channelInfo}
+                revisions={this.props.revisions}
+                selectedChannel={this.props.selectedChannel}
+                rowData={this.props.probes[row]}
+              />
+            );
+          })}
         </tbody>
       </table>
     );
