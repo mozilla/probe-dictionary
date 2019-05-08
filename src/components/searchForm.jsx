@@ -10,8 +10,13 @@ const SearchForm = props => {
         <form className="ml-1 mt-3">
           <div className="form-group form-inline" id="text-search-element">
             <div className="input-group mr-2">
-              <input className="form-control"
-                    id="text_search" name="text_search" placeholder="Search for text..." />
+              <input
+                className="form-control"
+                id="text_search"
+                name="text_search"
+                placeholder="Search for text..."
+                onChange={props.doSearchTextChange}
+              />
               <div className="input-group-addon" ><i className="fa fa-search" /></div>
             </div>
             in
@@ -23,6 +28,7 @@ const SearchForm = props => {
                 {label: 'name', value: 'in_name'},
                 {label: 'description', value: 'in_description'}
               ]}
+              onChange={props.doSearchConstraintChange}
             />
             .
           </div>

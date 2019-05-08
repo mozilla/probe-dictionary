@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-refetch';
 import SearchResults from './components/searchResults';
 import SearchForm from './components/searchForm';
+import { getVersionRange } from './lib/utils';
 
 import './App.css';
 
@@ -47,7 +48,7 @@ function processOtherFields(probes, data) {
 }
 
 // ported from explore.js (was renderVersions())
-function getVersions(revisions) {
+function getAllVersions(revisions) {
   const result = new Set();
 
   for (let channel in revisions) {
@@ -61,10 +62,19 @@ function getVersions(revisions) {
 
 class App extends Component {
   state = {
+    allProbes: {},
     probes: {},
     channelInfo: {},
     versions: [],
-    selectedChannel: 'any',
+    allVersions: [], // TODO: Will this be used? Remove if not.
+
+    selectedChannel: 'any', // TODO: this should be set after child component is mounted.
+    selectedProbeConstraint: 'is_in', // TODO: this should be set after child component is mounted.
+    selectedSearchConstraint: 'in_any', // TODO: this should be set after child component is mounted.
+    selectedVersion: 'any',
+    showReleaseOnly: false,
+    searchText: '',
+
     dataInitialized: false
   }
 
@@ -79,18 +89,159 @@ class App extends Component {
     );
   }
 
+  // ported from explore.js (was filterMeasurements())
+  getFilteredProbes(searchText) {
+    const {
+      allProbes,
+      selectedChannel,
+      selectedVersion,
+      selectedProbeConstraint,
+      channelInfo,
+      showReleaseOnly,
+      selectedSearchConstraint
+    } = this.state;
+
+    // Filter out by selected criteria.
+    let filtered = {};
+    let channels = [selectedChannel];
+
+    if (selectedChannel === 'any') {
+      channels = ['nightly', 'beta', 'release'];
+    }
+
+    //$.each(measurements, (id, data) => {
+    probeIterator: for (let probeId in allProbes) {
+      let data = allProbes[probeId];
+      for (let channel of channels) {
+        if (!(channel in data.history)) {
+          continue probeIterator;
+        }
+        let history = data.history[channel];
+
+        // Filter by optout.
+        if (showReleaseOnly) {
+          history = history.filter(m => m.optout);
+        }
+
+        // Filter for version constraint.
+        if (selectedVersion !== 'any') {
+          history = history.filter(m => {
+            let versions = getVersionRange(this.props.revisionsFetch.value, channelInfo, channel, m.revisions);
+            let expires = m.expiry_version;
+            switch (selectedProbeConstraint) {
+              case 'is_in':
+                return (versions.first <= selectedVersion) && (versions.last >= selectedVersion) &&
+                      ((expires === 'never') || (parseInt(expires, 10) >= selectedVersion));
+              case 'new_in':
+                return versions.first === selectedVersion;
+              case 'is_expired':
+                return (versions.first <= selectedVersion) && (versions.last >= selectedVersion) &&
+                      (expires !== 'never') && (parseInt(expires, 10) <= selectedVersion);
+              default:
+                throw 'Yuck, unknown selector.';
+            }
+          });
+        } else if (selectedProbeConstraint === 'is_expired') {
+          history = history.filter(m => m.expiry_version !== 'never');
+        }
+
+        // Filter for text search.
+        if (searchText !== '') {
+          const s = searchText.toLowerCase();
+          const test = (str) => str.toLowerCase().includes(s);
+          history = history.filter(h => {
+            switch (selectedSearchConstraint) {
+              case 'in_name': return test(data.name);
+              case 'in_description': return test(h.description);
+              case 'in_any': return test(data.name) || test(h.description);
+              default: throw 'Yuck, unsupported text search constraint.';
+            }
+          });
+        }
+
+        // Extract properties
+        if (history.length > 0) {
+          filtered[probeId] = {};
+          for (let p of Object.keys(allProbes[probeId])) {
+            filtered[probeId][p] = allProbes[probeId][p];
+          }
+          filtered[probeId]['history'][channel] = history;
+        }
+      }
+    }
+
+    return filtered;
+  }
+
+  handleChannelChange = evt => {
+    const channel = evt.target.value;
+    console.log('channel selected:', channel);
+    if (channel === 'release') {
+      this.setState({
+        showReleaseOnly: true,
+        selectedChannel: channel,
+        versions: this.getVersions(channel)
+      });
+      return;
+    }
+    this.setState({
+      selectedChannel: channel,
+      versions: this.getVersions(channel)
+    });
+  }
+
+  handleShowReleaseOnlyChange = evt => {
+    this.setState({showReleaseOnly: evt.target.checked});
+  }
+
+  handleProbeConstraintChange = evt => {
+    console.log('setting probe constraint to:', evt.target.value);
+    this.setState({selectedProbeConstraint: evt.target.value});
+  }
+
+  handleVersionChange = evt => {
+    console.log('setting version to:', evt.target.value);
+    this.setState({selectedVersion: evt.target.value});
+  }
+
+  handleSearchConstraintChange = evt => {
+    console.log('setting search constraint to:', evt.target.value);
+    this.setState({selectedSearchConstraint: evt.target.value});
+  }
+
+  handleSearchTextChange = evt => {
+    console.log('setting search text to:', evt.target.value);
+    this.setState({
+      searchText: evt.target.value,
+      probes: this.getFilteredProbes(evt.target.value)
+    });
+  }
+
+  getVersions = channel => {
+    const result = new Set();
+
+    Object.keys(this.state.channelInfo[channel].versions).forEach(version => {
+      result.add(version);
+    });
+
+    return [...result.values()].sort().reverse();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.areDataFetchesComplete() && !this.state.dataInitialized) {
       let probes = this.props.probesFetch.value;
       probes = processOtherFields(probes, this.props.environmentFetch.value);
       probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
       const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
-      const versions = getVersions(channelInfo);
+      const allVersions = getAllVersions(channelInfo);
+
+      //console.log('probes:', probes);
 
       this.setState({
+        allProbes: probes,
         probes,
         channelInfo,
-        versions,
+        allVersions,
         dataInitialized: true
       });
     }
@@ -138,7 +289,20 @@ class App extends Component {
           </div>
         </nav>
 
-        <SearchForm {...this.props} versions={this.state.versions} channels={this.state.channelInfo} />
+        <SearchForm
+          {...this.props}
+          versions={this.state.versions}
+          channels={this.state.channelInfo}
+          showReleaseOnly={this.state.showReleaseOnly}
+          selectedChannel={this.state.selectedChannel}
+
+          doChannelChange={this.handleChannelChange}
+          doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
+          doProbeConstraintChange={this.handleProbeConstraintChange}
+          doVersionChange={this.handleVersionChange}
+          doSearchConstraintChange={this.handleSearchConstraintChange}
+          doSearchTextChange={this.handleSearchTextChange}
+        />
 
         <div className="tab-content" id="main-tab-holder">
           <SearchResults

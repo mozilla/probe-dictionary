@@ -9,7 +9,6 @@ class SearchResults extends Component {
   }
 
   render() {
-    console.log('rendering...');
     return (
       <div className="tab-pane active" id="search-results-view">
         <SearchCounter probes={this.props.probes} />

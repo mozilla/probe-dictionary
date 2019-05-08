@@ -16,6 +16,7 @@ const ProbeFilters = props => {
             {label: 'new', value: 'new_in'},
             {label: 'expired', value: 'is_expired'}
           ]}
+          onChange={props.doProbeConstraintChange}
         />
         <div id="version-selection-element">
           in version
@@ -23,18 +24,27 @@ const ProbeFilters = props => {
             defaultValue="any"
             elementId="select_version"
             items={props.versions}
+            onChange={props.doVersionChange}
           />
         </div>
         on channel
         <SelectElement
           defaultValue="any"
           elementId="select_channel"
+          onChange={props.doChannelChange}
           items={Object.keys(props.channels).map(channel => {return {label: channel, value: channel};})}
         />
         .
       </div>
       <div className="form-row form-inline mt-2" id="optout-selection-element">
-        <input className="form-control form-control-sm mr-1" id="optout" type="checkbox" />
+        <input
+          className="form-control form-control-sm mr-1"
+          disabled={props.selectedChannel === 'release'}
+          onChange={props.doShowReleaseOnlyChange}
+          checked={props.showReleaseOnly}
+          id="optout"
+          type="checkbox"
+        />
         <label htmlFor="optout">Show only measurements collected on release.</label>
       </div>
     </div>
