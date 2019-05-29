@@ -19,6 +19,7 @@ class SearchResults extends Component {
             probes={this.props.probes}
             revisions={this.props.revisions}
             selectedChannel={this.props.selectedChannel}
+            doExposeProbeDetails={this.props.doExposeProbeDetails}
           />
         </div>
       </div>

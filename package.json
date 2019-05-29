@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "jquery-param": "^1.0.1",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-refetch": "^2.0.3",

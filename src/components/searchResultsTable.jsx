@@ -26,6 +26,8 @@ class SearchResultsTable extends Component {
                 revisions={this.props.revisions}
                 selectedChannel={this.props.selectedChannel}
                 rowData={this.props.probes[row]}
+                probeId={row}
+                doExposeProbeDetails={this.props.doExposeProbeDetails}
               />
             );
           })}

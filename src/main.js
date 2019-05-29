@@ -4,6 +4,7 @@ import SearchResults from './components/searchResults';
 import SearchForm from './components/searchForm';
 import { getVersionRange } from './lib/utils';
 import Navigation from './components/navigation';
+import ProbeDetails from './components/probeDetails';
 
 
 // ported from explore.js
@@ -73,6 +74,8 @@ class Main extends Component {
     selectedVersion: 'any',
     showReleaseOnly: false,
     searchText: '',
+
+    selectedProbe: {id: '', probe: {}}, // Used in ProbeDetails.
 
     dataInitialized: false
   }
@@ -219,6 +222,16 @@ class Main extends Component {
     });
   }
 
+  handleExposeProbeDetails = (probeId, probe) => {
+    console.log('exposing probe details:', probeId, ' and probe:', probe);
+    this.setState({
+      selectedProbe: {
+        id: probeId,
+        probe
+      }
+    });
+  }
+
   getVersions = channel => {
     const result = new Set();
 
@@ -269,6 +282,15 @@ class Main extends Component {
           doSearchTextChange={this.handleSearchTextChange}
         />
 
+        <ProbeDetails
+          selectedProbe={this.state.selectedProbe}
+          probes={this.state.probes}
+          channelInfo={this.state.channelInfo}
+          revisions={this.props.revisionsFetch.value}
+          selectedChannel={this.state.selectedChannel}
+          datasets={this.props.datasetsFetch.value}
+        />
+
         <div className="tab-content" id="main-tab-holder">
           <SearchResults
             channelInfo={this.state.channelInfo}
@@ -276,8 +298,11 @@ class Main extends Component {
             revisions={this.props.revisionsFetch.value}
             selectedChannel={this.state.selectedChannel}
             dataInitialized={this.state.dataInitialized}
+            doExposeProbeDetails={this.handleExposeProbeDetails}
           />
         </div>
+
+
       </div>
     );
   }
