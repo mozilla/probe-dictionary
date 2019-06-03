@@ -86,3 +86,6 @@ export function getFriendlyExpiryDescriptionForHistory(channelInfo, history, cha
 
   return `${alreadyExpired ? 'stopped' : 'will stop'} recording in ${expiry}`;
 }
+
+export const last = array => array[array.length - 1];
+export const first = array => array[0];

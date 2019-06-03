@@ -8,7 +8,7 @@ import {
 
 
 // Used quite heavily in getDatasetInfo() below.
-function getNewTabLink(link, label) {
+export function getNewTabLink(link, label) {
   return <a href={link} rel="noopener noreferrer" target="_blank">{label}</a>;
 }
 
@@ -275,7 +275,7 @@ function getExtraProbeDetails(probe, probeInfo) {
 class ProbeDetails extends Component {
   state = {  }
   render() {
-    const {revisions, channelInfo, selectedChannel, probes, selectedProbe, datasets} = this.props;
+    const {revisions, channelInfo, selectedChannel, selectedProbe, datasets, doCloseProbeDetails, activeView} = this.props;
     /* TODO: FOR USE WITH URIData later
     const probeId = window.decodeURIComponent(this.props.match.params.probeId);
     const params = new URLSearchParams(this.props.location.search);
@@ -301,12 +301,16 @@ class ProbeDetails extends Component {
     }
 
     const datasetInfo = getDatasetInfo(revisions, channelInfo, datasets, selectedProbe.id, probe, channel, probeInfo);
-
     const bugs = probeInfo['bug_numbers'] || [];
+    const parentClasses = ['container-fluid'];
+    if (activeView !== 'detail') parentClasses.push('hidden');
 
     return (
-      <div className="container-fluid" id="probe-detail-view">
+      <div className={parentClasses.join(' ')} id="probe-detail-view">
         <div id="detail-body">
+          <button type="button" onClick={doCloseProbeDetails} className="close" aria-label="Close" id="close-detail-view">
+            <span aria-hidden="true">×</span>
+          </button>
           <h2 id="detail-probe-name">{probe.name}</h2>
           <br />
           <br />

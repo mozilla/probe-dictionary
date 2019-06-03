@@ -31,8 +31,4 @@ hg-data/UseCounters.conf
 hg-data/dom/base/usecounters.py
 hg-data/Scalars.yaml
 hg-data/parse_scalars.py
-data/jquery-3.1.1.min.js
-data/general.json
-data/probes.json
-data/revisions.json
-data/db.json
+/data

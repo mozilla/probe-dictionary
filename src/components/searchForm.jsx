@@ -4,8 +4,15 @@ import SelectElement from './selectElement';
 
 
 const SearchForm = props => {
+  let activeClass = '';
+  if (props.activeView === 'stats') {
+    activeClass = 'stats-view';
+  } else if (props.activeView !== 'default') {
+    activeClass = 'hidden';
+  }
+
   return (
-    <div id="search-view">
+    <div id="search-view" className={activeClass}>
       <div className="container-fluid" id="search-form">
         <form className="ml-1 mt-3">
           <div className="form-group form-inline" id="text-search-element">

@@ -174,3 +174,10 @@ th {
   padding: 0;
   margin: 0;
 }
+
+/* added post-reactification */
+.stats-view #version-selection-element,
+.stats-view #text-search-element,
+.stats-view #optout-selection-element {
+  display: none;
+}

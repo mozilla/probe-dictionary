@@ -5,6 +5,7 @@ import SearchForm from './components/searchForm';
 import { getVersionRange } from './lib/utils';
 import Navigation from './components/navigation';
 import ProbeDetails from './components/probeDetails';
+import Stats from './components/stats';
 
 
 // ported from explore.js
@@ -77,7 +78,10 @@ class Main extends Component {
 
     selectedProbe: {id: '', probe: {}}, // Used in ProbeDetails.
 
-    dataInitialized: false
+    dataInitialized: false,
+
+    // Used to toggle visible page elements.
+    activeView: 'default' // Can be one of 'default', 'detail', 'stats'.
   }
 
   areDataFetchesComplete() {
@@ -111,9 +115,8 @@ class Main extends Component {
       channels = ['nightly', 'beta', 'release'];
     }
 
-    //$.each(measurements, (id, data) => {
     probeIterator: for (let probeId in allProbes) {
-      let data = allProbes[probeId];
+      const data = allProbes[probeId];
       for (let channel of channels) {
         if (!(channel in data.history)) {
           continue probeIterator;
@@ -128,8 +131,8 @@ class Main extends Component {
         // Filter for version constraint.
         if (selectedVersion !== 'any') {
           history = history.filter(m => {
-            let versions = getVersionRange(this.props.revisionsFetch.value, channelInfo, channel, m.revisions);
-            let expires = m.expiry_version;
+            const versions = getVersionRange(this.props.revisionsFetch.value, channelInfo, channel, m.revisions);
+            const expires = m.expiry_version;
             switch (selectedProbeConstraint) {
               case 'is_in':
                 return (versions.first <= selectedVersion) &&
@@ -225,11 +228,25 @@ class Main extends Component {
   handleExposeProbeDetails = (probeId, probe) => {
     console.log('exposing probe details:', probeId, ' and probe:', probe);
     this.setState({
+      activeView: 'detail',
       selectedProbe: {
         id: probeId,
         probe
       }
     });
+  }
+
+  handleCloseProbeDetails = () => {
+    // TODO: This might also need to unset the selectedProbe.
+    this.setState({activeView: 'default'});
+  }
+
+  handleStatsLinkClick = () => {
+    this.setState({activeView: 'stats'});
+  }
+
+  handleFindProbesLinkClick = () => {
+    this.setState({activeView: 'default'});
   }
 
   getVersions = channel => {
@@ -265,7 +282,12 @@ class Main extends Component {
   render() {
     return (
       <div className="container-full">
-        <Navigation />
+
+        <Navigation
+          doStatsLinkClick={this.handleStatsLinkClick}
+          doFindProbesLinkClick={this.handleFindProbesLinkClick}
+          datePublished={this.props.generalFetch.value}
+        />
 
         <SearchForm
           {...this.props}
@@ -280,28 +302,38 @@ class Main extends Component {
           doVersionChange={this.handleVersionChange}
           doSearchConstraintChange={this.handleSearchConstraintChange}
           doSearchTextChange={this.handleSearchTextChange}
+          activeView={this.state.activeView}
         />
 
         <ProbeDetails
           selectedProbe={this.state.selectedProbe}
-          probes={this.state.probes}
           channelInfo={this.state.channelInfo}
           revisions={this.props.revisionsFetch.value}
           selectedChannel={this.state.selectedChannel}
           datasets={this.props.datasetsFetch.value}
+          doCloseProbeDetails={this.handleCloseProbeDetails}
+          activeView={this.state.activeView}
         />
 
-        <div className="tab-content" id="main-tab-holder">
-          <SearchResults
-            channelInfo={this.state.channelInfo}
-            probes={this.state.probes}
-            revisions={this.props.revisionsFetch.value}
-            selectedChannel={this.state.selectedChannel}
-            dataInitialized={this.state.dataInitialized}
-            doExposeProbeDetails={this.handleExposeProbeDetails}
-          />
-        </div>
+        <Stats
+          selectedProbeConstraint={this.state.selectedProbeConstraint}
+          selectedChannel={this.state.selectedChannel}
+          channelInfo={this.state.channelInfo}
+          probes={this.state.allProbes}
+          revisions={this.props.revisionsFetch.value}
+          dataInitialized={this.state.dataInitialized}
+          activeView={this.state.activeView}
+        />
 
+        <SearchResults
+          channelInfo={this.state.channelInfo}
+          probes={this.state.probes}
+          revisions={this.props.revisionsFetch.value}
+          selectedChannel={this.state.selectedChannel}
+          dataInitialized={this.state.dataInitialized}
+          doExposeProbeDetails={this.handleExposeProbeDetails}
+          activeView={this.state.activeView}
+        />
 
       </div>
     );
