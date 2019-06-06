@@ -276,11 +276,6 @@ class ProbeDetails extends Component {
   state = {  }
   render() {
     const {revisions, channelInfo, selectedChannel, selectedProbe, datasets, doCloseProbeDetails, activeView} = this.props;
-    /* TODO: FOR USE WITH URIData later
-    const probeId = window.decodeURIComponent(this.props.match.params.probeId);
-    const params = new URLSearchParams(this.props.location.search);
-    const channel = params.get('channel') || 'nightly';
-    */
 
     if (!selectedProbe.id) return null;
 

@@ -107,6 +107,10 @@ class Main extends Component {
       selectedSearchConstraint
     } = this.state;
 
+    if (!searchText) {
+      return allProbes;
+    }
+
     // Filter out by selected criteria.
     let filtered = {};
     let channels = [selectedChannel];
@@ -185,44 +189,81 @@ class Main extends Component {
     const channel = evt.target.value;
     console.log('channel selected:', channel);
     if (channel === 'release') {
-      this.setState({
+      this.updateStateAndSearchResults({
         showReleaseOnly: true,
         selectedChannel: channel,
         versions: this.getVersions(channel)
       });
-      return;
+    } else {
+      this.updateStateAndSearchResults({
+        selectedChannel: channel,
+        versions: this.getVersions(channel)
+      });
     }
-    this.setState({
-      selectedChannel: channel,
-      versions: this.getVersions(channel)
-    });
+    this.updateURI('channel', channel);
   }
 
   handleShowReleaseOnlyChange = evt => {
-    this.setState({showReleaseOnly: evt.target.checked});
+    this.updateStateAndSearchResults({showReleaseOnly: evt.target.checked});
+    this.updateURI('optout', evt.target.checked);
   }
 
+  // TODO: merge 3 handlers below into a handleSelectChange().
   handleProbeConstraintChange = evt => {
     console.log('setting probe constraint to:', evt.target.value);
-    this.setState({selectedProbeConstraint: evt.target.value});
+    this.updateStateAndSearchResults({selectedProbeConstraint: evt.target.value});
+    this.updateURI('constraint', evt.target.value);
   }
 
   handleVersionChange = evt => {
     console.log('setting version to:', evt.target.value);
-    this.setState({selectedVersion: evt.target.value});
+    this.updateStateAndSearchResults({selectedVersion: evt.target.value});
+    this.updateURI('version', evt.target.value);
   }
 
   handleSearchConstraintChange = evt => {
     console.log('setting search constraint to:', evt.target.value);
-    this.setState({selectedSearchConstraint: evt.target.value});
+    this.updateStateAndSearchResults({selectedSearchConstraint: evt.target.value});
+    this.updateURI('searchtype', evt.target.value);
+  }
+
+  // Update search filters state then filter probes again to show new search results.
+  updateStateAndSearchResults(state) {
+    this.setState(state, this.updateSearchResults);
+  }
+
+  updateSearchResults(query) {
+    let searchText = query;
+    if (!searchText) searchText = document.querySelector('#text_search').value;
+
+    this.setState({
+      searchText,
+      probes: this.getFilteredProbes(searchText)
+    });
+  }
+
+  updateURI(paramName, paramValue, appendToHistory = false) {
+    const params = new URLSearchParams(window.location.search);
+    const defaultParams = ['any', 'is_in', 'in_any', 'default'];
+
+    // Delete the param if the value provided is falsey or default.
+    if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
+      params.delete(paramName);
+    } else {
+      params.set(paramName, paramValue);
+    }
+
+    // Add to the URL history or replace the current URL.
+    if (appendToHistory) {
+      window.history.pushState({}, '', '?' + params);
+    } else {
+      window.history.replaceState({}, '', '?' + params);
+    }
   }
 
   handleSearchTextChange = evt => {
-    console.log('setting search text to:', evt.target.value);
-    this.setState({
-      searchText: evt.target.value,
-      probes: this.getFilteredProbes(evt.target.value)
-    });
+    this.updateSearchResults(evt.target.value);
+    this.updateURI('search', evt.target.value);
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
@@ -234,19 +275,25 @@ class Main extends Component {
         probe
       }
     });
+    this.updateURI('view', 'detail', true);
   }
 
   handleCloseProbeDetails = () => {
     // TODO: This might also need to unset the selectedProbe.
     this.setState({activeView: 'default'});
+    this.updateURI('view', null);
   }
 
   handleStatsLinkClick = () => {
-    this.setState({activeView: 'stats'});
+    const viewName = 'stats';
+
+    this.setState({activeView: viewName});
+    this.updateURI('view', viewName);
   }
 
   handleFindProbesLinkClick = () => {
     this.setState({activeView: 'default'});
+    this.updateURI('view', null);
   }
 
   getVersions = channel => {

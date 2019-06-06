@@ -18,15 +18,15 @@ class SearchResultsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {Object.keys(this.props.probes).map(row => {
+          {this.props.probeKeys.map(key => {
             return (
               <SearchResultsRow
-                key={row}
+                key={key}
                 channelInfo={this.props.channelInfo}
                 revisions={this.props.revisions}
                 selectedChannel={this.props.selectedChannel}
-                rowData={this.props.probes[row]}
-                probeId={row}
+                rowData={this.props.probes[key]}
+                probeId={key}
                 doExposeProbeDetails={this.props.doExposeProbeDetails}
               />
             );
