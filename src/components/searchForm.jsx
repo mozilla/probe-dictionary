@@ -22,13 +22,14 @@ const SearchForm = props => {
                 id="text_search"
                 name="text_search"
                 placeholder="Search for text..."
+                value={props.searchText}
                 onChange={props.doSearchTextChange}
               />
               <div className="input-group-addon" ><i className="fa fa-search" /></div>
             </div>
             in
             <SelectElement
-              defaultValue="in_any"
+              value={props.selectedSearchConstraint}
               elementId="search_constraint"
               items={[
                 {label: 'any text field', value: 'in_any'},

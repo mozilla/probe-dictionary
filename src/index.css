@@ -181,3 +181,12 @@ th {
 .stats-view #optout-selection-element {
   display: none;
 }
+
+.nav-item button {
+  color: rgba(255,255,255,0.75);
+  font-weight: bold;
+  margin-top: 2px;
+}
+.nav-item button:hover {
+  color: rgb(255,255,255);
+}

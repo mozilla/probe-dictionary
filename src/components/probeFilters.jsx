@@ -9,7 +9,7 @@ const ProbeFilters = props => {
       <div className="form-row form-inline">
         Filter for probes
         <SelectElement
-          defaultValue="is_in"
+          value={props.selectedProbeConstraint}
           elementId="select_constraint"
           items={[
             {label: 'recorded', value: 'is_in'},
@@ -21,7 +21,7 @@ const ProbeFilters = props => {
         <div id="version-selection-element">
           in version
           <SelectVersionElement
-            defaultValue="any"
+            value={props.selectedVersion}
             elementId="select_version"
             items={props.versions}
             onChange={props.doVersionChange}
@@ -29,7 +29,7 @@ const ProbeFilters = props => {
         </div>
         on channel
         <SelectElement
-          defaultValue="any"
+          value={props.selectedChannel}
           elementId="select_channel"
           onChange={props.doChannelChange}
           items={Object.keys(props.channels).map(channel => {return {label: channel, value: channel};})}

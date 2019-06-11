@@ -84,6 +84,8 @@ class Main extends Component {
     activeView: 'default' // Can be one of 'default', 'detail', 'stats'.
   }
 
+  paramState = {}
+
   areDataFetchesComplete() {
     return (
       this.props.generalFetch.fulfilled &&
@@ -106,10 +108,6 @@ class Main extends Component {
       showReleaseOnly,
       selectedSearchConstraint
     } = this.state;
-
-    if (!searchText) {
-      return allProbes;
-    }
 
     // Filter out by selected criteria.
     let filtered = {};
@@ -188,6 +186,7 @@ class Main extends Component {
   handleChannelChange = evt => {
     const channel = evt.target.value;
     console.log('channel selected:', channel);
+
     if (channel === 'release') {
       this.updateStateAndSearchResults({
         showReleaseOnly: true,
@@ -234,17 +233,32 @@ class Main extends Component {
 
   updateSearchResults(query) {
     let searchText = query;
-    if (!searchText) searchText = document.querySelector('#text_search').value;
+    const channelFromParams = this.paramState.selectedChannel;
 
-    this.setState({
+    if (!searchText) searchText = document.querySelector('#text_search').value;
+    const newState = {
       searchText,
       probes: this.getFilteredProbes(searchText)
-    });
+    };
+
+    // Populate available versions if a channel was selected via URL params.
+    if (channelFromParams) {
+      newState.versions = this.getVersions(channelFromParams);
+      if (channelFromParams === 'release') {
+        newState.showReleaseOnly = true;
+      }
+      this.paramState.selectedChannel = null;
+    }
+
+    this.setState(newState);
   }
 
   updateURI(paramName, paramValue, appendToHistory = false) {
     const params = new URLSearchParams(window.location.search);
     const defaultParams = ['any', 'is_in', 'in_any', 'default'];
+
+    // Get search params string to be set or reset to '/'.
+    const getParamString = p => p.toString().length ? '?' + p : '/';
 
     // Delete the param if the value provided is falsey or default.
     if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
@@ -255,9 +269,9 @@ class Main extends Component {
 
     // Add to the URL history or replace the current URL.
     if (appendToHistory) {
-      window.history.pushState({}, '', '?' + params);
+      window.history.pushState({}, '', getParamString(params));
     } else {
-      window.history.replaceState({}, '', '?' + params);
+      window.history.replaceState({}, '', getParamString(params));
     }
   }
 
@@ -267,6 +281,9 @@ class Main extends Component {
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
+    if (!probe) {
+      probe = this.state.probes[probeId];
+    }
     console.log('exposing probe details:', probeId, ' and probe:', probe);
     this.setState({
       activeView: 'detail',
@@ -276,12 +293,14 @@ class Main extends Component {
       }
     });
     this.updateURI('view', 'detail', true);
+    this.updateURI('probeId', probeId);
   }
 
   handleCloseProbeDetails = () => {
     // TODO: This might also need to unset the selectedProbe.
     this.setState({activeView: 'default'});
     this.updateURI('view', null);
+    this.updateURI('probeId', null);
   }
 
   handleStatsLinkClick = () => {
@@ -306,6 +325,37 @@ class Main extends Component {
     return [...result.values()].sort().reverse();
   }
 
+  componentDidMount() {
+    const params = new URLSearchParams(window.location.search);
+    const appState = {};
+
+    // TODO: This should check for valid values.
+    for (let [name, value] of params.entries()) {
+      if (name === 'searchtype') {
+        appState.selectedSearchConstraint = value;
+      } else if (name === 'constraint') {
+        appState.selectedProbeConstraint = value;
+      } else if (name === 'channel') {
+        appState.selectedChannel = value;
+      } else if (name === 'version') {
+        appState.selectedVersion = parseInt(value, 10);
+      } else if (name === 'search') {
+        appState.searchText = value;
+      } else if (name === 'optout') {
+        appState.showReleaseOnly = value === 'true';
+      } else if (name === 'view') {
+        appState.activeView = value;
+
+        // Probe detail view requires a probeId via URL params.
+        if (value === 'detail') {
+          appState.selectedProbe = {id: params.get('probeId')};
+        }
+      }
+    }
+
+    this.paramState = appState;
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.areDataFetchesComplete() && !this.state.dataInitialized) {
       let probes = this.props.probesFetch.value;
@@ -313,15 +363,26 @@ class Main extends Component {
       probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
       const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
       const allVersions = getAllVersions(channelInfo);
+      let selectedProbe = {};
 
-      //console.log('probes:', probes);
+      // If probe was provided via URL params -> set selectedProbe to it.
+      if (this.paramState.selectedProbe) {
+        const probeId = this.paramState.selectedProbe.id;
 
-      this.setState({
+        selectedProbe = {
+          id: probeId,
+          probe: probes[probeId]
+        };
+      }
+
+      this.updateStateAndSearchResults({
         allProbes: probes,
         probes,
         channelInfo,
         allVersions,
-        dataInitialized: true
+        dataInitialized: true,
+        ...this.paramState,
+        selectedProbe // this property must follow paramState above
       });
     }
   }
@@ -341,7 +402,6 @@ class Main extends Component {
           versions={this.state.versions}
           channels={this.state.channelInfo}
           showReleaseOnly={this.state.showReleaseOnly}
-          selectedChannel={this.state.selectedChannel}
 
           doChannelChange={this.handleChannelChange}
           doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
@@ -350,6 +410,12 @@ class Main extends Component {
           doSearchConstraintChange={this.handleSearchConstraintChange}
           doSearchTextChange={this.handleSearchTextChange}
           activeView={this.state.activeView}
+
+          searchText={this.state.searchText}
+          selectedChannel={this.state.selectedChannel}
+          selectedSearchConstraint={this.state.selectedSearchConstraint}
+          selectedProbeConstraint={this.state.selectedProbeConstraint}
+          selectedVersion={this.state.selectedVersion}
         />
 
         <ProbeDetails
