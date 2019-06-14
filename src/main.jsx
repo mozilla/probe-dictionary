@@ -6,7 +6,30 @@ import { getVersionRange } from './lib/utils';
 import Navigation from './components/navigation';
 import ProbeDetails from './components/probeDetails';
 import Stats from './components/stats';
+import Spinner from './components/spinner';
 
+
+const CHANNELS = {
+  default: 'any',
+  valid: ['release', 'beta', 'nightly']
+};
+
+const VIEWS = {
+  default: 'default',
+  detail: 'detail',
+  stats: 'stats'
+};
+
+const PARAMS = {
+  searchIn: 'searchtype',
+  probeConstraint: 'constraint',
+  channel: 'channel',
+  version: 'version',
+  search: 'search',
+  optout: 'optout',
+  view: 'view',
+  probeId: 'probeId'
+};
 
 // ported from explore.js
 function extractChannelInfo(revisions) {
@@ -34,7 +57,7 @@ function processOtherFields(probes, data) {
 
   for (let field in data) {
     if ('all' in data[field]) {
-      ['release', 'beta', 'nightly'].forEach(channel => {
+      CHANNELS.valid.forEach(channel => {
         data[field].history[channel] = data[field].history.all;
       });
       delete data[field].history.all;
@@ -48,17 +71,26 @@ function processOtherFields(probes, data) {
   return result;
 }
 
-// ported from explore.js (was renderVersions())
-function getAllVersions(revisions) {
-  const result = new Set();
+function updateURI(paramName, paramValue, appendToHistory = false) {
+  const params = new URLSearchParams(window.location.search);
+  const defaultParams = ['any', 'is_in', 'in_any', VIEWS.default];
 
-  for (let channel in revisions) {
-    Object.keys(revisions[channel].versions).forEach(version => {
-      result.add(version);
-    });
+  // Get search params string to be set or reset to '/'.
+  const getParamString = p => p.toString().length ? '?' + p : '/';
+
+  // Delete the param if the value provided is falsey or default.
+  if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
+    params.delete(paramName);
+  } else {
+    params.set(paramName, paramValue);
   }
 
-  return [...result.values()].sort().reverse();
+  // Add to the URL history or replace the current URL.
+  if (appendToHistory) {
+    window.history.pushState({}, '', getParamString(params));
+  } else {
+    window.history.replaceState({}, '', getParamString(params));
+  }
 }
 
 class Main extends Component {
@@ -67,9 +99,8 @@ class Main extends Component {
     probes: {},
     channelInfo: {},
     versions: [],
-    allVersions: [], // TODO: Will this be used? Remove if not.
 
-    selectedChannel: 'any', // TODO: this should be set after child component is mounted.
+    selectedChannel: CHANNELS.default, // TODO: this should be set after child component is mounted.
     selectedProbeConstraint: 'is_in', // TODO: this should be set after child component is mounted.
     selectedSearchConstraint: 'in_any', // TODO: this should be set after child component is mounted.
     selectedVersion: 'any',
@@ -81,9 +112,10 @@ class Main extends Component {
     dataInitialized: false,
 
     // Used to toggle visible page elements.
-    activeView: 'default' // Can be one of 'default', 'detail', 'stats'.
+    activeView: VIEWS.default // Can be one of 'default', 'detail', 'stats'.
   }
 
+  // Used for initializing this component's state from URL params.
   paramState = {}
 
   areDataFetchesComplete() {
@@ -113,8 +145,8 @@ class Main extends Component {
     let filtered = {};
     let channels = [selectedChannel];
 
-    if (selectedChannel === 'any') {
-      channels = ['nightly', 'beta', 'release'];
+    if (selectedChannel === CHANNELS.default) {
+      channels = CHANNELS.valid;
     }
 
     probeIterator: for (let probeId in allProbes) {
@@ -199,32 +231,34 @@ class Main extends Component {
         versions: this.getVersions(channel)
       });
     }
-    this.updateURI('channel', channel);
+    updateURI(PARAMS.channel, channel);
   }
 
   handleShowReleaseOnlyChange = evt => {
     this.updateStateAndSearchResults({showReleaseOnly: evt.target.checked});
-    this.updateURI('optout', evt.target.checked);
+    updateURI(PARAMS.optout, evt.target.checked);
   }
 
-  // TODO: merge 3 handlers below into a handleSelectChange().
+  // The following 3 handlers could be generalized at the cost of more verbose child components.
+  // I will leave this as a future consideration since the existing functionality may need rethinking.
   handleProbeConstraintChange = evt => {
     console.log('setting probe constraint to:', evt.target.value);
     this.updateStateAndSearchResults({selectedProbeConstraint: evt.target.value});
-    this.updateURI('constraint', evt.target.value);
+    updateURI(PARAMS.probeConstraint, evt.target.value);
   }
 
   handleVersionChange = evt => {
     console.log('setting version to:', evt.target.value);
     this.updateStateAndSearchResults({selectedVersion: evt.target.value});
-    this.updateURI('version', evt.target.value);
+    updateURI(PARAMS.version, evt.target.value);
   }
 
   handleSearchConstraintChange = evt => {
     console.log('setting search constraint to:', evt.target.value);
     this.updateStateAndSearchResults({selectedSearchConstraint: evt.target.value});
-    this.updateURI('searchtype', evt.target.value);
+    updateURI(PARAMS.searchIn, evt.target.value);
   }
+  // End of 3 generalizable handlers.
 
   // Update search filters state then filter probes again to show new search results.
   updateStateAndSearchResults(state) {
@@ -253,66 +287,38 @@ class Main extends Component {
     this.setState(newState);
   }
 
-  updateURI(paramName, paramValue, appendToHistory = false) {
-    const params = new URLSearchParams(window.location.search);
-    const defaultParams = ['any', 'is_in', 'in_any', 'default'];
-
-    // Get search params string to be set or reset to '/'.
-    const getParamString = p => p.toString().length ? '?' + p : '/';
-
-    // Delete the param if the value provided is falsey or default.
-    if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
-      params.delete(paramName);
-    } else {
-      params.set(paramName, paramValue);
-    }
-
-    // Add to the URL history or replace the current URL.
-    if (appendToHistory) {
-      window.history.pushState({}, '', getParamString(params));
-    } else {
-      window.history.replaceState({}, '', getParamString(params));
-    }
-  }
-
   handleSearchTextChange = evt => {
     this.updateSearchResults(evt.target.value);
-    this.updateURI('search', evt.target.value);
+    updateURI(PARAMS.search, evt.target.value);
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
     if (!probe) {
       probe = this.state.probes[probeId];
     }
-    console.log('exposing probe details:', probeId, ' and probe:', probe);
+    console.log('exposing probe details:', probe);
     this.setState({
-      activeView: 'detail',
+      activeView: VIEWS.detail,
       selectedProbe: {
         id: probeId,
         probe
       }
     });
-    this.updateURI('view', 'detail', true);
-    this.updateURI('probeId', probeId);
+    updateURI(PARAMS.view, VIEWS.detail, true);
+    updateURI(PARAMS.probeId, probeId);
   }
 
   handleCloseProbeDetails = () => {
-    // TODO: This might also need to unset the selectedProbe.
-    this.setState({activeView: 'default'});
-    this.updateURI('view', null);
-    this.updateURI('probeId', null);
+    // TODO_V1: This could unset the selectedProbe but its UI parent is hidden.
+    // We should revisit this with an updated 2 column/overlay layout.
+    this.setState({activeView: VIEWS.default});
+    updateURI(PARAMS.view, null);
+    updateURI(PARAMS.probeId, null);
   }
 
   handleStatsLinkClick = () => {
-    const viewName = 'stats';
-
-    this.setState({activeView: viewName});
-    this.updateURI('view', viewName);
-  }
-
-  handleFindProbesLinkClick = () => {
-    this.setState({activeView: 'default'});
-    this.updateURI('view', null);
+    this.setState({activeView: VIEWS.stats});
+    updateURI(PARAMS.view, VIEWS.stats);
   }
 
   getVersions = channel => {
@@ -331,24 +337,24 @@ class Main extends Component {
 
     // TODO: This should check for valid values.
     for (let [name, value] of params.entries()) {
-      if (name === 'searchtype') {
+      if (name === PARAMS.searchIn) {
         appState.selectedSearchConstraint = value;
-      } else if (name === 'constraint') {
+      } else if (name === PARAMS.probeConstraint) {
         appState.selectedProbeConstraint = value;
-      } else if (name === 'channel') {
+      } else if (name === PARAMS.channel) {
         appState.selectedChannel = value;
-      } else if (name === 'version') {
+      } else if (name === PARAMS.version) {
         appState.selectedVersion = parseInt(value, 10);
-      } else if (name === 'search') {
+      } else if (name === PARAMS.search) {
         appState.searchText = value;
-      } else if (name === 'optout') {
+      } else if (name === PARAMS.optout) {
         appState.showReleaseOnly = value === 'true';
-      } else if (name === 'view') {
+      } else if (name === PARAMS.view) {
         appState.activeView = value;
 
         // Probe detail view requires a probeId via URL params.
-        if (value === 'detail') {
-          appState.selectedProbe = {id: params.get('probeId')};
+        if (value === VIEWS.detail) {
+          appState.selectedProbe = {id: params.get(PARAMS.probeId)};
         }
       }
     }
@@ -362,7 +368,6 @@ class Main extends Component {
       probes = processOtherFields(probes, this.props.environmentFetch.value);
       probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
       const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
-      const allVersions = getAllVersions(channelInfo);
       let selectedProbe = {};
 
       // If probe was provided via URL params -> set selectedProbe to it.
@@ -379,7 +384,6 @@ class Main extends Component {
         allProbes: probes,
         probes,
         channelInfo,
-        allVersions,
         dataInitialized: true,
         ...this.paramState,
         selectedProbe // this property must follow paramState above
@@ -389,11 +393,11 @@ class Main extends Component {
 
   render() {
     return (
-      <div className="container-full">
+      <div className={this.state.dataInitialized ? 'container-full' : 'container-full loading'}>
 
         <Navigation
           doStatsLinkClick={this.handleStatsLinkClick}
-          doFindProbesLinkClick={this.handleFindProbesLinkClick}
+          doFindProbesLinkClick={this.handleCloseProbeDetails}
           datePublished={this.props.generalFetch.value}
         />
 
@@ -447,6 +451,8 @@ class Main extends Component {
           doExposeProbeDetails={this.handleExposeProbeDetails}
           activeView={this.state.activeView}
         />
+
+        <Spinner />
 
       </div>
     );

@@ -190,3 +190,17 @@ th {
 .nav-item button:hover {
   color: rgb(255,255,255);
 }
+
+.container-full.loading {
+  background-color: #2780E3;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.container-full.loading > * {
+  display: none;
+}
+
+.container-full.loading .spinner {
+  display: block;
+}
