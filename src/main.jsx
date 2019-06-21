@@ -71,6 +71,8 @@ function processOtherFields(probes, data) {
   return result;
 }
 
+// Update URI search params to requested paramName and paramValue.
+// Will append to history state if appendToHistory == true.
 function updateURI(paramName, paramValue, appendToHistory = false) {
   const params = new URLSearchParams(window.location.search);
   const defaultParams = ['any', 'is_in', 'in_any', VIEWS.default];
@@ -116,6 +118,8 @@ class Main extends Component {
   }
 
   // Used for initializing this component's state from URL params.
+  // Technically complicates this component but it gets ignored
+  // after the initial component mounting.
   paramState = {}
 
   areDataFetchesComplete() {
@@ -130,6 +134,7 @@ class Main extends Component {
   }
 
   // ported from explore.js (was filterMeasurements())
+  // Returns a JSON blob of all probes matching this component state filter criteria.
   getFilteredProbes(searchText) {
     const {
       allProbes,
@@ -331,11 +336,13 @@ class Main extends Component {
     return [...result.values()].sort().reverse();
   }
 
-  componentDidMount() {
+  // Sets this.paramState to param values picked from the URL.
+  populateInitialParamState() {
     const params = new URLSearchParams(window.location.search);
     const appState = {};
 
-    // TODO: This should check for valid values.
+    // This is brittle and will fail on invalid URL params.
+    // - Likely an acceptable scenario. The app requires valid params or no params.
     for (let [name, value] of params.entries()) {
       if (name === PARAMS.searchIn) {
         appState.selectedSearchConstraint = value;
@@ -362,32 +369,40 @@ class Main extends Component {
     this.paramState = appState;
   }
 
+  populateInitialAppState() {
+    let probes = this.props.probesFetch.value;
+    probes = processOtherFields(probes, this.props.environmentFetch.value);
+    probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
+    const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
+    let selectedProbe = {};
+
+    // If probe was provided via URL params -> set selectedProbe to it.
+    if (this.paramState.selectedProbe) {
+      const probeId = this.paramState.selectedProbe.id;
+
+      selectedProbe = {
+        id: probeId,
+        probe: probes[probeId]
+      };
+    }
+
+    this.updateStateAndSearchResults({
+      allProbes: probes,
+      probes,
+      channelInfo,
+      dataInitialized: true,
+      ...this.paramState,
+      selectedProbe // this property must follow paramState above
+    });
+  }
+
+  componentDidMount() {
+    this.populateInitialParamState();
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (this.areDataFetchesComplete() && !this.state.dataInitialized) {
-      let probes = this.props.probesFetch.value;
-      probes = processOtherFields(probes, this.props.environmentFetch.value);
-      probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
-      const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
-      let selectedProbe = {};
-
-      // If probe was provided via URL params -> set selectedProbe to it.
-      if (this.paramState.selectedProbe) {
-        const probeId = this.paramState.selectedProbe.id;
-
-        selectedProbe = {
-          id: probeId,
-          probe: probes[probeId]
-        };
-      }
-
-      this.updateStateAndSearchResults({
-        allProbes: probes,
-        probes,
-        channelInfo,
-        dataInitialized: true,
-        ...this.paramState,
-        selectedProbe // this property must follow paramState above
-      });
+      this.populateInitialAppState();
     }
   }
 

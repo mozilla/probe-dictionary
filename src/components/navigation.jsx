@@ -35,7 +35,7 @@ const Navigation = ({doStatsLinkClick, doFindProbesLinkClick, datePublished}) =>
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <button
-              className="btn btn-default"
+              className="btn btn-default btn-find-probes"
               onClick={doFindProbesLinkClick}
             >
               <i className="fa fa-search" /> Find probes <span className="sr-only">(current)</span>
@@ -43,7 +43,7 @@ const Navigation = ({doStatsLinkClick, doFindProbesLinkClick, datePublished}) =>
           </li>
           <li className="nav-item">
             <button
-              className="btn btn-default"
+              className="btn btn-default btn-stats"
               onClick={doStatsLinkClick}
             >
               <i className="fa fa-bar-chart" /> Stats
