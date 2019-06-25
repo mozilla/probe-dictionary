@@ -71,20 +71,31 @@ function processOtherFields(probes, data) {
   return result;
 }
 
-// Update URI search params to requested paramName and paramValue.
+// Update URI search params to requested [{paramName: paramValue}, ...]
 // Will append to history state if appendToHistory == true.
-function updateURI(paramName, paramValue, appendToHistory = false) {
+function updateURI(requestedParams, appendToHistory = false) {
   const params = new URLSearchParams(window.location.search);
   const defaultParams = ['any', 'is_in', 'in_any', VIEWS.default];
 
   // Get search params string to be set or reset to '/'.
   const getParamString = p => p.toString().length ? '?' + p : '/';
 
-  // Delete the param if the value provided is falsey or default.
-  if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
-    params.delete(paramName);
-  } else {
-    params.set(paramName, paramValue);
+  for (const paramItem of requestedParams.values()) {
+    let paramName = '';
+    let paramValue = '';
+
+    // Since there seems to be no way to destructure computed keys.
+    Object.keys(paramItem).forEach(key => {
+      paramName = key;
+      paramValue = paramItem[key];
+    });
+
+    // Delete the param if the value provided is falsey or default.
+    if (defaultParams.indexOf(paramValue) > -1 || !paramValue) {
+      params.delete(paramName);
+    } else {
+      params.set(paramName, paramValue);
+    }
   }
 
   // Add to the URL history or replace the current URL.
@@ -236,12 +247,12 @@ class Main extends Component {
         versions: this.getVersions(channel)
       });
     }
-    updateURI(PARAMS.channel, channel);
+    updateURI([{[PARAMS.channel]: channel}]);
   }
 
   handleShowReleaseOnlyChange = evt => {
     this.updateStateAndSearchResults({showReleaseOnly: evt.target.checked});
-    updateURI(PARAMS.optout, evt.target.checked);
+    updateURI([{[PARAMS.optout]: evt.target.checked}]);
   }
 
   // The following 3 handlers could be generalized at the cost of more verbose child components.
@@ -249,19 +260,19 @@ class Main extends Component {
   handleProbeConstraintChange = evt => {
     console.log('setting probe constraint to:', evt.target.value);
     this.updateStateAndSearchResults({selectedProbeConstraint: evt.target.value});
-    updateURI(PARAMS.probeConstraint, evt.target.value);
+    updateURI([{[PARAMS.probeConstraint]: evt.target.value}]);
   }
 
   handleVersionChange = evt => {
     console.log('setting version to:', evt.target.value);
     this.updateStateAndSearchResults({selectedVersion: evt.target.value});
-    updateURI(PARAMS.version, evt.target.value);
+    updateURI([{[PARAMS.version]: evt.target.value}]);
   }
 
   handleSearchConstraintChange = evt => {
     console.log('setting search constraint to:', evt.target.value);
     this.updateStateAndSearchResults({selectedSearchConstraint: evt.target.value});
-    updateURI(PARAMS.searchIn, evt.target.value);
+    updateURI([{[PARAMS.searchIn]: evt.target.value}]);
   }
   // End of 3 generalizable handlers.
 
@@ -294,7 +305,7 @@ class Main extends Component {
 
   handleSearchTextChange = evt => {
     this.updateSearchResults(evt.target.value);
-    updateURI(PARAMS.search, evt.target.value);
+    updateURI([{[PARAMS.search]: evt.target.value}]);
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
@@ -309,21 +320,19 @@ class Main extends Component {
         probe
       }
     });
-    updateURI(PARAMS.view, VIEWS.detail, true);
-    updateURI(PARAMS.probeId, probeId);
+    updateURI([{[PARAMS.view]: VIEWS.detail}, {[PARAMS.probeId]: probeId}], true);
   }
 
   handleCloseProbeDetails = () => {
     // TODO_V1: This could unset the selectedProbe but its UI parent is hidden.
     // We should revisit this with an updated 2 column/overlay layout.
     this.setState({activeView: VIEWS.default});
-    updateURI(PARAMS.view, null);
-    updateURI(PARAMS.probeId, null);
+    updateURI([{[PARAMS.view]: null}, {[PARAMS.probeId]: null}]);
   }
 
   handleStatsLinkClick = () => {
     this.setState({activeView: VIEWS.stats});
-    updateURI(PARAMS.view, VIEWS.stats);
+    updateURI([{[PARAMS.view]: VIEWS.stats}], true);
   }
 
   getVersions = channel => {

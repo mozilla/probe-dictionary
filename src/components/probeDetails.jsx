@@ -240,7 +240,6 @@ function getExtraProbeDetails(probe, probeInfo) {
     ['kind', 'Kind', ['histogram', 'scalar', 'environment', 'info', 'simpleMeasurements']],
     ['keyed', 'Keyed', ['histogram', 'scalar']],
     ['record_in_processes', 'Recorded in processes', ['scalar', 'event']],
-    ['cpp_guard', 'Preprocessor guard', ['histogram', 'scalar', 'event']],
 
     ['low', 'Low', ['histogram']],
     ['high', 'High', ['histogram']],
@@ -255,10 +254,11 @@ function getExtraProbeDetails(probe, probeInfo) {
 
   // ported from explore.js (was pretty())
   const getFormattedDetail = prop => {
-    if (!prop) {
+    if (prop === undefined) {
       return '';
-    }
-    if (Array.isArray(prop)) {
+    } else if (prop === false) {
+      return 'false';
+    } else if (Array.isArray(prop)) {
       return prop.join(', ');
     }
     return prop;
@@ -273,7 +273,11 @@ function getExtraProbeDetails(probe, probeInfo) {
 }
 
 class ProbeDetails extends Component {
-  state = {  }
+  // TODO: This is an imprefect solution to back button click closing the modal.
+  // The next iteration should implement react-router-dom and have move localized components state.
+  componentDidMount() {
+    window.addEventListener('popstate', this.props.doCloseProbeDetails);
+  }
   render() {
     const {revisions, channelInfo, selectedChannel, selectedProbe, datasets, doCloseProbeDetails, activeView} = this.props;
 
@@ -329,14 +333,6 @@ class ProbeDetails extends Component {
           <br />
           <table className="table table-sm table-striped table-hover table-bordered border-0">
             <tbody>
-              <tr className="">
-                <td className="fit ml-1">Kind:</td>
-                <td id="detail-kind" className="grow">enumerated</td>
-              </tr>
-              <tr className="">
-                <td className="fit pr-2">Keyed:</td>
-                <td id="detail-keyed" className="grow">false</td>
-              </tr>
               <tr>
                 <td className="fit pr-2">Bug numbers:</td>
                 <td id="detail-bug-numbers" className="grow">
@@ -359,6 +355,12 @@ class ProbeDetails extends Component {
                 <td className="fit pr-2">Expiry:</td>
                 <td id="detail-expiry" className="grow">{getInfoList(expiryText)}</td>
               </tr>
+              {probeInfo.cpp_guard &&
+                (<tr>
+                  <td className="fit pr-2">Preprocessor guard:</td>
+                  <td className="grow">{probeInfo.cpp_guard}</td>
+                </tr>)
+              }
               {getExtraProbeDetails(probe, probeInfo).map(detail => {
                 return (
                   <tr key={detail.label}>

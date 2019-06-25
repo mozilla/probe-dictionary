@@ -30,7 +30,6 @@ class Stats extends Component {
 
     for (let id of Object.keys(probes)) {
       const data = probes[id];
-      //console.log('using data:', data, ' and selectedChannel:', channel);
       const history = data.history[channel];
       if (!history) {
         continue;
