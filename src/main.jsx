@@ -484,12 +484,10 @@ class Main extends Component {
 }
 
 export default connect(() => ({
-  // TODO: Fix these paths for prod.
-  // probesFetch: `${process.env.REACT_APP_ANALYSIS_URL}/firefox/all/main/all_probes`,
-  generalFetch: 'http://localhost:5000/general/',
-  probesFetch: 'http://localhost:5000/probes/',
-  revisionsFetch: 'http://localhost:5000/revisions/',
-  environmentFetch: 'http://localhost:5000/environment/',
-  otherFieldsFetch: 'http://localhost:5000/other_fields/',
-  datasetsFetch: 'http://localhost:5000/datasets/'
+  generalFetch: process.env.REACT_APP_DATA_GENERAL,
+  revisionsFetch: process.env.REACT_APP_DATA_REVISIONS,
+  probesFetch: process.env.REACT_APP_DATA_PROBES,
+  environmentFetch: process.env.REACT_APP_DATA_ENVIRONMENT,
+  otherFieldsFetch: process.env.REACT_APP_DATA_OTHER_FIELDS,
+  datasetsFetch: process.env.REACT_APP_DATA_DATASETS
 }))(Main);
