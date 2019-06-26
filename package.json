@@ -14,11 +14,12 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-refetch": "^2.0.3",
-    "react-scripts": "2.1.8"
+    "react-scripts": "^3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:staging": "env-cmd .env.staging npm run build",
     "test": "cypress open",
     "eject": "react-scripts eject"
   },
