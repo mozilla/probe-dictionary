@@ -204,3 +204,7 @@ th {
 .container-full.loading .spinner {
   display: block;
 }
+
+.navbar .form-control:empty {
+  display: none;
+}
