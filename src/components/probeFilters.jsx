@@ -4,6 +4,7 @@ import SelectVersionElement from './selectVersionElement';
 
 
 const ProbeFilters = props => {
+  const channels = [props.channels.default, ...props.channels.valid];
   return (
     <div id="probe-filters">
       <div className="form-row form-inline">
@@ -32,7 +33,7 @@ const ProbeFilters = props => {
           value={props.selectedChannel}
           elementId="select_channel"
           onChange={props.doChannelChange}
-          items={Object.keys(props.channels).map(channel => {return {label: channel, value: channel};})}
+          items={channels.map(channel => {return {label: channel, value: channel};})}
         />
         .
       </div>

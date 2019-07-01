@@ -428,7 +428,7 @@ class Main extends Component {
         <SearchForm
           {...this.props}
           versions={this.state.versions}
-          channels={this.state.channelInfo}
+          channels={CHANNELS}
           showReleaseOnly={this.state.showReleaseOnly}
 
           doChannelChange={this.handleChannelChange}
