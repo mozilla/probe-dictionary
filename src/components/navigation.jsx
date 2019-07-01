@@ -14,7 +14,9 @@ async function handleShortLinkClick() {
   }
   const { data } = await response.json();
   if (data.url) {
-    document.querySelector('.permalink-control input').value = data.url;
+    const linkInputElm = document.querySelector('.permalink-control input');
+    linkInputElm.value = data.url;
+    linkInputElm.classList.remove('hidden');
   }
 }
 
@@ -68,7 +70,7 @@ const Navigation = ({doStatsLinkClick, doFindProbesLinkClick, datePublished}) =>
                     <i className="fa fa-link" /> Get Shortlink
                   </button>
                 </span>
-                <input type="text" className="form-control" />
+                <input type="text" className="form-control hidden" />
               </div>
             </div>
           </li>

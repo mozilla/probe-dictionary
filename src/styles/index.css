@@ -205,6 +205,6 @@ th {
   display: block;
 }
 
-.navbar .form-control:empty {
+.permalink-control input.hidden {
   display: none;
 }
