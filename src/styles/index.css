@@ -178,7 +178,8 @@ th {
 /* added post-reactification */
 .stats-view #version-selection-element,
 .stats-view #text-search-element,
-.stats-view #optout-selection-element {
+.stats-view #optout-selection-element,
+.stats-view #select_channel option:first-child {
   display: none;
 }
 

@@ -14,6 +14,8 @@ const CHANNELS = {
   valid: ['release', 'beta', 'nightly']
 };
 
+const STATS_DEFAULT_CHANNEL = 'release';
+
 const VIEWS = {
   default: 'default',
   detail: 'detail',
@@ -323,16 +325,20 @@ class Main extends Component {
     updateURI([{[PARAMS.view]: VIEWS.detail}, {[PARAMS.probeId]: probeId}], true);
   }
 
-  handleCloseProbeDetails = () => {
+  handleResetToDefaultView = () => {
     // TODO_V1: This could unset the selectedProbe but its UI parent is hidden.
     // We should revisit this with an updated 2 column/overlay layout.
-    this.setState({activeView: VIEWS.default});
-    updateURI([{[PARAMS.view]: null}, {[PARAMS.probeId]: null}]);
+    if (this.state.activeView === VIEWS.stats) {
+      this.setState({activeView: VIEWS.default, selectedChannel: CHANNELS.default});
+    } else {
+      this.setState({activeView: VIEWS.default});
+    }
+    updateURI([{[PARAMS.view]: null}, {[PARAMS.probeId]: null}, {[PARAMS.channel]: null}]);
   }
 
   handleStatsLinkClick = () => {
-    this.setState({activeView: VIEWS.stats});
-    updateURI([{[PARAMS.view]: VIEWS.stats}], true);
+    this.setState({activeView: VIEWS.stats, selectedChannel: STATS_DEFAULT_CHANNEL});
+    updateURI([{[PARAMS.view]: VIEWS.stats}, {[PARAMS.channel]: STATS_DEFAULT_CHANNEL}], true);
   }
 
   getVersions = channel => {
@@ -421,7 +427,7 @@ class Main extends Component {
 
         <Navigation
           doStatsLinkClick={this.handleStatsLinkClick}
-          doFindProbesLinkClick={this.handleCloseProbeDetails}
+          doFindProbesLinkClick={this.handleResetToDefaultView}
           datePublished={this.props.generalFetch.value}
         />
 
@@ -452,7 +458,7 @@ class Main extends Component {
           revisions={this.props.revisionsFetch.value}
           selectedChannel={this.state.selectedChannel}
           datasets={this.props.datasetsFetch.value}
-          doCloseProbeDetails={this.handleCloseProbeDetails}
+          doCloseProbeDetails={this.handleResetToDefaultView}
           activeView={this.state.activeView}
         />
 
