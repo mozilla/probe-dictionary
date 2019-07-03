@@ -243,13 +243,14 @@ class Main extends Component {
         selectedChannel: channel,
         versions: this.getVersions(channel)
       });
+      updateURI([{[PARAMS.channel]: channel}, {[PARAMS.optout]: true}]);
     } else {
       this.updateStateAndSearchResults({
         selectedChannel: channel,
         versions: this.getVersions(channel)
       });
+      updateURI([{[PARAMS.channel]: channel}]);
     }
-    updateURI([{[PARAMS.channel]: channel}]);
   }
 
   handleShowReleaseOnlyChange = evt => {
@@ -365,6 +366,11 @@ class Main extends Component {
         appState.selectedProbeConstraint = value;
       } else if (name === PARAMS.channel) {
         appState.selectedChannel = value;
+
+        // The release channel toggles the "show release only" checkbox.
+        if (value === 'release') {
+          appState.showReleaseOnly = true;
+        }
       } else if (name === PARAMS.version) {
         appState.selectedVersion = parseInt(value, 10);
       } else if (name === PARAMS.search) {
