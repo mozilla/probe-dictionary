@@ -164,7 +164,9 @@ class Main extends Component {
     let channels = [selectedChannel];
 
     if (selectedChannel === CHANNELS.default) {
-      channels = CHANNELS.valid;
+      // This *should* be CHANNELS.valid but in order to match the previous app.
+      // We'll manually force this order to match the expected result counts.
+      channels = ['nightly', 'beta', 'release'];
     }
 
     probeIterator: for (let probeId in allProbes) {
@@ -267,7 +269,7 @@ class Main extends Component {
   }
 
   handleVersionChange = evt => {
-    const newVersion = parseInt(evt.target.value, 10);
+    const newVersion = parseInt(evt.target.value, 10) || 'any';
     console.log('setting version to:', newVersion);
     this.updateStateAndSearchResults({selectedVersion: newVersion});
     updateURI([{[PARAMS.version]: newVersion}]);
