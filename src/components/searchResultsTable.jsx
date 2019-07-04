@@ -18,8 +18,7 @@ class SearchResultsTable extends Component {
           </tr>
         </thead>
         <tbody>
-          {this.props.probeKeys.map(key => {
-            return (
+          {this.props.probeKeys.map(key => (
               <SearchResultsRow
                 key={key}
                 channelInfo={this.props.channelInfo}
@@ -29,8 +28,8 @@ class SearchResultsTable extends Component {
                 probeId={key}
                 doExposeProbeDetails={this.props.doExposeProbeDetails}
               />
-            );
-          })}
+            )
+          )}
         </tbody>
       </table>
     );

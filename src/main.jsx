@@ -58,7 +58,7 @@ function processOtherFields(probes, data) {
   let result = {};
 
   for (let field in data) {
-    if ('all' in data[field]) {
+    if ('all' in data[field].history) {
       CHANNELS.valid.forEach(channel => {
         data[field].history[channel] = data[field].history.all;
       });
@@ -115,9 +115,9 @@ class Main extends Component {
     channelInfo: {},
     versions: [],
 
-    selectedChannel: CHANNELS.default, // TODO: this should be set after child component is mounted.
-    selectedProbeConstraint: 'is_in', // TODO: this should be set after child component is mounted.
-    selectedSearchConstraint: 'in_any', // TODO: this should be set after child component is mounted.
+    selectedChannel: CHANNELS.default,
+    selectedProbeConstraint: 'is_in',
+    selectedSearchConstraint: 'in_any',
     selectedVersion: 'any',
     showReleaseOnly: false,
     searchText: '',
@@ -267,9 +267,10 @@ class Main extends Component {
   }
 
   handleVersionChange = evt => {
-    console.log('setting version to:', evt.target.value);
-    this.updateStateAndSearchResults({selectedVersion: evt.target.value});
-    updateURI([{[PARAMS.version]: evt.target.value}]);
+    const newVersion = parseInt(evt.target.value, 10);
+    console.log('setting version to:', newVersion);
+    this.updateStateAndSearchResults({selectedVersion: newVersion});
+    updateURI([{[PARAMS.version]: newVersion}]);
   }
 
   handleSearchConstraintChange = evt => {
