@@ -359,6 +359,7 @@ class Main extends Component {
   populateInitialParamState() {
     const params = new URLSearchParams(window.location.search);
     const appState = {};
+    let isChannelSet = false; // default to nightly if version is set but not channel
 
     // This is brittle and will fail on invalid URL params.
     // - Likely an acceptable scenario. The app requires valid params or no params.
@@ -369,6 +370,7 @@ class Main extends Component {
         appState.selectedProbeConstraint = value;
       } else if (name === PARAMS.channel) {
         appState.selectedChannel = value;
+        isChannelSet = true;
 
         // The release channel toggles the "show release only" checkbox.
         if (value === 'release') {
@@ -376,6 +378,10 @@ class Main extends Component {
         }
       } else if (name === PARAMS.version) {
         appState.selectedVersion = parseInt(value, 10);
+
+        if (!isChannelSet) {
+          appState.selectedChannel = 'nightly';
+        }
       } else if (name === PARAMS.search) {
         appState.searchText = value;
       } else if (name === PARAMS.optout) {

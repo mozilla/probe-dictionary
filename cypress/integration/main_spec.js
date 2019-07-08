@@ -72,4 +72,10 @@ describe('Probe Dictionary Main Component', function() {
     cy.get('#select_constraint').should('be.visible');
     cy.get('#select_channel').should('be.visible');
   });
+
+  it('sets active channel to nightly if only version param is set', function() {
+    cy.visit('/?version=60');
+
+    cy.get('#select_channel').should('be.visible').should('have.value', 'nightly');
+  });
 });
