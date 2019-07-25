@@ -3,8 +3,8 @@ import React from 'react';
 
 async function handleShortLinkClick() {
   const url = 'https://api-ssl.bitly.com/v3/shorten?';
-  // To test this locally either edit your local hosts file or set params to something like the commented line below.
-  //const params = `longUrl=${encodeURIComponent('https://www.mozilla.com')}&access_token=48ecf90304d70f30729abe82dfea1dd8a11c4584&format=json`;
+  // To test this locally either edit your local hosts file or
+  // replace window.location.href with any url string.
   const params = `longUrl=${encodeURIComponent(window.location.href)}&access_token=48ecf90304d70f30729abe82dfea1dd8a11c4584&format=json`;
 
   const response = await fetch(url + params);
@@ -12,6 +12,7 @@ async function handleShortLinkClick() {
     console.error(`Bitly API response error. Status Code: ${response.status}`);
     return;
   }
+
   const { data } = await response.json();
   if (data.url) {
     const linkInputElm = document.querySelector('.permalink-control input');

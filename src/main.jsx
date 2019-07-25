@@ -436,72 +436,70 @@ class Main extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className={this.state.dataInitialized ? 'container-full' : 'container-full loading'}>
+  render = () => (
+    <div className={this.state.dataInitialized ? 'container-full' : 'container-full loading'}>
 
-        <Navigation
-          doStatsLinkClick={this.handleStatsLinkClick}
-          doFindProbesLinkClick={this.handleResetToDefaultView}
-          datePublished={this.props.generalFetch.value}
-        />
+      <Navigation
+        doStatsLinkClick={this.handleStatsLinkClick}
+        doFindProbesLinkClick={this.handleResetToDefaultView}
+        datePublished={this.props.generalFetch.value}
+      />
 
-        <SearchForm
-          {...this.props}
-          versions={this.state.versions}
-          channels={CHANNELS}
-          showReleaseOnly={this.state.showReleaseOnly}
+      <SearchForm
+        {...this.props}
+        versions={this.state.versions}
+        channels={CHANNELS}
+        showReleaseOnly={this.state.showReleaseOnly}
 
-          doChannelChange={this.handleChannelChange}
-          doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
-          doProbeConstraintChange={this.handleProbeConstraintChange}
-          doVersionChange={this.handleVersionChange}
-          doSearchConstraintChange={this.handleSearchConstraintChange}
-          doSearchTextChange={this.handleSearchTextChange}
-          activeView={this.state.activeView}
+        doChannelChange={this.handleChannelChange}
+        doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
+        doProbeConstraintChange={this.handleProbeConstraintChange}
+        doVersionChange={this.handleVersionChange}
+        doSearchConstraintChange={this.handleSearchConstraintChange}
+        doSearchTextChange={this.handleSearchTextChange}
+        activeView={this.state.activeView}
 
-          searchText={this.state.searchText}
-          selectedChannel={this.state.selectedChannel}
-          selectedSearchConstraint={this.state.selectedSearchConstraint}
-          selectedProbeConstraint={this.state.selectedProbeConstraint}
-          selectedVersion={this.state.selectedVersion}
-        />
+        searchText={this.state.searchText}
+        selectedChannel={this.state.selectedChannel}
+        selectedSearchConstraint={this.state.selectedSearchConstraint}
+        selectedProbeConstraint={this.state.selectedProbeConstraint}
+        selectedVersion={this.state.selectedVersion}
+      />
 
-        <ProbeDetails
-          selectedProbe={this.state.selectedProbe}
-          channelInfo={this.state.channelInfo}
-          revisions={this.props.revisionsFetch.value}
-          selectedChannel={this.state.selectedChannel}
-          datasets={this.props.datasetsFetch.value}
-          doCloseProbeDetails={this.handleResetToDefaultView}
-          activeView={this.state.activeView}
-        />
+      <ProbeDetails
+        selectedProbe={this.state.selectedProbe}
+        channelInfo={this.state.channelInfo}
+        revisions={this.props.revisionsFetch.value}
+        selectedChannel={this.state.selectedChannel}
+        datasets={this.props.datasetsFetch.value}
+        doCloseProbeDetails={this.handleResetToDefaultView}
+        activeView={this.state.activeView}
+      />
 
-        <Stats
-          selectedProbeConstraint={this.state.selectedProbeConstraint}
-          selectedChannel={this.state.selectedChannel}
-          channelInfo={this.state.channelInfo}
-          probes={this.state.allProbes}
-          revisions={this.props.revisionsFetch.value}
-          dataInitialized={this.state.dataInitialized}
-          activeView={this.state.activeView}
-        />
+      <Stats
+        selectedProbeConstraint={this.state.selectedProbeConstraint}
+        selectedChannel={this.state.selectedChannel}
+        channelInfo={this.state.channelInfo}
+        probes={this.state.allProbes}
+        revisions={this.props.revisionsFetch.value}
+        dataInitialized={this.state.dataInitialized}
+        activeView={this.state.activeView}
+      />
 
-        <SearchResults
-          channelInfo={this.state.channelInfo}
-          probes={this.state.probes}
-          revisions={this.props.revisionsFetch.value}
-          selectedChannel={this.state.selectedChannel}
-          dataInitialized={this.state.dataInitialized}
-          doExposeProbeDetails={this.handleExposeProbeDetails}
-          activeView={this.state.activeView}
-        />
+      <SearchResults
+        channelInfo={this.state.channelInfo}
+        probes={this.state.probes}
+        revisions={this.props.revisionsFetch.value}
+        selectedChannel={this.state.selectedChannel}
+        dataInitialized={this.state.dataInitialized}
+        doExposeProbeDetails={this.handleExposeProbeDetails}
+        activeView={this.state.activeView}
+      />
 
-        <Spinner />
+      <Spinner />
 
-      </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default connect(() => ({

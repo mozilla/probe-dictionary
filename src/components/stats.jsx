@@ -100,7 +100,6 @@ class Stats extends Component {
     if (!this.props.dataInitialized) return;
 
     let data = this.getMeasurementCountsPerVersion();
-    //console.log('data found is:', data);
     const hasOptoutData = (data.find(item => item.optout > 0) !== undefined);
     const hasOptinData = (data.find(item => item.optin > 0) !== undefined);
 

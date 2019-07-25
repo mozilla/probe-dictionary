@@ -62,9 +62,7 @@ export function getFriendlyRecordingRangeForHistory(revisions, channelInfo, hist
 
   if (expiry === 'never' && (lastVersion >= latestVersion)) {
     return `from ${firstVersion}`;
-  }
-
-  if (expiry !== 'never') {
+  } else if (expiry !== 'never') {
     const expiryVersion = parseInt(shortVersion(expiry), 10);
     if ((lastVersion >= expiryVersion) || (lastVersion >= latestVersion)) {
       lastVersion = expiryVersion - 1;

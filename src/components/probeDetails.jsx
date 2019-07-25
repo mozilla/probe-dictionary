@@ -8,9 +8,9 @@ import {
 
 
 // Used quite heavily in getDatasetInfo() below.
-export function getNewTabLink(link, label) {
-  return <a href={link} rel="noopener noreferrer" target="_blank">{label}</a>;
-}
+const getNewTabLink = (link, label) => (
+  <a href={link} rel="noopener noreferrer" target="_blank">{label}</a>
+);
 
 // ported from explore.js
 function getTelemetryDashboardURL(dashType, name, type, channel, min_version='null', max_version='null') {
@@ -89,7 +89,7 @@ function getDatasetInfo(revisions, channelInfo, datasetMappings, probeId, probe,
 
   // Link to the hardware report for all hardware & OS related probes.
   if (probeId.startsWith('environment/system.')) {
-    const url = 'https://hardware.metrics.mozilla.com/';
+    const url = 'https://data.firefox.com/dashboard/hardware/';
     datasetInfo.push(<React.Fragment><a href={url}>hardware report</a> - view what hardware and operating systems Firefox users have.</React.Fragment>);
   }
 
@@ -336,13 +336,11 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Bug numbers:</td>
                 <td id="detail-bug-numbers" className="grow">
-                  {bugs.map(bugNumber => {
-                    return (
-                      <React.Fragment key={bugNumber}>
-                        <a href={`https://bugzilla.mozilla.org/show_bug.cgi?id=${bugNumber}`}>bug {bugNumber}</a>,{' '}
-                      </React.Fragment>
-                    );
-                  })}
+                  {bugs.map(bugNumber => (
+                    <React.Fragment key={bugNumber}>
+                      <a href={`https://bugzilla.mozilla.org/show_bug.cgi?id=${bugNumber}`}>bug {bugNumber}</a>,{' '}
+                    </React.Fragment>
+                  ))}
                 </td>
               </tr>
               <tr title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
@@ -355,20 +353,18 @@ class ProbeDetails extends Component {
                 <td className="fit pr-2">Expiry:</td>
                 <td id="detail-expiry" className="grow">{getInfoList(expiryText)}</td>
               </tr>
-              {probeInfo.cpp_guard &&
-                (<tr>
+              {probeInfo.cpp_guard && (
+                <tr>
                   <td className="fit pr-2">Preprocessor guard:</td>
                   <td className="grow">{probeInfo.cpp_guard}</td>
-                </tr>)
-              }
-              {getExtraProbeDetails(probe, probeInfo).map(detail => {
-                return (
-                  <tr key={detail.label}>
-                    <td className="fit pr-2">{detail.label}:</td>
-                    <td className="grow">{detail.content}</td>
-                  </tr>
-                );
-              })}
+                </tr>
+              )}
+              {getExtraProbeDetails(probe, probeInfo).map(detail => (
+                <tr key={detail.label}>
+                  <td className="fit pr-2">{detail.label}:</td>
+                  <td className="grow">{detail.content}</td>
+                </tr>
+                ))}
             </tbody>
           </table>
         </div>
