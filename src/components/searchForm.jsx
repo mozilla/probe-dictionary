@@ -14,7 +14,7 @@ const SearchForm = props => {
   return (
     <div id="search-view" className={activeClass}>
       <div className="container-fluid" id="search-form">
-        <form className="ml-1 mt-3">
+        <form className="ml-1 mt-3" onSubmit={e => {e.preventDefault();}}>
           <div className="form-group form-inline" id="text-search-element">
             <div className="input-group mr-2">
               <input
