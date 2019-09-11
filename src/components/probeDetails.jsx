@@ -216,9 +216,33 @@ function getDatasetInfo(revisions, channelInfo, datasetMappings, probeId, probe,
 }
 
 function getInfoList(list) {
+  // super brittle if number of release channels grows
+  const releaseSort = (a, b) => {
+    if (a.constructor !== String) return 0;
+
+    if (a.indexOf('nightly') > -1) { // a is nightly
+      if (b.indexOf('nightly') > -1) {
+        return 0;
+      }
+      return -1;
+    } else if (a.indexOf('beta') > -1) { // a is beta
+      if (b.indexOf('nightly') > -1) {
+        return 1;
+      } else if (b.indexOf('beta') > -1) {
+        return 0;
+      }
+      return -1;
+    } else { // a is release
+      if (b.indexOf('release') > -1) {
+        return 0;
+      }
+      return 1;
+    }
+  }
+
   return (
     <ul className="infolist">
-      {list.map((item, i) => <li key={i}>{item}</li>)}
+      {list.sort(releaseSort).map((item, i) => <li key={i}>{item}</li>)}
     </ul>
   );
 }
