@@ -210,7 +210,8 @@ class Main extends Component {
         // Filter for text search.
         if (searchText !== '') {
           const s = searchText.toLowerCase();
-          const test = (str) => str.toLowerCase().includes(s);
+          // with credit to chutten
+          const test = str => s.split(' ').every(term => str.toLowerCase().includes(term));
           history = history.filter(h => {
             switch (selectedSearchConstraint) {
               case 'in_name': return test(data.name);
