@@ -373,6 +373,14 @@ class ProbeDetails extends Component {
                   {getInfoList(rangeText)}
                 </td>
               </tr>
+              {probeInfo.details.record_into_store && (
+                <tr title="Which stores this probe is actually recorded in.">
+                  <td className="fit pr-2">Recorded in stores:</td>
+                  <td className="grow">
+                    {probeInfo.details.record_into_store.join(', ')}
+                  </td>
+                </tr>
+              )}
               <tr title="The probe will automatically expire in and stop recording in this version. This means that the probe will record at most until the version before that. Note that the code recording it could be removed before that.">
                 <td className="fit pr-2">Expiry:</td>
                 <td id="detail-expiry" className="grow">{getInfoList(expiryText)}</td>
