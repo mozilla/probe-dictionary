@@ -315,7 +315,7 @@ class ProbeDetails extends Component {
     const rangeText = [];
     const expiryText = [];
     for (let [ch, history] of Object.entries(probe.history)) {
-      if ((!history[0].optout && (ch === 'release')) || (ch === 'aurora')) {
+      if (!history[0].optout && (ch === 'release')) {
         continue;
       }
 
