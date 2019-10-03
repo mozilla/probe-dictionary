@@ -129,17 +129,8 @@ function getDatasetInfo(revisions, channelInfo, datasetMappings, probeId, probe,
 
   // All events are available in main_summary and the events table.
   if (probe.type === 'event') {
-    let dataset = 'main_summary';
+    const dataset = 'events';
     let datasetText = dataset;
-    if (dataset in dataDocs) {
-      datasetText = getNewTabLink(dataDocs[dataset], dataset);
-    }
-    datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} in the {code('events')} column</React.Fragment>);
-
-    // repeat for dataset=events
-
-    dataset = 'events';
-    datasetText = dataset;
     if (dataset in dataDocs) {
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
