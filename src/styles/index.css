@@ -209,3 +209,19 @@ th {
 .permalink-control input.hidden {
   display: none;
 }
+
+/* category histogram labels on the probe details page */
+.cat-labels {
+  display: flex;
+  list-style: none;
+  margin: 5px 0 5px 5px;
+  padding: 0;
+  justify-content: flex-start;
+}
+
+.cat-labels li {
+  padding: 3px 8px;
+  margin-right: 10px;
+  background-color: rgba(0,0,0,0.05);
+  border-radius: 4px;
+}

@@ -302,6 +302,7 @@ class ProbeDetails extends Component {
     const channel = selectedChannel === 'any' ? 'nightly' : selectedChannel;
     const probeInfo = probe.history[channel][0]; // was 'state' in explore.js
     const populationLabel = probeInfo.optout ? 'release' : 'prerelease';
+    const categoryLabels = probeInfo.details.labels;
 
     const rangeText = [];
     const expiryText = [];
@@ -388,6 +389,16 @@ class ProbeDetails extends Component {
                   <td className="grow">{detail.content}</td>
                 </tr>
                 ))}
+              {categoryLabels && (
+                <tr>
+                  <td className="fit pr-2">Labels:</td>
+                  <td className="grow">
+                    <ol start="0" className="cat-labels">
+                      {categoryLabels.map(label => <li key={label}>{label}</li>)}
+                    </ol>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
