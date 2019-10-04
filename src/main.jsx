@@ -292,7 +292,7 @@ class Main extends Component {
     let searchText = query;
     const channelFromParams = this.paramState.selectedChannel;
 
-    if (!searchText) searchText = document.querySelector('#text_search').value;
+    if (!searchText) searchText = document.querySelector('#search').value;
     const newState = {
       searchText,
       probes: this.getFilteredProbes(searchText)

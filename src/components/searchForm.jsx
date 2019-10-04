@@ -19,8 +19,8 @@ const SearchForm = props => {
             <div className="input-group mr-2">
               <input
                 className="form-control"
-                id="text_search"
-                name="text_search"
+                id="search"
+                name="search"
                 placeholder="Search for text..."
                 value={props.searchText}
                 onChange={props.doSearchTextChange}
