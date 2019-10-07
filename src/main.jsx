@@ -141,8 +141,7 @@ class Main extends Component {
       this.props.probesFetch.fulfilled &&
       this.props.revisionsFetch.fulfilled &&
       this.props.environmentFetch.fulfilled &&
-      this.props.otherFieldsFetch.fulfilled &&
-      this.props.datasetsFetch.fulfilled
+      this.props.otherFieldsFetch.fulfilled
     );
   }
 
@@ -472,7 +471,6 @@ class Main extends Component {
         channelInfo={this.state.channelInfo}
         revisions={this.props.revisionsFetch.value}
         selectedChannel={this.state.selectedChannel}
-        datasets={this.props.datasetsFetch.value}
         doCloseProbeDetails={this.handleResetToDefaultView}
         activeView={this.state.activeView}
       />
@@ -508,6 +506,5 @@ export default connect(() => ({
   revisionsFetch: process.env.REACT_APP_DATA_REVISIONS,
   probesFetch: process.env.REACT_APP_DATA_PROBES,
   environmentFetch: process.env.REACT_APP_DATA_ENVIRONMENT,
-  otherFieldsFetch: process.env.REACT_APP_DATA_OTHER_FIELDS,
-  datasetsFetch: process.env.REACT_APP_DATA_DATASETS
+  otherFieldsFetch: process.env.REACT_APP_DATA_OTHER_FIELDS
 }))(Main);

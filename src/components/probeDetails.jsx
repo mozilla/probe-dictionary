@@ -51,7 +51,7 @@ function getProbeDocumentationURI(type) {
 }
 
 // ported from explore.js (was getDatasetInfos())
-function getDatasetInfo(revisions, channelInfo, datasetMappings, probeId, probe, channel, state) {
+function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) {
   const last = array => array[array.length - 1];
 
   // Available documentation.
@@ -91,17 +91,6 @@ function getDatasetInfo(revisions, channelInfo, datasetMappings, probeId, probe,
   if (probeId.startsWith('environment/system.')) {
     const url = 'https://data.firefox.com/dashboard/hardware/';
     datasetInfo.push(<React.Fragment><a href={url}>hardware report</a> - view what hardware and operating systems Firefox users have.</React.Fragment>);
-  }
-
-  // Lookup in mappings from datasets.json.
-  if (probeId in datasetMappings) {
-    Object.keys(datasetMappings[probeId]).forEach(item => {
-      let datasetText = item;
-      if (item in dataDocs) {
-        datasetText = <React.Fragment>{stmoLink}: in {getNewTabLink(dataDocs[item], item)}</React.Fragment>;
-      }
-      datasetInfo.push(<React.Fragment>{datasetText} as {code(datasetMappings[probeId][item])}</React.Fragment>);
-    });
   }
 
   // Longitudinal includes all release parent process scalars.
@@ -294,7 +283,7 @@ class ProbeDetails extends Component {
     window.addEventListener('popstate', this.props.doCloseProbeDetails);
   }
   render() {
-    const {revisions, channelInfo, selectedChannel, selectedProbe, datasets, doCloseProbeDetails, activeView} = this.props;
+    const {revisions, channelInfo, selectedChannel, selectedProbe, doCloseProbeDetails, activeView} = this.props;
 
     if (!selectedProbe.id) return null;
 
@@ -315,7 +304,7 @@ class ProbeDetails extends Component {
       expiryText.push(`${ch} ${getFriendlyExpiryDescriptionForHistory(channelInfo, history, ch)}`);
     }
 
-    const datasetInfo = getDatasetInfo(revisions, channelInfo, datasets, selectedProbe.id, probe, channel, probeInfo);
+    const datasetInfo = getDatasetInfo(revisions, channelInfo, selectedProbe.id, probe, channel, probeInfo);
     const bugs = probeInfo['bug_numbers'] || [];
     const parentClasses = ['container-fluid'];
     if (activeView !== 'detail') parentClasses.push('hidden');
