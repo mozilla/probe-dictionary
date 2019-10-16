@@ -43,7 +43,6 @@ const SearchForm = props => {
           <ProbeFilters {...props} />
         </form>
       </div>
-      <hr />
     </div>
   );
 }

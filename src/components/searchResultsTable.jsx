@@ -2,7 +2,6 @@ import React from 'react';
 import SearchResultsRow from './searchResultsRow';
 
 
-// TODO: This is a behemoth. In urgent need of pagination.
 const SearchResultsTable = props => (
   <table id="search-results-table">
     <thead>
@@ -16,7 +15,7 @@ const SearchResultsTable = props => (
       </tr>
     </thead>
     <tbody>
-      {props.probeKeys.map(key => (
+      {props.paginatedProbeKeys.map(key => props.probes[key] && (
         <SearchResultsRow
           key={key}
           channelInfo={props.channelInfo}
@@ -26,8 +25,7 @@ const SearchResultsTable = props => (
           probeId={key}
           doExposeProbeDetails={props.doExposeProbeDetails}
         />
-        )
-      )}
+      ))}
     </tbody>
   </table>
 );

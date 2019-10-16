@@ -176,6 +176,11 @@ th {
 }
 
 /* added post-reactification */
+:root {
+  --primary-color: #2780e3;
+  --disabled-color: #bbb;
+}
+
 .stats-view #version-selection-element,
 .stats-view #text-search-element,
 .stats-view #optout-selection-element,
@@ -193,7 +198,7 @@ th {
 }
 
 .container-full.loading {
-  background-color: #2780E3;
+  background-color: var(--primary-color);
   overflow: hidden;
   height: 100vh;
 }
@@ -224,4 +229,56 @@ th {
   margin-right: 10px;
   background-color: rgba(0,0,0,0.05);
   border-radius: 4px;
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #bbb;
+  padding: 0 15px 15px 0;
+  margin-bottom: 15px;
+}
+
+.paginator {
+  list-style: none;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.paginator li {
+  margin-right: 5px;
+}
+
+.paginator li:last-child {
+  margin-right: 0;
+}
+
+.paginator button, .paginator .current-page {
+  border: 1px solid var(--primary-color);
+  background-color: var(--primary-color);
+  color: #fff;
+  line-height: 35px;
+  padding: 0 13px;
+  border-radius: 50%;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.paginator button:hover, .paginator .active button, .paginator .current-page {
+  background-color: #fff;
+  color: var(--primary-color);
+}
+
+.paginator button:disabled, .paginator button:disabled:hover {
+  background-color: var(--disabled-color);
+  color: #fff;
+  border: 1px solid var(--disabled-color);
+}
+
+.paginator .active button {
+  cursor: default;
+  pointer-events: none;
 }

@@ -7,6 +7,8 @@ import Navigation from './components/navigation';
 import ProbeDetails from './components/probeDetails';
 import Stats from './components/stats';
 import Spinner from './components/spinner';
+import Pagination from './components/pagination';
+import SearchCounter from './components/searchCounter';
 
 
 const CHANNELS = {
@@ -125,6 +127,11 @@ class Main extends Component {
     selectedProbe: {id: '', probe: {}}, // Used in ProbeDetails.
 
     dataInitialized: false,
+
+    // Pagination related.
+    pageSize: 1000,
+    currentPage: 1,
+    probesCount: 0,
 
     // Used to toggle visible page elements.
     activeView: VIEWS.default // Can be one of 'default', 'detail', 'stats'.
@@ -294,8 +301,10 @@ class Main extends Component {
     if (!searchText) searchText = document.querySelector('#search').value;
     const newState = {
       searchText,
-      probes: this.getFilteredProbes(searchText)
+      probes: this.getFilteredProbes(searchText),
+      currentPage: 1
     };
+    newState.probesCount = Object.keys(newState.probes).length;
 
     // Populate available versions if a channel was selected via URL params.
     if (channelFromParams) {
@@ -399,6 +408,11 @@ class Main extends Component {
     this.paramState = appState;
   }
 
+  handlePageChange = page => {
+    console.log('Setting current page to:', page);
+    this.setState({ currentPage: page});
+  }
+
   populateInitialAppState() {
     let probes = this.props.probesFetch.value;
     probes = processOtherFields(probes, this.props.environmentFetch.value);
@@ -419,6 +433,7 @@ class Main extends Component {
     this.updateStateAndSearchResults({
       allProbes: probes,
       probes,
+      probesCount: Object.keys(probes).length,
       channelInfo,
       dataInitialized: true,
       ...this.paramState,
@@ -445,26 +460,37 @@ class Main extends Component {
         datePublished={this.props.generalFetch.value}
       />
 
-      <SearchForm
-        {...this.props}
-        versions={this.state.versions}
-        channels={CHANNELS}
-        showReleaseOnly={this.state.showReleaseOnly}
+      <div className="controls">
+        <SearchForm
+          {...this.props}
+          versions={this.state.versions}
+          channels={CHANNELS}
+          showReleaseOnly={this.state.showReleaseOnly}
 
-        doChannelChange={this.handleChannelChange}
-        doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
-        doProbeConstraintChange={this.handleProbeConstraintChange}
-        doVersionChange={this.handleVersionChange}
-        doSearchConstraintChange={this.handleSearchConstraintChange}
-        doSearchTextChange={this.handleSearchTextChange}
-        activeView={this.state.activeView}
+          doChannelChange={this.handleChannelChange}
+          doShowReleaseOnlyChange={this.handleShowReleaseOnlyChange}
+          doProbeConstraintChange={this.handleProbeConstraintChange}
+          doVersionChange={this.handleVersionChange}
+          doSearchConstraintChange={this.handleSearchConstraintChange}
+          doSearchTextChange={this.handleSearchTextChange}
+          activeView={this.state.activeView}
 
-        searchText={this.state.searchText}
-        selectedChannel={this.state.selectedChannel}
-        selectedSearchConstraint={this.state.selectedSearchConstraint}
-        selectedProbeConstraint={this.state.selectedProbeConstraint}
-        selectedVersion={this.state.selectedVersion}
-      />
+          searchText={this.state.searchText}
+          selectedChannel={this.state.selectedChannel}
+          selectedSearchConstraint={this.state.selectedSearchConstraint}
+          selectedProbeConstraint={this.state.selectedProbeConstraint}
+          selectedVersion={this.state.selectedVersion}
+        />
+        
+        <Pagination
+          itemsCount={this.state.probesCount}
+          currentPage={this.state.currentPage}
+          pageSize={this.state.pageSize}
+          doPageChange={this.handlePageChange}
+          activeView={this.state.activeView}
+        />
+
+      </div>
 
       <ProbeDetails
         selectedProbe={this.state.selectedProbe}
@@ -485,6 +511,13 @@ class Main extends Component {
         activeView={this.state.activeView}
       />
 
+      <SearchCounter
+        probesCount={this.state.probesCount}
+        pageSize={this.state.pageSize}
+        currentPage={this.state.currentPage}
+        activeView={this.state.activeView}
+      />
+
       <SearchResults
         channelInfo={this.state.channelInfo}
         probes={this.state.probes}
@@ -493,6 +526,9 @@ class Main extends Component {
         dataInitialized={this.state.dataInitialized}
         doExposeProbeDetails={this.handleExposeProbeDetails}
         activeView={this.state.activeView}
+        currentPage={this.state.currentPage}
+        pageSize={this.state.pageSize}
+        probesCount={this.state.probesCount}
       />
 
       <Spinner />

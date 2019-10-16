@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import SearchResultsTable from './searchResultsTable';
-import SearchCounter from './searchCounter';
 
 
 // Clever way to sort the probes by georgf.
@@ -11,9 +10,31 @@ function getSortedProbeKeys(probes) {
   });
 }
 
+function getPaginatedProbeKeys(items, pageNumber, pageSize) {
+  const startIndex = (pageNumber - 1) * pageSize;
+  return items.slice(startIndex, startIndex + pageSize);
+}
+
 class SearchResults extends Component {
+  state = {
+    sortedProbeKeys: [],
+    currentPageProbeKeys: []
+  }
+  
   shouldComponentUpdate(nextProps) {
     return nextProps.dataInitialized;
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentPage !== this.props.currentPage || this.props.probesCount !== prevProps.probesCount) {
+      const {probes, currentPage, pageSize} = this.props;
+      const sortedProbeKeys = getSortedProbeKeys(probes);
+    
+      this.setState({
+        sortedProbeKeys,
+        currentPageProbeKeys: getPaginatedProbeKeys(sortedProbeKeys, currentPage, pageSize)
+      });
+    }
   }
 
   render() {
@@ -23,13 +44,12 @@ class SearchResults extends Component {
     return (
       <div className={parentClasses.join(' ')} id="main-tab-holder">
         <div className="tab-pane active" id="search-results-view">
-          <SearchCounter probes={this.props.probes} />
           <div className="container table table-sm table-striped table-hover table-bordered border-0 pl-5"
               id="measurements">
             <SearchResultsTable
               channelInfo={this.props.channelInfo}
               probes={this.props.probes}
-              probeKeys={getSortedProbeKeys(this.props.probes)}
+              paginatedProbeKeys={this.state.currentPageProbeKeys}
               revisions={this.props.revisions}
               selectedChannel={this.props.selectedChannel}
               doExposeProbeDetails={this.props.doExposeProbeDetails}
