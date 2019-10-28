@@ -22,3 +22,9 @@ data/general.json
 data/probes.json
 
 data/revisions.json
+
+node_modules
+
+.env.local
+
+.env
