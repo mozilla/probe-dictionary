@@ -159,3 +159,12 @@ th {
 #detail-probe-name {
     overflow-wrap: break-word;
 }
+
+.callout {
+    position: relative;
+    width: 100%;
+    z-index: 15;
+    text-align: center;
+    line-height: 2;
+    background-color: #fff;
+}
