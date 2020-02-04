@@ -56,7 +56,6 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
 
   // Available documentation.
   const dataDocs = {
-    longitudinal: 'https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#longitudinal',
     main_summary: 'https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#mainsummary',
     events: 'https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html',
   };
@@ -91,29 +90,6 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
   if (probeId.startsWith('environment/system.')) {
     const url = 'https://data.firefox.com/dashboard/hardware/';
     datasetInfo.push(<React.Fragment><a href={url}>hardware report</a> - view what hardware and operating systems Firefox users have.</React.Fragment>);
-  }
-
-  // Longitudinal includes all release parent process scalars.
-  if (probe.type === 'scalar' && state.optout && state.details.record_in_processes.includes('main')) {
-    const dataset = 'longitudinal';
-    let datasetText = dataset;
-    if (dataset in dataDocs) {
-      datasetText = getNewTabLink(dataDocs[dataset], dataset);
-    }
-    const name = 'scalar_parent_' + probe.name.toLowerCase().replace(/\./g, '_');
-    datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {code(name)}</React.Fragment>);
-  }
-
-  // Longitudinal includes all release histograms.
-  if (probe.type === 'histogram' && state.optout) {
-    const dataset = 'longitudinal';
-    let datasetText = dataset;
-    if (dataset in dataDocs) {
-      datasetText = getNewTabLink(dataDocs[dataset], dataset);
-    }
-    const name = probe.name.toLowerCase().replace(/\./g, '_');
-    const names = <React.Fragment>{code(name)}, {code(<React.Fragment>{name}_<i>&lt;process&gt;</i></React.Fragment>)}</React.Fragment>;
-    datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {names}</React.Fragment>);
   }
 
   // All events are available in main_summary and the events table.
