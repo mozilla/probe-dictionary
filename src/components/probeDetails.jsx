@@ -9,7 +9,9 @@ import {
 
 // Used quite heavily in getDatasetInfo() below.
 const getNewTabLink = (link, label) => (
-  <a href={link} rel="noopener noreferrer" target="_blank">{label}</a>
+  <React.Fragment>
+    <a href={link} rel="noopener noreferrer" target="_blank"><i className="fa fa-external-link" /> {label}</a>
+  </React.Fragment>
 );
 
 // ported from explore.js
@@ -314,6 +316,12 @@ class ProbeDetails extends Component {
           <br />
           <table className="table table-sm table-striped table-hover table-bordered border-0">
             <tbody>
+              <tr>
+                <td className="fit pr-2">Find in:</td>
+                <td className="grow">
+                  {getNewTabLink(`https://dxr.mozilla.org/mozilla-central/search?q=${probe.name}`, 'DXR')},{' '}
+                  {getNewTabLink(`https://searchfox.org/mozilla-central/search?q=${probe.name}`, 'Searchfox')}</td>
+              </tr>
               <tr>
                 <td className="fit pr-2">Bug numbers:</td>
                 <td id="detail-bug-numbers" className="grow">
