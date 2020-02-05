@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import jqParam from 'jquery-param';
+import ReactMarkdown from 'react-markdown';
+
 import {
   getVersionRange,
   getFriendlyRecordingRangeForHistory,
@@ -312,7 +314,7 @@ class ProbeDetails extends Component {
             </tbody>
           </table>
           <br />
-          <div id="detail-description">{probeInfo.description}</div>
+          <div id="detail-description"><ReactMarkdown source={probeInfo.description} /></div>
           <br />
           <table className="table table-sm table-striped table-hover table-bordered border-0">
             <tbody>
