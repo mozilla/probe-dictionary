@@ -282,3 +282,8 @@ th {
   cursor: default;
   pointer-events: none;
 }
+
+#detail-body i.fa {
+  font-size: 13px;
+  font-weight: 600;
+}
