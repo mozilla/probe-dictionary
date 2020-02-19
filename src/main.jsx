@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-refetch';
+import axios from 'axios';
 import SearchResults from './components/searchResults';
 import SearchForm from './components/searchForm';
 import { getVersionRange } from './lib/utils';
@@ -127,6 +127,7 @@ class Main extends Component {
     selectedProbe: {id: '', probe: {}}, // Used in ProbeDetails.
 
     dataInitialized: false,
+    dataFetched: false,
 
     // Pagination related.
     pageSize: 1000,
@@ -141,16 +142,6 @@ class Main extends Component {
   // Technically complicates this component but it gets ignored
   // after the initial component mounting.
   paramState = {}
-
-  areDataFetchesComplete() {
-    return (
-      this.props.generalFetch.fulfilled &&
-      this.props.probesFetch.fulfilled &&
-      this.props.revisionsFetch.fulfilled &&
-      this.props.environmentFetch.fulfilled &&
-      this.props.otherFieldsFetch.fulfilled
-    );
-  }
 
   // ported from explore.js (was filterMeasurements())
   // Returns a JSON blob of all probes matching this component state filter criteria.
@@ -191,7 +182,7 @@ class Main extends Component {
         // Filter for version constraint.
         if (selectedVersion !== 'any') {
           history = history.filter(m => {
-            const versions = getVersionRange(this.props.revisionsFetch.value, channelInfo, channel, m.revisions);
+            const versions = getVersionRange(this.revisionsDataFetch, channelInfo, channel, m.revisions);
             const expires = m.expiry_version;
             switch (selectedProbeConstraint) {
               case 'is_in':
@@ -414,10 +405,10 @@ class Main extends Component {
   }
 
   populateInitialAppState() {
-    let probes = this.props.probesFetch.value;
-    probes = processOtherFields(probes, this.props.environmentFetch.value);
-    probes = processOtherFields(probes, this.props.otherFieldsFetch.value);
-    const channelInfo = extractChannelInfo(this.props.revisionsFetch.value);
+    let probes = this.probesDataFetch;
+    probes = processOtherFields(probes, this.environmentDataFetch);
+    probes = processOtherFields(probes, this.otherFieldsDataFetch);
+    const channelInfo = extractChannelInfo(this.revisionsDataFetch);
     let selectedProbe = {};
 
     // If probe was provided via URL params -> set selectedProbe to it.
@@ -443,10 +434,26 @@ class Main extends Component {
 
   componentDidMount() {
     this.populateInitialParamState();
+    
+    axios.all([
+      axios.get(process.env.REACT_APP_DATA_GENERAL),
+      axios.get(process.env.REACT_APP_DATA_REVISIONS),
+      axios.get(process.env.REACT_APP_DATA_PROBES),
+      axios.get(process.env.REACT_APP_DATA_ENVIRONMENT),
+      axios.get(process.env.REACT_APP_DATA_OTHER_FIELDS)
+    ]).then(axios.spread((general, revisions, probes, environment, otherFields) => {
+      this.generalDataFetch = general.data;
+      this.revisionsDataFetch = revisions.data;
+      this.probesDataFetch = probes.data;
+      this.environmentDataFetch = environment.data;
+      this.otherFieldsDataFetch = otherFields.data;
+      
+      this.setState({dataFetched: true});
+    }));
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.areDataFetchesComplete() && !this.state.dataInitialized) {
+    if (this.state.dataFetched && !this.state.dataInitialized) {
       this.populateInitialAppState();
     }
   }
@@ -457,12 +464,11 @@ class Main extends Component {
       <Navigation
         doStatsLinkClick={this.handleStatsLinkClick}
         doFindProbesLinkClick={this.handleResetToDefaultView}
-        datePublished={this.props.generalFetch.value}
+        datePublished={this.generalDataFetch}
       />
 
       <div className="controls">
         <SearchForm
-          {...this.props}
           versions={this.state.versions}
           channels={CHANNELS}
           showReleaseOnly={this.state.showReleaseOnly}
@@ -495,7 +501,7 @@ class Main extends Component {
       <ProbeDetails
         selectedProbe={this.state.selectedProbe}
         channelInfo={this.state.channelInfo}
-        revisions={this.props.revisionsFetch.value}
+        revisions={this.revisionsDataFetch}
         selectedChannel={this.state.selectedChannel}
         doCloseProbeDetails={this.handleResetToDefaultView}
         activeView={this.state.activeView}
@@ -506,7 +512,7 @@ class Main extends Component {
         selectedChannel={this.state.selectedChannel}
         channelInfo={this.state.channelInfo}
         probes={this.state.allProbes}
-        revisions={this.props.revisionsFetch.value}
+        revisions={this.revisionsDataFetch}
         dataInitialized={this.state.dataInitialized}
         activeView={this.state.activeView}
       />
@@ -521,7 +527,7 @@ class Main extends Component {
       <SearchResults
         channelInfo={this.state.channelInfo}
         probes={this.state.probes}
-        revisions={this.props.revisionsFetch.value}
+        revisions={this.revisionsDataFetch}
         selectedChannel={this.state.selectedChannel}
         dataInitialized={this.state.dataInitialized}
         doExposeProbeDetails={this.handleExposeProbeDetails}
@@ -537,10 +543,4 @@ class Main extends Component {
   );
 }
 
-export default connect(() => ({
-  generalFetch: process.env.REACT_APP_DATA_GENERAL,
-  revisionsFetch: process.env.REACT_APP_DATA_REVISIONS,
-  probesFetch: process.env.REACT_APP_DATA_PROBES,
-  environmentFetch: process.env.REACT_APP_DATA_ENVIRONMENT,
-  otherFieldsFetch: process.env.REACT_APP_DATA_OTHER_FIELDS
-}))(Main);
+export default Main;
