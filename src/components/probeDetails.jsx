@@ -341,10 +341,18 @@ class ProbeDetails extends Component {
                 </td>
               </tr>
               {probeInfo.details.record_into_store && (
-                <tr title="Which stores this probe is actually recorded in.">
+                <tr title="Which stores this probe is recorded in.">
                   <td className="fit pr-2">Recorded in stores:</td>
                   <td className="grow">
                     {probeInfo.details.record_into_store.join(', ')}
+                  </td>
+                </tr>
+              )}
+              {probeInfo.details.record_in_processes && (
+                <tr title="Which processes this probe is recorded in.">
+                  <td className="fit pr-2">Recorded in processes:</td>
+                  <td className="grow">
+                    {probeInfo.details.record_in_processes.join(', ')}
                   </td>
                 </tr>
               )}
