@@ -1,30 +1,27 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-*.pyc
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
 
-hg-data/histogram_tools.py
+# testing
+/coverage
 
-hg-data/Histograms.json
+# production
+/build
 
-hg-data/nsDeprecatedOperationList.h
-
-hg-data/UseCounters.conf
-
-hg-data/dom/base/usecounters.py
-
-hg-data/Scalars.yaml
-
-hg-data/parse_scalars.py
-
-data/jquery-3.1.1.min.js
-
-data/general.json
-
-data/probes.json
-
-data/revisions.json
-
-node_modules
-
+# misc
+.DS_Store
 .env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+
+# local JSON fixtures
+/data

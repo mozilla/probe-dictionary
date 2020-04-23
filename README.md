@@ -1,7 +1,7 @@
 ## probe-dictionary
 A tool that makes the Telemetry probe data in Firefox more discoverable and searchable.
 
-This front-end allows answering questions like 
+This front-end allows answering questions like
 * *"do we have any probes in Firefox 55 that tell us about [tab usage](https://telemetry.mozilla.org/probe-dictionary/?search=tab&searchtype=in_name&optout=true&channel=release&constraint=is_in&version=55)?"*
 * *"which Firefox versions is this probe in anyway?"*
 
@@ -14,3 +14,14 @@ Currently this supports:
 * major releases only
 * all probes registered in separate files (histograms, scalars, events)
 * some select environment data points (more to come)
+
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Development
+To run locally:
+> run `npm start`
+To launch the cypress test runner:
+> run `npm run test`
+
+The production data endpoints should work just fine locally.
