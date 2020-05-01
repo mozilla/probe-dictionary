@@ -90,12 +90,6 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
     datasetInfo.push(getNewTabLink(url, 'Use Counter Dashboard'));
   }
 
-  // Link to the hardware report for all hardware & OS related probes.
-  if (probeId.startsWith('environment/system.')) {
-    const url = 'https://data.firefox.com/dashboard/hardware/';
-    datasetInfo.push(<React.Fragment><a href={url}>hardware report</a> - view what hardware and operating systems Firefox users have.</React.Fragment>);
-  }
-
   // All events are available in main_summary and the events table.
   if (probe.type === 'event') {
     const dataset = 'events';
