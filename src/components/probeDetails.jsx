@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import jqParam from 'jquery-param';
 import ReactMarkdown from 'react-markdown';
+import ReactJSON from 'react-json-view';
 
 import {
   getVersionRange,
@@ -376,6 +377,12 @@ class ProbeDetails extends Component {
                   </td>
                 </tr>
               )}
+              <tr>
+                <td className="fit pr-2">Probe JSON:</td>
+                <td className="grow">
+                  <ReactJSON src={probe} />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
