@@ -380,7 +380,7 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Probe JSON:</td>
                 <td className="grow">
-                  <ReactJSON src={probe} />
+                  <ReactJSON collapsed={true} src={probe} />
                 </td>
               </tr>
             </tbody>
