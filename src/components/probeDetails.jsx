@@ -5,7 +5,7 @@ import ReactJSON from 'react-json-view';
 
 import {
   getVersionRange,
-  getFriendlyRecordingRangeForHistory,
+  getFriendlyRecordingRange,
   getFriendlyExpiryDescriptionForHistory
 } from '../lib/utils';
 
@@ -16,6 +16,21 @@ const getNewTabLink = (link, label) => (
     <a href={link} rel="noopener noreferrer" target="_blank"><i className="fa fa-external-link" /> {label}</a>
   </React.Fragment>
 );
+
+function getFriendlyRecordingRangeForAllChannels(history, selectedChannel) {
+  let result = [];
+  let channels = ['nightly', 'beta', 'release'];
+  
+  if (history[selectedChannel][0].optout === false) {
+    channels = ['nightly', 'beta'];
+  }
+
+  channels.forEach(channel => {
+    result.push(<p className="history-item" key={channel}>{channel}: {getFriendlyRecordingRange(history[channel])}</p>)
+  });
+
+  return result;
+}
 
 // ported from explore.js
 function getTelemetryDashboardURL(dashType, name, type, channel, min_version='null', max_version='null') {
@@ -268,14 +283,12 @@ class ProbeDetails extends Component {
     const populationLabel = probeInfo.optout ? 'release' : 'prerelease';
     const categoryLabels = probeInfo.details.labels;
 
-    const rangeText = [];
     const expiryText = [];
     for (let [ch, history] of Object.entries(probe.history)) {
       if (!history[0].optout && (ch === 'release')) {
         continue;
       }
 
-      rangeText.push(`${ch} ${getFriendlyRecordingRangeForHistory(revisions, channelInfo, history, ch, true)}`);
       expiryText.push(`${ch} ${getFriendlyExpiryDescriptionForHistory(channelInfo, history, ch)}`);
     }
 
@@ -332,7 +345,7 @@ class ProbeDetails extends Component {
               <tr title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
                 <td className="fit pr-2">Recorded in versions:</td>
                 <td id="detail-recording-range" className="grow">
-                  {getInfoList(rangeText)}
+                  {getFriendlyRecordingRangeForAllChannels(probe.history, channel)}
                 </td>
               </tr>
               {probeInfo.details.record_into_store && (

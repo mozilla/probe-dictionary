@@ -32,6 +32,7 @@ function shortVersion(v) {
   return v.split('.')[0];
 }
 
+/************* TODO: REMOVE THIS ********************/
 /**
  * Return a human readable description of from when to when a probe is recorded.
  * This can return "never", "from X to Y" or "from X" for non-expiring probes.
@@ -70,6 +71,75 @@ export function getFriendlyRecordingRangeForHistory(revisions, channelInfo, hist
   }
 
   return `${firstVersion} to ${lastVersion}`;
+}
+
+export function getRecordingRange(historyForChannel) {
+  if (!historyForChannel) return null;
+  const result = [];
+  const expiry = historyForChannel[0].expiry_version === 'never' ? 'never' : parseInt(historyForChannel[0].expiry_version, 10);
+
+  historyForChannel.forEach(item => {
+    if (item.versions) {
+      result.push({first: item.versions.first, last: item.versions.last});
+    } else if (item.revisions) {
+      result.push({first: item.revisions.firstVersion, last: item.revisions.last});
+    } else {
+      result.push('Unknown, please check this probe\'s JSON history.');
+    }
+  });
+
+  if (expiry === 'never') {
+    result[0].last = expiry;
+  } else if (parseInt(result[0].last, 10) >= expiry) {
+    if (parseInt(result[result.length - 1].first, 10) >= expiry) {
+      result[0].first = 'never';
+    }
+    result[0].last = expiry - 1;
+  }
+
+  // Since versions[] in the JSON is prepended to 0th index is latest.
+  // This makes the output start from the lowest version number.
+  return result.reverse();
+}
+
+export function getFriendlyRecordingRange(historyForChannel) {
+  if (!historyForChannel) return null;
+  const range = getRecordingRange(historyForChannel);
+  const result = [];  
+
+  if (range.length > 1) {
+    let segment = {first: range[0].first, last: range[0].last};
+
+    for (let i = 0, len = range.length - 1; i < len; i++) {      
+      if (parseInt(range[i + 1].first, 10) - parseInt(range[i].last, 10) === 1) {
+        segment.last = range[i + 1].last;
+        
+        if (range[len].last === segment.last) {
+          result.push(getRangeString(segment.first, segment.last));
+        } else {
+          continue;
+        }
+      } else {
+        result.push(getRangeString(segment.first, segment.last));
+        segment.first = range[i + 1].first;
+      }
+    }
+  } else {
+    result.push(getRangeString(range[0].first, range[0].last));
+  }
+  
+  return result.join(', ');
+}
+
+// Helper method to getFriendlyRecordingRange(). Makes range strings more English-friendly.
+function getRangeString(first, last) {
+  if (first === 'never') {
+    return 'never';
+  } else if (last === 'never') {
+    return `from ${first}`;
+  } else {
+    return `${first} to ${last}`;
+  }
 }
 
 export function getFriendlyExpiryDescriptionForHistory(channelInfo, history, channel) {

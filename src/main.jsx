@@ -130,7 +130,7 @@ class Main extends Component {
     dataFetched: false,
 
     // Pagination related.
-    pageSize: 1000,
+    pageSize: 100,
     currentPage: 1,
     probesCount: 0,
 

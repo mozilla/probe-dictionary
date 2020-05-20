@@ -6,8 +6,7 @@ const SearchResultsTable = props => (
   <table id="search-results-table">
     <thead>
       <tr>
-        <th />
-        <th>name</th>
+        <th>probe</th>
         <th>type</th>
         <th>population</th>
         <th>recorded</th>
@@ -18,8 +17,6 @@ const SearchResultsTable = props => (
       {props.paginatedProbeKeys.map(key => props.probes[key] && (
         <SearchResultsRow
           key={key}
-          channelInfo={props.channelInfo}
-          revisions={props.revisions}
           selectedChannel={props.selectedChannel}
           rowData={props.probes[key]}
           probeId={key}
