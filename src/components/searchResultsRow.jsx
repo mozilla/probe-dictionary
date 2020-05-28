@@ -1,5 +1,5 @@
 import React from 'react';
-import { getFriendlyRecordingRange } from '../lib/utils';
+import { getVersionRangeFromHistory } from '../lib/utils';
 
 
 // Ported from explore.js
@@ -20,14 +20,15 @@ const SearchResultsRow = ({
   // TODO: possibly move this elsewhere.
   let channelToUse = selectedChannel;
   if (channelToUse === 'any') {
-    channelToUse = ['release', 'beta', 'nightly'].find(c => c in rowData.history);
+    channelToUse = ['nightly', 'beta', 'release'].find(c => c in rowData.history);
   }
   const history = rowData.history[channelToUse];
 
   let recordingRange = 'N/A';
 
   if (history) {
-    recordingRange = getFriendlyRecordingRange(history)
+    recordingRange = getVersionRangeFromHistory(history, channelToUse);
+    //recordingRange = '---';
   }
 
   // TODO: What happens with undefined history? Affects description and population.

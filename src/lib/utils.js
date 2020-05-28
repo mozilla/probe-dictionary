@@ -32,114 +32,120 @@ function shortVersion(v) {
   return v.split('.')[0];
 }
 
-/************* TODO: REMOVE THIS ********************/
-/**
- * Return a human readable description of from when to when a probe is recorded.
- * This can return "never", "from X to Y" or "from X" for non-expiring probes.
- *
- * @param history The history array of a probe for a channel.
- * @param channel The Firefox channel this history is for.
- * @param filterPrerelease Whether to filter out prerelease probes on the release channel.
- */
-export function getFriendlyRecordingRangeForHistory(revisions, channelInfo, history, channel, filterPrerelease) {
-  const last = array => array[array.length - 1];
-
-  // Optionally filter out prerelease probes on the release channel.
-  // This is used for the detail view, but not for the search results view.
-  if ((channel === 'release') && filterPrerelease) {
-    history = history.filter(h => h.optout);
+function getExpiry(expString) {
+  if (expString === 'never') {
+    return 0;
   }
 
-  // The filtering might have left us with an empty recording history.
-  // This means we never recorded anything on this channel.
-  if (!history || history.length === 0) {
-    return 'never';
-  }
+  return parseInt(expString, 10) - 1;
+}
 
-  const expiry = last(history).expiry_version;
-  const latestVersion = getLatestVersion(channelInfo, channel);
-  const firstVersion = getVersionRange(revisions, channelInfo, channel, last(history).revisions).first;
-  let lastVersion = getVersionRange(revisions, channelInfo, channel, history[0].revisions).last;
+function getContinuousRange(original, additional) {
+  return {
+    first: original.first,
+    last: additional.last,
+    expiry: additional.expiry,
+    optout: additional.optout
+  };
+}
 
-  if (expiry === 'never' && (lastVersion >= latestVersion)) {
-    return `from ${firstVersion}`;
-  } else if (expiry !== 'never') {
-    const expiryVersion = parseInt(shortVersion(expiry), 10);
-    if ((lastVersion >= expiryVersion) || (lastVersion >= latestVersion)) {
-      lastVersion = expiryVersion - 1;
+function collapseVersions(ranges) {
+  let result = [];
+  
+  for (let i = 0, len = ranges.length - 1; i < len; i++) {
+    const current = ranges[i];
+    const next = ranges[i + 1];
+
+    // The meat of the range determining logic.
+    // Keep in mind for the array [a, b, c] => a is chronologically the most recent range entry 
+    if (!(current.first - next.last < 2)) {// [{first: 45, last: 56}, {first: 22, last: 44}] => continuous (not fragmented)
+      result.push(next);
+    } else {
+      result.push(getContinuousRange(next, current));
     }
   }
 
-  return `${firstVersion} to ${lastVersion}`;
+  return result;
 }
 
-export function getRecordingRange(historyForChannel) {
-  if (!historyForChannel) return null;
+function trimVersionsToExpiry(ranges) {
   const result = [];
-  const expiry = historyForChannel[0].expiry_version === 'never' ? 'never' : parseInt(historyForChannel[0].expiry_version, 10);
 
-  historyForChannel.forEach(item => {
-    if (item.versions) {
-      result.push({first: item.versions.first, last: item.versions.last});
-    } else if (item.revisions) {
-      result.push({first: item.revisions.firstVersion, last: item.revisions.last});
+  ranges.forEach(rangeSegment => {
+    const newSegment = {...rangeSegment, isTrimmed: false};
+
+    if (newSegment.expiry && newSegment.last >= newSegment.expiry) {
+      newSegment.isTrimmed = true; // We should later add 1 to the range start.
+      newSegment.last = newSegment.expiry;
+    }
+    result.push(newSegment);
+  });
+
+  return result;
+}
+
+function getRangeString(ranges) {
+  const result = [];
+
+  ranges.forEach((rangeSegment, i) => {
+    if (rangeSegment.expiry === 0 && i === (ranges.length - 1)) {
+      if (rangeSegment.isTrimmed) {
+        result.push(`from ${rangeSegment.first + 1}`);
+      } else {
+        result.push(`from ${rangeSegment.first}`);
+      }
+    } else if (rangeSegment.first >= rangeSegment.last) {
+      result.push('never');
     } else {
-      result.push('Unknown, please check this probe\'s JSON history.');
+      result.push(`${rangeSegment.first} to ${rangeSegment.last}`);
     }
   });
 
-  if (expiry === 'never') {
-    result[0].last = expiry;
-  } else if (parseInt(result[0].last, 10) >= expiry) {
-    if (parseInt(result[result.length - 1].first, 10) >= expiry) {
-      result[0].first = 'never';
-    }
-    result[0].last = expiry - 1;
-  }
-
-  // Since versions[] in the JSON is prepended to 0th index is latest.
-  // This makes the output start from the lowest version number.
-  return result.reverse();
-}
-
-export function getFriendlyRecordingRange(historyForChannel) {
-  if (!historyForChannel) return null;
-  const range = getRecordingRange(historyForChannel);
-  const result = [];  
-
-  if (range.length > 1) {
-    let segment = {first: range[0].first, last: range[0].last};
-
-    for (let i = 0, len = range.length - 1; i < len; i++) {      
-      if (parseInt(range[i + 1].first, 10) - parseInt(range[i].last, 10) === 1) {
-        segment.last = range[i + 1].last;
-        
-        if (range[len].last === segment.last) {
-          result.push(getRangeString(segment.first, segment.last));
-        } else {
-          continue;
-        }
-      } else {
-        result.push(getRangeString(segment.first, segment.last));
-        segment.first = range[i + 1].first;
-      }
-    }
-  } else {
-    result.push(getRangeString(range[0].first, range[0].last));
-  }
-  
   return result.join(', ');
 }
 
-// Helper method to getFriendlyRecordingRange(). Makes range strings more English-friendly.
-function getRangeString(first, last) {
-  if (first === 'never') {
-    return 'never';
-  } else if (last === 'never') {
-    return `from ${first}`;
-  } else {
-    return `${first} to ${last}`;
+export function getVersionRangeFromHistory(history, channel) {
+  let ranges = [];
+
+  // Checks either versions (preferred) or revisions to get recorded in value.
+  // Some probe types (like scalars) only have a 'revisions' key.
+  function getVersionOrRevisionValue(entry, position) {
+    if (entry.versions) {
+      if (position === 'first') {
+        return parseInt(entry.versions.first, 10);
+      }
+      return parseInt(entry.versions.last, 10);
+    } else {
+      if (position === 'first') {
+        return parseInt(entry.revisions.firstVersion, 10);
+      }
+      return parseInt(entry.revisions.last, 10);
+    }
   }
+  
+  history.forEach(entry => {
+    const expiry = getExpiry(entry.expiry_version);
+    const first = getVersionOrRevisionValue(entry, 'first');
+    const last = getVersionOrRevisionValue(entry, 'last');
+    
+    if (channel === 'release' && entry.optout || channel !== 'release') {
+      ranges.push({first, last, expiry, optout: entry.optout});
+    }
+  });
+
+  // 1. Trim last version range segment to expiry version.
+  // {first: 33, last: 68, expiry: 57} => "33 to 56"
+  ranges = trimVersionsToExpiry(ranges);
+  
+  // 2. Collapse versions ranges.
+  // [{first: 33, last: 54}, {first: 55, last: 68}] => "33 to 68"
+  if (ranges.length > 1) {
+    ranges = collapseVersions(ranges);
+  }
+  
+  // 3. Get English-readable string from reversed ranges. (API provides them reversed)
+  // {first: 43, last: 67} => "43 to 67"
+  return getRangeString(ranges.reverse());
 }
 
 export function getFriendlyExpiryDescriptionForHistory(channelInfo, history, channel) {

@@ -5,7 +5,7 @@ import ReactJSON from 'react-json-view';
 
 import {
   getVersionRange,
-  getFriendlyRecordingRange,
+  getVersionRangeFromHistory,
   getFriendlyExpiryDescriptionForHistory
 } from '../lib/utils';
 
@@ -17,16 +17,14 @@ const getNewTabLink = (link, label) => (
   </React.Fragment>
 );
 
-function getFriendlyRecordingRangeForAllChannels(history, selectedChannel) {
+function getFriendlyRecordingRangeForAllChannels(history) {
   let result = [];
-  let channels = ['nightly', 'beta', 'release'];
   
-  if (history[selectedChannel][0].optout === false) {
-    channels = ['nightly', 'beta'];
-  }
-
-  channels.forEach(channel => {
-    result.push(<p className="history-item" key={channel}>{channel}: {getFriendlyRecordingRange(history[channel])}</p>)
+  ['nightly', 'beta', 'release'].forEach(channel => {
+    const rangeText = getVersionRangeFromHistory(history[channel], channel);
+    if (rangeText) {
+      result.push(<p className="history-item" key={channel}>{channel}: {rangeText}</p>);
+    }
   });
 
   return result;
@@ -345,7 +343,7 @@ class ProbeDetails extends Component {
               <tr title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
                 <td className="fit pr-2">Recorded in versions:</td>
                 <td id="detail-recording-range" className="grow">
-                  {getFriendlyRecordingRangeForAllChannels(probe.history, channel)}
+                  {getFriendlyRecordingRangeForAllChannels(probe.history)}
                 </td>
               </tr>
               {probeInfo.details.record_into_store && (
