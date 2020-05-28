@@ -9,7 +9,7 @@ const SearchResultsTable = props => (
         <th>probe</th>
         <th>type</th>
         <th>population</th>
-        <th>recorded</th>
+        <th>recorded ({props.selectedChannel === 'any' ? 'nightly' : props.selectedChannel})</th>
         <th>description</th>
       </tr>
     </thead>
