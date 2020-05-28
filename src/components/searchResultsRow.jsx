@@ -27,7 +27,7 @@ const SearchResultsRow = ({
   let recordingRange = 'N/A';
 
   if (history) {
-    recordingRange = getVersionRangeFromHistory(history, channelToUse) || '---';
+    recordingRange = getVersionRangeFromHistory(history, channelToUse) || `never in ${channelToUse}`;
   }
 
   // TODO: What happens with undefined history? Affects description and population.
