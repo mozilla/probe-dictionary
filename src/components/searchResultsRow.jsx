@@ -28,7 +28,6 @@ const SearchResultsRow = ({
 
   if (history) {
     recordingRange = getVersionRangeFromHistory(history, channelToUse);
-    //recordingRange = '---';
   }
 
   // TODO: What happens with undefined history? Affects description and population.

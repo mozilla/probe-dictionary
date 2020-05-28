@@ -286,3 +286,9 @@ th {
 .bg-primary {
   background-color: var(--beta-color) !important;
 }
+
+.experimental-warning {
+  font-style: italic;
+  font-size: 13px;
+  margin: 6px 0;
+}

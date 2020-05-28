@@ -340,10 +340,16 @@ class ProbeDetails extends Component {
                   ))}
                 </td>
               </tr>
-              <tr title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
+              <tr>
                 <td className="fit pr-2">Recorded in versions:</td>
                 <td id="detail-recording-range" className="grow">
                   {getFriendlyRecordingRangeForAllChannels(probe.history)}
+                  <p className="experimental-warning">
+                    This was computed from the history object in the JSON below. 
+                    If the range seems incorrect please{' '}
+                    {getNewTabLink('https://github.com/mozilla/probe-dictionary/issues/new', 'file a bug')} with
+                    the probe name and expected range.
+                  </p>
                 </td>
               </tr>
               {probeInfo.details.record_into_store && (

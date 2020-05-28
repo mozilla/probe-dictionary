@@ -1,5 +1,4 @@
 // From explore.js
-// TODO: d3 provides a range() function - we should use it here.
 export function getVersionRange(revisions, channelInfo, channel, revisionsRange) {
   var range = {
     first: null,
@@ -40,30 +39,70 @@ function getExpiry(expString) {
   return parseInt(expString, 10) - 1;
 }
 
-function getContinuousRange(original, additional) {
+function getContinuousRange(startRange, endRange) {
+  if (startRange.constructor === Array) {
+    return {
+      first: startRange[startRange.length - 1].first,
+      last: startRange[0].last,
+      expiry: startRange[0].expiry
+    };
+  }
+  
   return {
-    first: original.first,
-    last: additional.last,
-    expiry: additional.expiry,
-    optout: additional.optout
+    first: startRange.first,
+    last: endRange.last,
+    expiry: endRange.expiry
   };
 }
 
 function collapseVersions(ranges) {
   let result = [];
+  let isRangeContinuous = true;
+  
+  // The meat of the range determining logic.
+  for (let i = 0, len = ranges.length - 1; i < len; i++) {
+    
+    // [{first: 47, last: 56}, {first: 22, last: 44}] => fragmented (not continuous)
+    // Keep in mind for the array [a, b, c] => a is chronologically the most recent range entry 
+    if (!(ranges[i].first - ranges[i + 1].last < 2)) {
+      isRangeContinuous = false;
+    }
+  }
+
+  // The simple case where the full range is continuous.
+  if (isRangeContinuous) {
+    result = [getContinuousRange(ranges[ranges.length - 1], ranges[0])];
+  } else {
+    // Iterate over a nested array of continuous ranges and fill result.
+    getFragmentedRanges(ranges).forEach(continuousRange => {
+      result.push(getContinuousRange(continuousRange));
+    });
+  }
+
+  return result;
+}
+
+// Only gets called on version ranges with discontinuities.
+// Returns a nested array of continous range arrays.
+function getFragmentedRanges(ranges) {
+  const result = [];
+  let rangeSegment = [];
   
   for (let i = 0, len = ranges.length - 1; i < len; i++) {
     const current = ranges[i];
     const next = ranges[i + 1];
 
-    // The meat of the range determining logic.
-    // Keep in mind for the array [a, b, c] => a is chronologically the most recent range entry 
-    if (!(current.first - next.last < 2)) {// [{first: 45, last: 56}, {first: 22, last: 44}] => continuous (not fragmented)
-      result.push(next);
+    if (!(current.first - next.last < 2)) {
+      // If the 0th and 1st items are discontinuous we add [current] to result.
+      result.push(rangeSegment.length ? rangeSegment : [current]);
+      rangeSegment = [next];
     } else {
-      result.push(getContinuousRange(next, current));
+      rangeSegment.push(current);
+      rangeSegment.push(next);
     }
+
   }
+  result.push(rangeSegment);
 
   return result;
 }
@@ -78,7 +117,9 @@ function trimVersionsToExpiry(ranges) {
       newSegment.isTrimmed = true; // We should later add 1 to the range start.
       newSegment.last = newSegment.expiry;
     }
-    result.push(newSegment);
+    if (newSegment.first <= newSegment.last) {
+      result.push(newSegment);
+    }
   });
 
   return result;
@@ -88,16 +129,20 @@ function getRangeString(ranges) {
   const result = [];
 
   ranges.forEach((rangeSegment, i) => {
-    if (rangeSegment.expiry === 0 && i === (ranges.length - 1)) {
+    if (!rangeSegment.expiry && i === (ranges.length - 1)) {
       if (rangeSegment.isTrimmed) {
         result.push(`from ${rangeSegment.first + 1}`);
       } else {
         result.push(`from ${rangeSegment.first}`);
       }
-    } else if (rangeSegment.first >= rangeSegment.last) {
+    } else if (rangeSegment.first > rangeSegment.last) {
       result.push('never');
     } else {
-      result.push(`${rangeSegment.first} to ${rangeSegment.last}`);
+      if (rangeSegment.first === rangeSegment.last) {
+        result.push('' + rangeSegment.first);
+      } else {
+        result.push(`${rangeSegment.first} to ${rangeSegment.last}`);
+      }
     }
   });
 
@@ -105,6 +150,7 @@ function getRangeString(ranges) {
 }
 
 export function getVersionRangeFromHistory(history, channel) {
+  if (!history) return ''; // Rare but sometimes omitted on the release channel.
   let ranges = [];
 
   // Checks either versions (preferred) or revisions to get recorded in value.
@@ -118,6 +164,8 @@ export function getVersionRangeFromHistory(history, channel) {
     } else {
       if (position === 'first') {
         return parseInt(entry.revisions.firstVersion, 10);
+      } else if (entry.revisions.last === 'latest') {
+        return Infinity;
       }
       return parseInt(entry.revisions.last, 10);
     }
@@ -129,12 +177,16 @@ export function getVersionRangeFromHistory(history, channel) {
     const last = getVersionOrRevisionValue(entry, 'last');
     
     if (channel === 'release' && entry.optout || channel !== 'release') {
-      ranges.push({first, last, expiry, optout: entry.optout});
+      ranges.push({first, last, expiry});
     }
   });
 
+  // console.log('channel:', channel);
+  // console.log('ranges:', ranges);
+
   // 1. Trim last version range segment to expiry version.
   // {first: 33, last: 68, expiry: 57} => "33 to 56"
+  // {first: 45, last: 47, expiry: 0} => "from 45"
   ranges = trimVersionsToExpiry(ranges);
   
   // 2. Collapse versions ranges.
