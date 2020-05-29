@@ -288,3 +288,7 @@ th {
   font-size: 13px;
   margin: 6px 0;
 }
+
+#search {
+  min-width: 500px;
+}
