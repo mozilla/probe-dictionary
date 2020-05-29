@@ -289,7 +289,7 @@ class Main extends Component {
     let searchText = query;
     const channelFromParams = this.paramState.selectedChannel;
 
-    if (!searchText) searchText = document.querySelector('#search').value;
+    if (!searchText) searchText = '';
     const newState = {
       searchText,
       probes: this.getFilteredProbes(searchText),
@@ -309,9 +309,9 @@ class Main extends Component {
     this.setState(newState);
   }
 
-  handleSearchTextChange = evt => {
-    this.updateSearchResults(evt.target.value);
-    updateURI([{[PARAMS.search]: evt.target.value}]);
+  handleSearchTextChange = val => {
+    this.updateSearchResults(val);
+    updateURI([{[PARAMS.search]: val}]);
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
