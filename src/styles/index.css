@@ -98,7 +98,7 @@ code {
 }
 
 #measurements {
-  padding-left: 0px !important;
+  padding: 0px !important;
 }
 
 #search-results-table {
@@ -117,16 +117,6 @@ code {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-#search-results-table tr th:first-child {
-  background-color: white;
-  border: none;
-}
-
-#search-results-table tr td:first-child {
-  background-color: white;
-  border: none;
 }
 
 .code {
@@ -178,6 +168,7 @@ th {
 /* added post-reactification */
 :root {
   --primary-color: #2780e3;
+  --beta-color: #bb1c0c;
   --disabled-color: #bbb;
 }
 
@@ -286,4 +277,14 @@ th {
 #detail-body i.fa {
   font-size: 13px;
   font-weight: 600;
+}
+
+.history-item {
+  margin: 5px 0;
+}
+
+.experimental-warning {
+  font-style: italic;
+  font-size: 13px;
+  margin: 6px 0;
 }

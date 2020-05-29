@@ -1,5 +1,5 @@
 import React from 'react';
-import { getFriendlyRecordingRangeForHistory } from '../lib/utils';
+import { getVersionRangeFromHistory } from '../lib/utils';
 
 
 // Ported from explore.js
@@ -14,22 +14,25 @@ const SearchResultsRow = ({
     probeId,
     rowData,
     selectedChannel,
-    revisions,
-    channelInfo,
     doExposeProbeDetails
   }) => {
 
   // TODO: possibly move this elsewhere.
   let channelToUse = selectedChannel;
   if (channelToUse === 'any') {
-    channelToUse = ['release', 'beta', 'nightly'].find(c => c in rowData.history);
+    channelToUse = ['nightly', 'beta', 'release'].find(c => c in rowData.history);
   }
   const history = rowData.history[channelToUse];
+
+  let recordingRange = 'N/A';
+
+  if (history) {
+    recordingRange = getVersionRangeFromHistory(history, channelToUse) || `never in ${channelToUse}`;
+  }
 
   // TODO: What happens with undefined history? Affects description and population.
   return (
     <tr onClick={() => doExposeProbeDetails(probeId, rowData)}>
-      <td className="search-results-field-"><span className="btn btn-outline-secondary btn-sm">+<span /></span></td>
       <td className="search-results-field-name">{rowData.name}</td>
       <td className="search-results-field-type">{rowData.type}</td>
       <td className="search-results-field-population"
@@ -38,7 +41,7 @@ const SearchResultsRow = ({
       </td>
       <td className="search-results-field-recorded"
           title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
-          {getFriendlyRecordingRangeForHistory(revisions, channelInfo, history, channelToUse, false)}
+        {recordingRange}
       </td>
       <td className="search-results-field-description">{history ? history[0].description : ''}</td>
     </tr>

@@ -5,7 +5,7 @@ import ReactJSON from 'react-json-view';
 
 import {
   getVersionRange,
-  getFriendlyRecordingRangeForHistory,
+  getVersionRangeFromHistory,
   getFriendlyExpiryDescriptionForHistory
 } from '../lib/utils';
 
@@ -16,6 +16,19 @@ const getNewTabLink = (link, label) => (
     <a href={link} rel="noopener noreferrer" target="_blank"><i className="fa fa-external-link" /> {label}</a>
   </React.Fragment>
 );
+
+function getFriendlyRecordingRangeForAllChannels(history) {
+  let result = [];
+  
+  ['nightly', 'beta', 'release'].forEach(channel => {
+    const rangeText = getVersionRangeFromHistory(history[channel], channel);
+    if (rangeText) {
+      result.push(<p className="history-item" key={channel}>{channel}: {rangeText}</p>);
+    }
+  });
+
+  return result;
+}
 
 // ported from explore.js
 function getTelemetryDashboardURL(dashType, name, type, channel, min_version='null', max_version='null') {
@@ -268,14 +281,12 @@ class ProbeDetails extends Component {
     const populationLabel = probeInfo.optout ? 'release' : 'prerelease';
     const categoryLabels = probeInfo.details.labels;
 
-    const rangeText = [];
     const expiryText = [];
     for (let [ch, history] of Object.entries(probe.history)) {
       if (!history[0].optout && (ch === 'release')) {
         continue;
       }
 
-      rangeText.push(`${ch} ${getFriendlyRecordingRangeForHistory(revisions, channelInfo, history, ch, true)}`);
       expiryText.push(`${ch} ${getFriendlyExpiryDescriptionForHistory(channelInfo, history, ch)}`);
     }
 
@@ -329,10 +340,16 @@ class ProbeDetails extends Component {
                   ))}
                 </td>
               </tr>
-              <tr title="What versions this probe is actually recorded in. This depends on when the probe was added, removed and its expiry.">
+              <tr>
                 <td className="fit pr-2">Recorded in versions:</td>
                 <td id="detail-recording-range" className="grow">
-                  {getInfoList(rangeText)}
+                  {getFriendlyRecordingRangeForAllChannels(probe.history)}
+                  <p className="experimental-warning">
+                    This was computed from the history object in the JSON below. 
+                    If the range seems incorrect please{' '}
+                    {getNewTabLink('https://github.com/mozilla/probe-dictionary/issues/new', 'file a bug')} with
+                    the probe name and expected range.
+                  </p>
                 </td>
               </tr>
               {probeInfo.details.record_into_store && (
