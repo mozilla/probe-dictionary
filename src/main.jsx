@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import SearchResults from './components/searchResults';
 import SearchForm from './components/searchForm';
-import { getVersionRange } from './lib/utils';
+import { getVersionRange, getSearchTextFromURLParams } from './lib/utils';
 import Navigation from './components/navigation';
 import ProbeDetails from './components/probeDetails';
 import Stats from './components/stats';
@@ -122,7 +122,6 @@ class Main extends Component {
     selectedSearchConstraint: 'in_any',
     selectedVersion: 'any',
     showReleaseOnly: false,
-    searchText: '',
 
     selectedProbe: {id: '', probe: {}}, // Used in ProbeDetails.
 
@@ -285,13 +284,12 @@ class Main extends Component {
     this.setState(state, this.updateSearchResults);
   }
 
-  updateSearchResults(query) {
-    let searchText = query;
-    const channelFromParams = this.paramState.selectedChannel;
+  updateSearchResults = query => {
+    let searchText = query || getSearchTextFromURLParams();
+    const channelFromParams = this.paramState ? this.paramState.selectedChannel : null;
 
     if (!searchText) searchText = '';
     const newState = {
-      searchText,
       probes: this.getFilteredProbes(searchText),
       currentPage: 1
     };
@@ -307,11 +305,6 @@ class Main extends Component {
     }
 
     this.setState(newState);
-  }
-
-  handleSearchTextChange = val => {
-    this.updateSearchResults(val);
-    updateURI([{[PARAMS.search]: val}]);
   }
 
   handleExposeProbeDetails = (probeId, probe) => {
@@ -382,8 +375,6 @@ class Main extends Component {
         if (!isChannelSet) {
           appState.selectedChannel = 'nightly';
         }
-      } else if (name === PARAMS.search) {
-        appState.searchText = value;
       } else if (name === PARAMS.optout) {
         appState.showReleaseOnly = value === 'true';
       } else if (name === PARAMS.view) {
@@ -478,10 +469,10 @@ class Main extends Component {
           doProbeConstraintChange={this.handleProbeConstraintChange}
           doVersionChange={this.handleVersionChange}
           doSearchConstraintChange={this.handleSearchConstraintChange}
-          doSearchTextChange={this.handleSearchTextChange}
           activeView={this.state.activeView}
+          doUpdateSearchResults={this.updateSearchResults}
+          doUpdateURI={updateURI}
 
-          searchText={this.state.searchText}
           selectedChannel={this.state.selectedChannel}
           selectedSearchConstraint={this.state.selectedSearchConstraint}
           selectedProbeConstraint={this.state.selectedProbeConstraint}
