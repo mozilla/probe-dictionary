@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { throttle } from 'throttle-debounce';
 import ProbeFilters from './probeFilters';
 import SelectElement from './selectElement';
+import { getSearchTextFromURLParams } from '../lib/utils';
 
 
 class SearchForm extends Component {
@@ -9,23 +10,22 @@ class SearchForm extends Component {
     super(props);
 
     this.state = {
-      searchText: props.searchText,
-      initialized: false
+      searchText: getSearchTextFromURLParams()
     };
 
-    this.handleSearchTextChangeThrottled = throttle(500, props.doSearchTextChange, false);
+    this.handleSearchTextChangeThrottled = throttle(500, this.handleSearchTextChange, false);
   }
 
   handleSearch = (evt) => {
     this.setState({searchText: evt.target.value}, () => {
-      this.handleSearchTextChangeThrottled(this.state.searchText);
+      this.handleSearchTextChangeThrottled();
     });
   }
 
-  componentDidUpdate = () => {
-    if (this.state.searchText !== this.props.searchText && !this.state.initialized) {
-      this.setState({searchText: this.props.searchText, initialized: true});
-    }
+  handleSearchTextChange = () => {
+    // This order is important because of how main.updateSearchResults() gets the filter string.
+    this.props.doUpdateURI([{search: this.state.searchText}]);
+    this.props.doUpdateSearchResults(this.state.searchText);
   }
 
   render() {

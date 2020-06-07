@@ -215,3 +215,14 @@ export function getFriendlyExpiryDescriptionForHistory(channelInfo, history, cha
 
 export const last = array => array[array.length - 1];
 export const first = array => array[0];
+
+export const getSearchTextFromURLParams = () => {
+  const params = new URLSearchParams(window.location.search);
+
+  for (let [name, value] of params.entries()) {
+    if (name === 'search') {
+      return value;
+    }
+  }
+  return '';
+}
