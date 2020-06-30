@@ -23,5 +23,4 @@ yarn-debug.log*
 yarn-error.log*
 yarn.lock
 
-# local JSON fixtures
-/data
+/public/build/
