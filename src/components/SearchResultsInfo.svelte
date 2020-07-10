@@ -1,6 +1,5 @@
 <script>
 	import { store } from '../state/store';
-	import Paginator from './Paginator.svelte';
 
 
   let start = 0;
@@ -15,5 +14,4 @@
 	<div class="search-results-counter" id="stats">
 		{start} to {end} of {$store.totalProbeCount}
 	</div>
-	<Paginator />
 </div>

@@ -1,5 +1,5 @@
 import { createStore } from './create-store';
-import { CHANNELS, VIEWS, PRODUCTS, PROBE_VERSION_FILTERS } from '../utils/constants';
+import { CHANNELS, PRODUCTS, PROBE_VERSION_FILTERS } from '../utils/constants';
 
 
 const initialState = {
@@ -15,15 +15,13 @@ const initialState = {
   showReleaseOnly: false, // "release measurements only" checkbox filter
   product: PRODUCTS.default, // product choice <select> filter
   totalProbeCount: 0,
+  isFirefoxDesktop: false,
 
-  probe: {}, // Used in ProbeDetails.
+  probe: null, // Used in ProbeDetails.
 
   // Pagination related.
   pageSize: 1000,
   currentPage: 1,
-
-  // Used to toggle visible page elements.
-  activeView: VIEWS.default // Can be one of 'default', 'detail', 'stats'.
 }
 
 export const store = createStore(initialState);

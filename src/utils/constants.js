@@ -7,8 +7,7 @@ export const STATS_DEFAULT_CHANNEL = 'release';
 
 // TODO: pull this from an API endpoint
 export const PRODUCTS = {
-  default: 'desktop',
-  valid: ['desktop', 'fenix'],
+  default: 'fenix',
 };
 
 export const VIEWS = {
