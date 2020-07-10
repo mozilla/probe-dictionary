@@ -2,7 +2,7 @@
   "name": "glean-dictionary",
   "version": "1.0.0",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup --config --environment NODE_ENV:production",
     "dev": "rollup -c -w",
     "start": "sirv public"
   },
