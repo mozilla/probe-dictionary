@@ -31,7 +31,7 @@
   function closeProbeDetails() {
     store.setField('probe', null);
     document.body.classList.remove('overlay-active');
-    updateURI([{[PARAMS['probeId']]: null}]);
+    updateURI([{[PARAMS['metric']]: null}]);
   }
   
   $: probe = $store.probe;
@@ -69,7 +69,7 @@
         <div class="probe-details--extra-info">
           <div>
             <dl class="probe-details--group">
-              <dt>find this probe in</dt>
+              <dt>find this metric in</dt>
               <dd>
                 {#each probe.info.bugs as bug}
                   <a href={bug} target="_blank">{bug}</a>

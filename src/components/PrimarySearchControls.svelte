@@ -68,7 +68,7 @@
 				<input
           id="search"
           type="search"
-          placeholder="Search for text..."
+          placeholder="Search for metric..."
           on:input={handleSearchQueryChange}
           value={$store.searchQuery}
         />
@@ -85,7 +85,7 @@
           {/each}
         </select>
       {/if}
-      probes.
+      metrics.
 		</div>
     {#if $store.isFirefoxDesktop}
       <div id="probe-filters">

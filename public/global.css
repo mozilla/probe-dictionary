@@ -635,7 +635,6 @@ h1 {
 .probe-details--header a {
   color: var(--primary-controls-link-color);
   font-weight: 500;
-  text-transform: capitalize;
   border-bottom: 1px solid var(--primary-controls-link-color);
 }
 .probe-details--header a:hover {

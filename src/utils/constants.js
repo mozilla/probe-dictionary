@@ -32,7 +32,7 @@ export const PARAMS = {
   search: 'search',
   showReleaseOnly: 'optout',
   activeView: 'view',
-  probeId: 'probeId',
+  metric: 'metric',
   product: 'product'
 };
 

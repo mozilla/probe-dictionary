@@ -19,9 +19,9 @@
     for (let [name, value] of params.entries()) {
       if (name === PARAMS.product) {
         store.setField(PARAMS.product, value);
-      } else if (name === PARAMS.probeId) {
+      } else if (name === PARAMS.metric) {
         getProbe(value).then(result => {
-          console.log('exposing probe from URL params:', result[0]);
+          console.log('exposing metric from URL params:', result[0]);
           store.setField('probe', result[0]);
         });
       } else if (name === PARAMS.search) {
