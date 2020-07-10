@@ -62,12 +62,13 @@
 </script>
 
 <div class="primary-search-controls">
-	<form>
+	<form on:submit={(evt) => {evt.preventDefault()}}>
 		<div id="text-search-element" class="probe-text-search">
 			<div>
 				<input
           id="search"
           type="search"
+          name="search"
           placeholder="Search for metric..."
           on:input={handleSearchQueryChange}
           value={$store.searchQuery}
