@@ -225,6 +225,7 @@ code {
 a {
   text-decoration: none;
   color: var(--primary-link-color);
+  border-bottom: 1px solid transparent;
 }
 
 a:visited {
@@ -750,7 +751,6 @@ h1 {
 }
 .probe-details--list {
   line-height: 1.7;
-  text-transform: lowercase;
 }
 .probe-details--list li {
   padding: var(--grid-gap-medium);

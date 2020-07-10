@@ -14,7 +14,7 @@
 <table id="search-results-table" class="search-results">
   <thead>
     <tr>
-      <th class="search-results--probe-name">probe</th>
+      <th class="search-results--probe-name">metric</th>
       <th class="search-results--probe-type">type</th>
       {#if $store.isFirefoxDesktop}
         <th class="search-results--probe-population">population</th>

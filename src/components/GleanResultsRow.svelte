@@ -7,7 +7,7 @@
   export let probe;
 
   function selectProbe(p) {
-    console.log('exposing probe details:', p);
+    console.log('exposing metric details:', p);
     store.setField('probe', p);
     document.body.classList.add('overlay-active');
     updateURI([{[PARAMS['metric']]: p.name}]);

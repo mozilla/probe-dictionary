@@ -47,7 +47,7 @@
       <div>
         <h2>{probe.name}</h2>
         <p class="probe-meta-details">
-          <a href={getProbeDocumentationURI(probe.type)} target="_blank">{probe.type}</a> in 
+          <a href={getProbeDocumentationURI(probe.type)} target="_blank">{probe.type.replace('_', ' ')}</a> in 
           the <span class="probe-details--highlight">{$store.product}</span> product.
         </p>
       </div>
@@ -68,11 +68,11 @@
         
         <div class="probe-details--extra-info">
           <div>
-            <dl class="probe-details--group">
-              <dt>find this metric in</dt>
+            <dl class="probe-details--group probe-details--bugs">
+              <dt>relevant bugs</dt>
               <dd>
                 {#each probe.info.bugs as bug}
-                  <a href={bug} target="_blank">{bug}</a>
+                  <a href={bug} title={bug} target="_blank">&hellip;{bug.substr(bug.length - 8)}</a>
                 {/each}
               </dd>
             </dl>
@@ -103,10 +103,26 @@
           </div>
 
           <div>
+            {#if probe.info.data_reviews && probe.info.data_reviews.length}
+              <dl class="probe-details--group probe-details--bugs">
+                <dt>data reviews</dt>
+                <dd>
+                  {#each probe.info.data_reviews as rev}
+                    <a href={rev} title={rev} target="_blank">&hellip;{rev.substr(rev.length - 8)}</a>
+                  {/each}
+                </dd>
+              </dl>
+            {/if}
             <ul class="probe-details--list">
-              <li>
-                label: value
-              </li>
+              {#if probe.info.no_lint && probe.info.no_lint.length}
+                <li>
+                  no_lint: {probe.info.no_lint.join(', ')}
+                </li>
+              {:else if probe.info.labels && probe.info.labels.length}
+                <li>
+                  labels: {probe.info.labels.join(', ')}
+                </li>
+              {/if}
             </ul>
           </div>
         </div>
@@ -117,3 +133,15 @@
     <button class="btn-overlay-close" on:click={closeProbeDetails} />
   </section>
 {/if}
+
+<style>
+  .probe-details--bugs dd {
+    display: grid;
+    grid-auto-flow: column;
+    justify-content: flex-start;
+    grid-gap: var(--grid-gap-medium);
+  }
+  .probe-details--extra-info > div:last-child .probe-details--group {
+    border-bottom: 0;
+  }
+</style>
