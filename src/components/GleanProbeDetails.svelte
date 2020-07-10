@@ -6,12 +6,23 @@
   
   
   function getProbeDocumentationURI(type) {
-    const sourceDocs = 'https://firefox-source-docs.mozilla.org/toolkit/components/telemetry/telemetry/';
+    const sourceDocs = 'https://mozilla.github.io/glean/book/user/metrics/';
     const links = {
-      environment: sourceDocs + 'data/environment.html',
-      histogram: sourceDocs + 'collection/histograms.html',
-      scalar: sourceDocs + 'collection/scalars.html',
-      event: sourceDocs + 'collection/events.html',
+      memory_distribution: sourceDocs + 'memory_distribution.html',
+      quantity: sourceDocs + 'quantity.html',
+      custom_distribution: sourceDocs + 'custom_distribution.html',
+      string_list: sourceDocs + 'string_list.html',
+      labeled_string: sourceDocs + 'labeled_strings.html',
+      timespan: sourceDocs + 'timespan.html',
+      datetime: sourceDocs + 'datetime.html',
+      string: sourceDocs + 'string.html',
+      timing_distribution: sourceDocs + 'timing_distribution.html',
+      boolean: sourceDocs + 'boolean.html',
+      labeled_counter: sourceDocs + 'labeled_counters.html',
+      uuid: sourceDocs + 'uuid.html',
+      counter: sourceDocs + 'counter.html',
+      datetime: sourceDocs + 'datetime.html',
+      event: sourceDocs + 'event.html',
     };
 
     return links[type] || sourceDocs;
@@ -36,7 +47,7 @@
       <div>
         <h2>{probe.name}</h2>
         <p class="probe-meta-details">
-          <a href={getProbeDocumentationURI(probe.type)}>{probe.type}</a> in 
+          <a href={getProbeDocumentationURI(probe.type)} target="_blank">{probe.type}</a> in 
           the <span class="probe-details--highlight">{$store.product}</span> product.
         </p>
       </div>
