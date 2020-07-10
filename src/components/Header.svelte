@@ -1,10 +1,22 @@
 <script>
+  import { store } from '../state/store';
   import Button from './Button.svelte';
   import URLShortener from './URLShortener.svelte';
+  import { PRODUCTS, PARAMS } from '../utils/constants';
+  import { updateURI } from '../utils/url';
+  import { updateSearchResults } from '../utils/api';
   
   
   // TODO: implement these handlers
-  function handleResetSearchClick() { console.log('resetting search...'); }
+  function handleResetSearchClick() {
+    store.setField('searchQuery', '');
+    store.setField('product', PRODUCTS.default);
+
+    updateURI([{[PARAMS['search']]: ''}]);
+    updateURI([{[PARAMS['product']]: PRODUCTS.default}]);
+    
+    updateSearchResults();
+  }
 
   let dateString = 'TODO time';
 </script>
