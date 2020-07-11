@@ -28,6 +28,17 @@
     return links[type] || sourceDocs;
   }
 
+  function getExpiryText(expiry) {
+    switch (expiry) {
+      case 'never':
+        return 'never expires';
+      case 'expired':
+        return 'has already manually expired';
+      default:
+        return `expires on ${expiry}`;
+    }
+  }
+
   function closeProbeDetails() {
     store.setField('probe', null);
     document.body.classList.remove('overlay-active');
@@ -45,10 +56,10 @@
     
     <header class="probe-details--header">
       <div>
-        <h2>{probe.name}</h2>
+        <h2 title={probe.name}>{probe.name}</h2>
         <p class="probe-meta-details">
           <a href={getProbeDocumentationURI(probe.type)} target="_blank">{probe.type.replace('_', ' ')}</a> in 
-          the <span class="probe-details--highlight">{$store.product}</span> product.
+          <span class="probe-details--highlight">{$store.product}</span> that {getExpiryText(probe.info.expires)}
         </p>
       </div>
     </header>

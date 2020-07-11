@@ -174,6 +174,7 @@ html {
   --checkbox-size-medium: var(--space-scale-05);
   --table-cell-height: var(--space-scale-06);
   --probe-details-content-width: var(--space-scale-16);
+  --probe-details-header-height: var(--space-scale-08);
 
   --primary-theme-color: var(--digital-blue-600);
   --primary-link-color: var(--primary-theme-color);
@@ -633,6 +634,14 @@ h1 {
   grid-gap: var(--grid-gap-large);
   color: var(--primary-controls-text-color);
 }
+.probe-details--header > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: var(--probe-details-header-height);
+  overflow: hidden;
+  white-space: nowrap;
+}
 .probe-details--header a {
   color: var(--primary-controls-link-color);
   font-weight: 500;
@@ -642,8 +651,8 @@ h1 {
   border-bottom: 1px solid var(--primary-controls-link-color);
 }
 .probe-details--header h2 {
-  font-size: var(--text-scale-04);
-  font-weight: 800;
+  font-size: var(--text-scale-06);
+  font-weight: 600;
   margin: 0;
 }
 .probe-details--header,
