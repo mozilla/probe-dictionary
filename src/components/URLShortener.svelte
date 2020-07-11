@@ -1,5 +1,7 @@
 <script>
   import Button from './Button.svelte';
+	import { scale } from 'svelte/transition';
+	import { cubicOut } from 'svelte/easing';
 
 
   let active = false;
@@ -44,7 +46,7 @@
   {/if}
       
   {#if active}
-    <div class="url-shortener--details">
+    <div class="url-shortener--details" in:scale="{{duration: 300, opacity: 0.6, start: 0.6, easing: cubicOut }}">
       <input type="text" id="url-shortener--input" value={shortURL} />
       <button class="url-shortener--copy-btn" on:click={handleCopy}>
         copy
@@ -57,6 +59,7 @@
   .url-shortener--details {
     height: var(--form-field-height-medium);
     position: relative;
+    top: 5px;
   }
   .url-shortener--details,
   #url-shortener--input {
@@ -69,7 +72,7 @@
     height: var(--form-field-height-medium);
     border: 1px solid var(--primary-link-color);
     border-radius: var(--border-radius-02);
-    background: transparent url('./img/icons/copy.svg') no-repeat center;
+    background: transparent url('/img/icons/copy.svg') no-repeat center;
     background-size: calc(var(--form-field-height-medium) - 12px) calc(var(--form-field-height-medium) - 12px);
     width: var(--form-field-height-medium);
     text-indent: -200vw;
