@@ -142,7 +142,7 @@
                 <dt>
                   lifetime
                   <a
-                    href="https://mozilla.github.io/glean/book/user/metric-parameters.html#optional-metric-parameters"
+                    href="https://mozilla.github.io/glean/book/user/adding-new-metrics.html?highlight=lifetime#when-should-glean-automatically-clear-the-measurement"
                     target="_blank"
                     class="btn-more-info"
                   >
