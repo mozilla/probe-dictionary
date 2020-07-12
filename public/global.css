@@ -183,6 +183,7 @@ html {
   --form-field-border-color: var(--cool-gray-400);
   --subtle-text-color: var(--digital-blue-400);
   --primary-controls-color: linear-gradient(to right, var(--digital-blue-600), var(--digital-blue-400));
+  --primary-theme-gradient: linear-gradient(to left, var(--digital-blue-600), var(--digital-blue-400));
   --primary-controls-text-color: var(--digital-blue-100);
   --primary-controls-link-color: var(--digital-blue-100);
   --secondary-controls-color: linear-gradient(to bottom, var(--cool-gray-250), var(--cool-gray-150));
@@ -217,6 +218,10 @@ body {
 button {
   font-family: 'Spartan', sans-serif;
   font-weight: 500;
+}
+
+button:focus {
+  outline: 0;
 }
 
 code {
@@ -612,179 +617,7 @@ h1 {
 }
 /** /Loading State **/
 
-/** Details Overlay **/
-.probe-details--content {
-  border-radius: var(--border-radius-04);
-  width: var(--probe-details-content-width);
-  box-shadow: var(--shadow-depth-major);
-  position: fixed;
-  top: 10vh;
-  z-index: 60;
-  background: var(--zebra-stripe-color);
-  left: calc(50% - (var(--probe-details-content-width) / 2));
-  max-height: 85vh;
-  overflow-y: hidden;
-}
-.probe-details--header {
-  background: var(--primary-controls-color);
-  border-radius: var(--border-radius-04) var(--border-radius-04) 0 0;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-gap: var(--grid-gap-large);
-  color: var(--primary-controls-text-color);
-}
-.probe-details--header > div {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  min-height: var(--probe-details-header-height);
-  overflow: hidden;
-  white-space: nowrap;
-}
-.probe-details--header a {
-  color: var(--primary-controls-link-color);
-  font-weight: 500;
-  border-bottom: 1px solid var(--primary-controls-link-color);
-}
-.probe-details--header a:hover {
-  border-bottom: 1px solid var(--primary-controls-link-color);
-}
-.probe-details--header h2 {
-  font-size: var(--text-scale-06);
-  font-weight: 600;
-  margin: 0;
-}
-.probe-details--header,
-.probe-details--body {
-  padding: var(--grid-gap-large);
-  max-height: 500px;
-}
-.probe-details--body {
-  overflow-y: auto;
-}
-.probe-details--recording-range {
-  display: grid;
-  grid-auto-flow: column;
-  grid-gap: var(--grid-gap-large);
-  justify-content: space-around;
-}
-.probe-version-item {
-  max-width: 140px;
-}
-.probe-version-item dt {
-  font-size: var(--text-size-minor-label);
-}
-.probe-version-item dd {
-  font-size: var(--text-size-table);
-  padding: var(--grid-gap-medium) 0;
-}
-.probe-version-item--compact dd {
-  padding: 0;
-}
-.probe-meta-details {
-  margin: 0;
-  font-size: var(--text-size-table);
-}
-.probe-details--highlight {
-  font-weight: 600;
-  font-size: var(--text-size-minor-label);
-  text-transform: uppercase;
-}
-.btn-overlay-close {
-  position: absolute;
-  top: var(--grid-gap-medium);
-  right: var(--grid-gap-medium);
-  height: var(--space-scale-05);
-  width: var(--space-scale-05);
-  cursor: pointer;
-  border-radius: 50%;
-  border: 0;
-  background: transparent url('../img/icons/close.svg') no-repeat center;
-  background-size: 18px 18px;
-  border: 2px solid var(--primary-controls-link-color);
-}
-.btn-overlay-close.dark {
-  border: 2px solid var(--secondary-controls-text-color);
-  background: transparent url('../img/icons/close_dark.svg') no-repeat center;
-}
-.probe-details--description {
-  line-height: 1.6;
-}
-.probe-details--description > *:first-child {
-  margin-top: 0;
-}
-.probe-details--description > *:last-child {
-  margin-bottom: 0;
-}
-.probe-details--footer {
-  padding: var(--grid-gap-large) 0;
-  background-color: var(--secondary-controls-color);
-  font-size: var(--text-size-table);
-  border-radius: 0 0 var(--border-radius-04) var(--border-radius-04);
-}
-.probe-details--expiry {
-  display: flex;
-  justify-content: space-between;
-  grid-gap: var(--grid-gap-large);
-  padding-bottom: var(--grid-gap-medium);
-  border-bottom: var(--border-gentle);
-}
-.probe-details--expiry .probe-version-item {
-  max-width: initial;
-}
-.probe-details--extra-info {
-  display: flex;
-  justify-content: space-between;
-  margin: var(--grid-gap-large) 0;
-  grid-gap: var(--grid-gap-large);
-}
-.probe-details--extra-info > div {
-  width: 50%;
-  display: grid;
-  grid-gap: var(--grid-gap-medium);
-}
-.probe-details--group {
-  border-bottom: var(--border-gentle);
-  padding-bottom: var(--grid-gap-medium);
-}
-.probe-details--group:last-child {
-  border-bottom: 0;
-  padding-bottom: 0;
-}
-.probe-details--group dt {
-  font-size: var(--text-size-minor-label);
-}
-.probe-details--group dd {
-  line-height: 1.7;
-}
-.probe-details--list {
-  line-height: 1.7;
-}
-.probe-details--list li {
-  padding: var(--grid-gap-medium);
-  border: 1.5px solid var(--border-color-gray-light);
-  border-bottom: 1px solid var(--border-color-gray-light);
-}
-.probe-details--list li:nth-child(even) {
-  background: var(--zebra-stripe-color);
-}
-.probe-details--list li:first-child {
-  border-top: 0;
-}
-.probe-details--list li:last-child {
-  border-bottom: 0;
-}
-.overlay-mask {
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-color: rgba(255,255,255,0.6);
-  width: 100%;
-  height: 100%;
-  z-index: 50;
-}
-/** /Details Overlay **/
+
 
 /** Stats Overlay **/
 .stats-overlay {
@@ -803,6 +636,7 @@ h1 {
 body.overlay-active {
   height: 100vh;
   overflow: hidden;
+  padding-right: 15px;
 }
 
 /* /Component Styles */

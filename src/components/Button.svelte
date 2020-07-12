@@ -30,6 +30,9 @@
     padding: var(--btn-padding-medium);
     display: inline-block;
   }
+  .btn:focus {
+    outline: 0;
+  }
   .btn.nav-icon {
     padding-left: 20px;
     background-size: 14px 14px;

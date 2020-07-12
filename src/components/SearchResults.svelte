@@ -20,7 +20,7 @@
         <th class="search-results--probe-population">population</th>
         <th class="search-results--probe-recorded-in">recorded ({channelToUse})</th>
       {:else}
-        <th class="search-results--probe-recorded-in">expires</th>
+        <th class="search-results--probe-recorded-in">expiry</th>
       {/if}
       <th class="search-results--probe-description">description</th>
     </tr>

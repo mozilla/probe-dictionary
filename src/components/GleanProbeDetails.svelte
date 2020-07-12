@@ -3,6 +3,8 @@
   import snarkdown from 'snarkdown';
   import { updateURI } from '../utils/url';
   import { PARAMS } from '../utils/constants';
+  import { fly, fade } from 'svelte/transition';
+	import { quintOut, cubicIn } from 'svelte/easing';
   
   
   function getProbeDocumentationURI(type) {
@@ -29,6 +31,10 @@
   }
 
   function getExpiryText(expiry) {
+    if (Date.now() > (new Date(expiry))) {
+      return `expired on ${expiry}`;
+    }
+
     switch (expiry) {
       case 'never':
         return 'never expires';
@@ -44,15 +50,33 @@
     document.body.classList.remove('overlay-active');
     updateURI([{[PARAMS['metric']]: null}]);
   }
+
+  function handleEscape({ key }) {
+    if (key === 'Escape' && $store.probe) {
+      closeProbeDetails();
+    }
+  }
   
   $: probe = $store.probe;
   const parentClasses = ['probe-details--content'];
 </script>
 
+<svelte:window on:keydown={handleEscape}/>
+
 {#if probe}
-  <div class="detail overlay-mask" on:click={closeProbeDetails} />
+  <div
+    class="detail overlay-mask"
+    on:click={closeProbeDetails}
+    in:fade={{duration: 300}}
+    out:fade={{delay: 100, duration: 200}}
+  />
           
-  <section class={parentClasses.join(' ')} id="probe-detail-view">
+  <section
+    class={parentClasses.join(' ')}
+    id="probe-detail-view"
+    in:fly={{duration: 200, x: 0, y: -200, opacity: 0.3, easing: quintOut}}
+    out:fly={{duration: 200, x: 0, y: -200, opacity: 0.3, easing: cubicIn}}  
+  >
     
     <header class="probe-details--header">
       <div>
@@ -73,17 +97,19 @@
       {/if}
 
       <footer class="probe-details--footer">
-        <div class="probe-details--expiry">
-          
-        </div>
-        
         <div class="probe-details--extra-info">
           <div>
             <dl class="probe-details--group probe-details--bugs">
               <dt>relevant bugs</dt>
               <dd>
                 {#each probe.info.bugs as bug}
-                  <a href={bug} title={bug} target="_blank">&hellip;{bug.substr(bug.length - 8)}</a>
+                  {#if ('' + bug).indexOf('http') > -1}
+                    <a href={bug} title={bug} target="_blank">
+                      &hellip;{bug.length > 8 ? bug.substr(bug.length - 8) : bug}
+                    </a>
+                  {:else}
+                    {bug}
+                  {/if}
                 {/each}
               </dd>
             </dl>
@@ -103,7 +129,31 @@
               <dt>disabled</dt>
               <dd>{probe.info.disabled}</dd>
             </dl>
-            {#if probe.info.labels}
+            {#if probe.info.data_reviews && probe.info.data_reviews.length}
+              <dl class="probe-details--group probe-details--bugs">
+                <dt>data reviews</dt>
+                <dd>
+                  {#each probe.info.data_reviews as rev}
+                    {#if ('' + rev).indexOf('http') > -1}
+                      <a href={rev} title={rev} target="_blank">
+                        &hellip;{rev.length > 8 ? rev.substr(rev.length - 8) : rev}
+                      </a>
+                    {:else}
+                      {rev}
+                    {/if}
+                  {/each}
+                </dd>
+              </dl>
+            {/if}
+            {#if probe.info.no_lint && probe.info.no_lint.length}
+              <dl class="probe-details--group">
+                <dt>no_lint</dt>
+                <dd>
+                  {probe.info.no_lint.join(', ')}
+                </dd>
+              </dl>
+            {/if}
+            {#if probe.info.labels && probe.info.labels.length}
               <dl class="probe-details--group">
                 <dt>labels</dt>
                 <dd>
@@ -111,30 +161,14 @@
                 </dd>
               </dl>
             {/if}
-          </div>
-
-          <div>
-            {#if probe.info.data_reviews && probe.info.data_reviews.length}
-              <dl class="probe-details--group probe-details--bugs">
-                <dt>data reviews</dt>
+            {#if probe.info.version || probe.info.version === 0}
+              <dl class="probe-details--group">
+                <dt>version</dt>
                 <dd>
-                  {#each probe.info.data_reviews as rev}
-                    <a href={rev} title={rev} target="_blank">&hellip;{rev.substr(rev.length - 8)}</a>
-                  {/each}
+                  {probe.info.version}
                 </dd>
               </dl>
             {/if}
-            <ul class="probe-details--list">
-              {#if probe.info.no_lint && probe.info.no_lint.length}
-                <li>
-                  no_lint: {probe.info.no_lint.join(', ')}
-                </li>
-              {:else if probe.info.labels && probe.info.labels.length}
-                <li>
-                  labels: {probe.info.labels.join(', ')}
-                </li>
-              {/if}
-            </ul>
           </div>
         </div>
       </footer>
@@ -146,13 +180,169 @@
 {/if}
 
 <style>
+  /** Details Overlay **/
+  .probe-details--content {
+    border-radius: var(--border-radius-04);
+    width: var(--probe-details-content-width);
+    box-shadow: var(--shadow-depth-major);
+    position: fixed;
+    top: 15vh;
+    z-index: 60;
+    background: var(--zebra-stripe-color);
+    left: calc(50% - (var(--probe-details-content-width) / 2));
+    max-height: 85vh;
+    overflow-y: hidden;
+    --themed-border: 1.5px solid var(--digital-blue-400); 
+  }
+  .probe-details--header {
+    background: var(--primary-controls-color);
+    border-radius: var(--border-radius-04) var(--border-radius-04) 0 0;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-gap: var(--grid-gap-large);
+    color: var(--primary-controls-text-color);
+    border-bottom: var(--themed-border);
+  }
+  .probe-details--header > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: var(--probe-details-header-height);
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .probe-details--content a {
+    color: var(--primary-controls-link-color);
+    font-weight: 500;
+    border-bottom: 1px solid var(--primary-controls-link-color);
+  }
+  .probe-details--header a:hover {
+    border-bottom: 1px solid var(--primary-controls-link-color);
+  }
+  .probe-details--header h2 {
+    font-size: var(--text-scale-06);
+    font-weight: 600;
+    margin: 0;
+  }
+  .probe-details--header,
+  .probe-details--body {
+    padding: var(--grid-gap-large);
+    max-height: 500px;
+  }
+  .probe-details--body {
+    overflow-y: auto;
+    background: var(--primary-controls-color);
+    color: var(--primary-controls-text-color);
+  }
+  .probe-details--recording-range {
+    display: grid;
+    grid-auto-flow: column;
+    grid-gap: var(--grid-gap-large);
+    justify-content: space-around;
+  }
+  .probe-version-item {
+    max-width: 140px;
+  }
+  .probe-version-item dt {
+    font-size: var(--text-size-minor-label);
+  }
+  .probe-version-item dd {
+    font-size: var(--text-size-table);
+    padding: var(--grid-gap-medium) 0;
+  }
+  .probe-version-item--compact dd {
+    padding: 0;
+  }
+  .probe-meta-details {
+    margin: 0;
+    font-size: var(--text-size-table);
+  }
+  .probe-details--highlight {
+    font-weight: 600;
+    font-size: var(--text-size-minor-label);
+    text-transform: uppercase;
+  }
+  .btn-overlay-close {
+    position: absolute;
+    top: var(--grid-gap-medium);
+    right: var(--grid-gap-medium);
+    height: var(--space-scale-05);
+    width: var(--space-scale-05);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 0;
+    background: transparent url('../img/icons/close.svg') no-repeat center;
+    background-size: 18px 18px;
+    border: 2px solid var(--primary-controls-link-color);
+    opacity: 0.7;
+    transition: opacity 300ms;
+  }
+  .btn-overlay-close:hover {
+    opacity: 1;
+  }
+  .btn-overlay-close.dark {
+    border: 2px solid var(--secondary-controls-text-color);
+    background: transparent url('../img/icons/close_dark.svg') no-repeat center;
+  }
+  .probe-details--description {
+    line-height: 1.6;
+  }
+  .probe-details--description > *:first-child {
+    margin-top: 0;
+  }
+  .probe-details--description > *:last-child {
+    margin-bottom: 0;
+  }
+  .probe-details--footer {
+    padding: var(--grid-gap-large) 0;
+    background-color: var(--secondary-controls-color);
+    font-size: var(--text-size-table);
+    border-radius: 0 0 var(--border-radius-04) var(--border-radius-04);
+  }
+  .probe-details--expiry {
+    display: flex;
+    justify-content: space-between;
+    grid-gap: var(--grid-gap-large);
+    padding-bottom: var(--grid-gap-medium);
+    border-bottom: var(--border-gentle);
+  }
+  .probe-details--extra-info > div {
+    display: grid;
+    grid-gap: var(--grid-gap-medium);
+    grid-template-columns: 1fr 1fr;
+  }
+  .probe-details--group {
+    background: var(--digital-blue-400);
+    padding: var(--grid-gap-medium);
+    border-radius: var(--border-radius-02);
+  }
+  .probe-details--group:nth-child(odd) {
+    background: var(--primary-controls-color);
+  }
+  .probe-details--group dt {
+    font-size: var(--text-size-minor-label);
+  }
+  .probe-details--group dd {
+    line-height: 1.7;
+  }
+  .probe-details--list {
+    line-height: 1.7;
+  }
+  .overlay-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255,255,255,0.6);
+    width: 100%;
+    height: 100%;
+    z-index: 50;
+  }
   .probe-details--bugs dd {
     display: grid;
     grid-auto-flow: column;
     justify-content: flex-start;
     grid-gap: var(--grid-gap-medium);
   }
-  .probe-details--extra-info > div:last-child .probe-details--group {
-    border-bottom: 0;
-  }
+  /** /Details Overlay **/
 </style>
