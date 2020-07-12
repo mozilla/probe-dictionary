@@ -100,7 +100,16 @@
         <div class="probe-details--extra-info">
           <div>
             <dl class="probe-details--group probe-details--bugs">
-              <dt>relevant bugs</dt>
+              <dt>
+                relevant bugs
+                <a
+                  href="https://mozilla.github.io/glean/book/user/metric-parameters.html"
+                  target="_blank"
+                  class="btn-more-info"
+                >
+                    more info
+                </a>
+              </dt>
               <dd>
                 {#each probe.info.bugs as bug}
                   {#if ('' + bug).indexOf('http') > -1}
@@ -114,24 +123,60 @@
               </dd>
             </dl>
             <dl class="probe-details--group">
-              <dt>send in pings</dt>
+              <dt>
+                send in pings
+                <a
+                  href="https://mozilla.github.io/glean/book/user/metric-parameters.html#optional-metric-parameters"
+                  target="_blank"
+                  class="btn-more-info"
+                >
+                  more info
+                </a>
+              </dt>
               <dd>
                 {probe.info.send_in_pings.join(', ')}
               </dd>
             </dl>
             {#if probe.info.lifetime}
               <dl class="probe-details--group">
-                <dt>lifetime</dt>
+                <dt>
+                  lifetime
+                  <a
+                    href="https://mozilla.github.io/glean/book/user/metric-parameters.html#optional-metric-parameters"
+                    target="_blank"
+                    class="btn-more-info"
+                  >
+                    more info
+                  </a>
+                </dt>
                 <dd>{probe.info.lifetime}</dd>
               </dl>
             {/if}
             <dl class="probe-details--group">
-              <dt>disabled</dt>
+              <dt>
+                disabled
+                <a
+                  href="https://mozilla.github.io/glean/book/user/metric-parameters.html#optional-metric-parameters"
+                  target="_blank"
+                  class="btn-more-info"
+                >
+                  more info
+                </a>
+              </dt>
               <dd>{probe.info.disabled}</dd>
             </dl>
             {#if probe.info.data_reviews && probe.info.data_reviews.length}
               <dl class="probe-details--group probe-details--bugs">
-                <dt>data reviews</dt>
+                <dt>
+                  data reviews
+                  <a
+                    href="https://mozilla.github.io/glean/book/user/metric-parameters.html"
+                    target="_blank"
+                    class="btn-more-info"
+                  >
+                    more info
+                  </a>
+                </dt>
                 <dd>
                   {#each probe.info.data_reviews as rev}
                     {#if ('' + rev).indexOf('http') > -1}
@@ -163,7 +208,16 @@
             {/if}
             {#if probe.info.version || probe.info.version === 0}
               <dl class="probe-details--group">
-                <dt>version</dt>
+                <dt>
+                  version
+                  <a
+                    href="https://mozilla.github.io/glean/book/user/metric-parameters.html#optional-metric-parameters"
+                    target="_blank"
+                    class="btn-more-info"
+                  >
+                    more info
+                  </a>
+                </dt>
                 <dd>
                   {probe.info.version}
                 </dd>
@@ -316,6 +370,7 @@
     background: var(--digital-blue-400);
     padding: var(--grid-gap-medium);
     border-radius: var(--border-radius-02);
+    position: relative;
   }
   .probe-details--group:nth-child(odd) {
     background: var(--primary-controls-color);
@@ -343,6 +398,25 @@
     grid-auto-flow: column;
     justify-content: flex-start;
     grid-gap: var(--grid-gap-medium);
+  }
+  .probe-details--content .btn-more-info {
+    position: absolute;
+    top: var(--grid-gap-small);
+    right: var(--grid-gap-small);
+    height: var(--space-scale-05);
+    width: var(--space-scale-05);
+    cursor: pointer;
+    border-radius: 50%;
+    border: 0;
+    background: transparent url('../img/icons/help.svg') no-repeat center;
+    background-size: 18px 18px;
+    opacity: 0.7;
+    transition: opacity 300ms;
+    text-indent: -10000em;
+    border-bottom: 0;
+  }
+  .btn-more-info:hover {
+    opacity: 1;
   }
   /** /Details Overlay **/
 </style>

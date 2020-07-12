@@ -164,6 +164,7 @@ html {
   --text-size-table: var(--text-scale-02);
   
   --box-padding-large: var(--space-scale-05);
+  --grid-gap-small: var(--space-scale-01);
   --grid-gap-medium: var(--space-scale-03);
   --grid-gap-large: var(--space-scale-05);
   --form-field-height-medium: var(--space-scale-06);
