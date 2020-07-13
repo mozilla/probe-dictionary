@@ -177,15 +177,15 @@ html {
   --probe-details-content-width: var(--space-scale-16);
   --probe-details-header-height: var(--space-scale-08);
 
-  --primary-theme-color: var(--digital-blue-600);
+  --primary-theme-color: var(--digital-blue-700);
   --primary-link-color: var(--primary-theme-color);
-  --primary-link-color--visited: var(--digital-blue-550);
+  --primary-link-color--visited: var(--digital-blue-500);
   --primary-text-color: var(--cool-gray-800);
   --form-field-border-color: var(--cool-gray-400);
   --subtle-text-color: var(--digital-blue-400);
-  --primary-controls-color: linear-gradient(to right, var(--digital-blue-600), var(--digital-blue-400));
-  --primary-theme-gradient: linear-gradient(to left, var(--digital-blue-600), var(--digital-blue-400));
-  --primary-controls-text-color: var(--digital-blue-100);
+  --primary-controls-color: linear-gradient(to right, var(--digital-blue-700), var(--digital-blue-500));
+  --primary-theme-gradient: linear-gradient(to left, var(--digital-blue-700), var(--digital-blue-500));
+  --primary-controls-text-color: #fff;
   --primary-controls-link-color: var(--digital-blue-100);
   --secondary-controls-color: linear-gradient(to bottom, var(--cool-gray-250), var(--cool-gray-150));
   --secondary-controls-text-color: var(--cool-gray-850);

@@ -22,7 +22,7 @@
 </script>
 
 <header class="global-header">
-	<h1><a class="global-header--main-heading" href="/">Glean Dictionary</a> <span>alpha</span></h1>
+	<h1><a class="global-header--main-heading" href="/"><em>Glean</em> Dictionary</a> <span>alpha</span></h1>
 	<nav>
 		<ul class="global-navigation">
 			<li>
@@ -82,5 +82,14 @@
   h1 span {
     text-transform: lowercase;
     font-size: var(--text-size-minor-label);
+  }
+  h1 em {
+    text-indent: -10000em;
+    display: inline-block;
+    width: 80px;
+    height: 20px;
+    background: url('/img/glean_logo.png') no-repeat;
+    background-size: 80px 20px;
+    border-radius: var(--border-radius-02);
   }
 </style>

@@ -246,7 +246,7 @@
     left: calc(50% - (var(--probe-details-content-width) / 2));
     max-height: 85vh;
     overflow-y: hidden;
-    --themed-border: 1.5px solid var(--digital-blue-400); 
+    --themed-border: 2.5px solid var(--digital-blue-500);
   }
   .probe-details--header {
     background: var(--primary-controls-color);
@@ -367,7 +367,7 @@
     grid-template-columns: 1fr 1fr;
   }
   .probe-details--group {
-    background: var(--digital-blue-400);
+    background: var(--digital-blue-500);
     padding: var(--grid-gap-medium);
     border-radius: var(--border-radius-02);
     position: relative;
@@ -395,9 +395,9 @@
   }
   .probe-details--bugs dd {
     display: grid;
-    grid-auto-flow: column;
-    justify-content: flex-start;
+    justify-items: start;
     grid-gap: var(--grid-gap-medium);
+    grid-template-columns: repeat(auto-fit, minmax(85px, auto));
   }
   .probe-details--content .btn-more-info {
     position: absolute;
