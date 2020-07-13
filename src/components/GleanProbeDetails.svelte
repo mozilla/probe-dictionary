@@ -111,13 +111,13 @@
                 </a>
               </dt>
               <dd>
-                {#each probe.info.bugs as bug}
+                {#each probe.info.bugs as bug, i}
                   {#if ('' + bug).indexOf('http') > -1}
                     <a href={bug} title={bug} target="_blank">
-                      &hellip;{bug.length > 8 ? bug.substr(bug.length - 8) : bug}
+                      {i}
                     </a>
                   {:else}
-                    {bug}
+                    <span>{bug}</span>
                   {/if}
                 {/each}
               </dd>
@@ -178,13 +178,13 @@
                   </a>
                 </dt>
                 <dd>
-                  {#each probe.info.data_reviews as rev}
+                  {#each probe.info.data_reviews as rev, i}
                     {#if ('' + rev).indexOf('http') > -1}
                       <a href={rev} title={rev} target="_blank">
-                        &hellip;{rev.length > 8 ? rev.substr(rev.length - 8) : rev}
+                        {i}
                       </a>
                     {:else}
-                      {rev}
+                      <span>{rev}</span>
                     {/if}
                   {/each}
                 </dd>
@@ -266,7 +266,7 @@
     overflow: hidden;
     white-space: nowrap;
   }
-  .probe-details--content a {
+  .probe-details--content :global(a) {
     color: var(--primary-controls-link-color);
     font-weight: 500;
     border-bottom: 1px solid var(--primary-controls-link-color);
@@ -397,7 +397,7 @@
     display: grid;
     justify-items: start;
     grid-gap: var(--grid-gap-medium);
-    grid-template-columns: repeat(auto-fit, minmax(85px, auto));
+    grid-template-columns: repeat(auto-fit, minmax(30px, auto));
   }
   .probe-details--content .btn-more-info {
     position: absolute;
