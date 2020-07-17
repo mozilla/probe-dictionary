@@ -57,7 +57,10 @@
 
   let products = [];
   getProductsList().then(res => {
-    products = res.filter(item => item.product !== 'firefox');
+    products = res
+      .filter(item => item.product !== "firefox")
+      .map(item => item.product)
+      .sort();
   });
 </script>
 
@@ -81,8 +84,8 @@
           value={$store.product}
           on:input={evt => {handleSearchDimensionChange(evt, 'product', true);}}
         >
-          {#each products as p (p)}
-            <option value={p.product}>{p.product}</option>
+          {#each products as product}
+            <option value={product}>{product}</option>
           {/each}
         </select>
       {/if}
