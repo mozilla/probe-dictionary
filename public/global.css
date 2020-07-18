@@ -152,7 +152,7 @@ html {
 
   --border-radius-01: 2px;
   --border-radius-02: 4px;
-  --border-radius-04: 8px;
+  --border-radius-03: 8px;
   --border-radius-04: 12px;
   /* /Style System Scales */
 
@@ -187,6 +187,7 @@ html {
   --primary-theme-gradient: linear-gradient(to left, var(--digital-blue-700), var(--digital-blue-500));
   --primary-controls-text-color: #fff;
   --primary-controls-link-color: var(--digital-blue-100);
+  --primary-controls-item-border: 1.5px solid var(--digital-blue-350);
   --secondary-controls-color: linear-gradient(to bottom, var(--cool-gray-250), var(--cool-gray-150));
   --secondary-controls-text-color: var(--cool-gray-850);
   --paginator-button-color: var(--cool-gray-100);

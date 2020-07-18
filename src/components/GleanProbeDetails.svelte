@@ -114,7 +114,7 @@
                 {#each probe.info.bugs as bug, i}
                   {#if ('' + bug).indexOf('http') > -1}
                     <a href={bug} title={bug} target="_blank">
-                      {i}
+                      {i + 1}
                     </a>
                   {:else}
                     <span>{bug}</span>
@@ -181,7 +181,7 @@
                   {#each probe.info.data_reviews as rev, i}
                     {#if ('' + rev).indexOf('http') > -1}
                       <a href={rev} title={rev} target="_blank">
-                        {i}
+                        {i + 1}
                       </a>
                     {:else}
                       <span>{rev}</span>
@@ -398,6 +398,17 @@
     justify-items: start;
     grid-gap: var(--grid-gap-medium);
     grid-template-columns: repeat(auto-fit, minmax(30px, auto));
+    padding-top: var(--grid-gap-small);
+  }
+  .probe-details--bugs a {
+    border: var(--primary-controls-item-border);
+    padding: 1.5px var(--grid-gap-medium) 0 var(--grid-gap-medium);
+    border-radius: var(--border-radius-03);
+    opacity: 0.7;
+    transition: opacity 300ms;
+  }
+  .probe-details--bugs a:hover {
+    opacity: 1;
   }
   .probe-details--content .btn-more-info {
     position: absolute;
