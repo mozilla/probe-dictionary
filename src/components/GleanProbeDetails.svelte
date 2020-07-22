@@ -397,7 +397,7 @@
     display: grid;
     justify-items: start;
     grid-gap: var(--grid-gap-medium);
-    grid-template-columns: repeat(auto-fit, minmax(30px, auto));
+    grid-template-columns: repeat(auto-fit, minmax(30px, 30px));
     padding-top: var(--grid-gap-small);
   }
   .probe-details--bugs a {
