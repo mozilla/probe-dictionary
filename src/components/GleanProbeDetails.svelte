@@ -394,11 +394,10 @@
     z-index: 50;
   }
   .probe-details--bugs dd {
-    display: grid;
-    justify-items: start;
+    display: flex;
     grid-gap: var(--grid-gap-medium);
-    grid-template-columns: repeat(auto-fit, minmax(30px, 30px));
     padding-top: var(--grid-gap-small);
+    flex-wrap: wrap;
   }
   .probe-details--bugs a {
     border: var(--primary-controls-item-border);
