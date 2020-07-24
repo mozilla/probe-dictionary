@@ -152,6 +152,61 @@
                 <dd>{probe.info.lifetime}</dd>
               </dl>
             {/if}
+            {#if probe.info.time_unit}
+              <dl class="probe-details--group">
+                <dt>
+                  time unit
+                  <a
+                    href="https://mozilla.github.io/glean/book/user/metrics/timing_distribution.html"
+                    target="_blank"
+                    class="btn-more-info"
+                  >
+                    more info
+                  </a>
+                </dt>
+                <dd>{probe.info.time_unit}</dd>
+              </dl>
+            {/if}
+            {#if probe.info.bucket_count}
+              <dl class="probe-details--group">
+                <dt>
+                  bucket count
+                </dt>
+                <dd>{probe.info.bucket_count}</dd>
+              </dl>
+            {/if}
+            {#if probe.info.histogram_type}
+              <dl class="probe-details--group">
+                <dt>
+                  histogram type
+                </dt>
+                <dd>{probe.info.histogram_type}</dd>
+              </dl>
+            {/if}
+            {#if probe.info.unit}
+              <dl class="probe-details--group">
+                <dt>
+                  unit
+                </dt>
+                <dd>{probe.info.unit}</dd>
+              </dl>
+            {/if}
+            {#if probe.info.range_min !== undefined}
+              <dl class="probe-details--group">
+                <dt>
+                  range minimum
+                </dt>
+                <dd>{probe.info.range_min}</dd>
+              </dl>
+            {/if}
+            {#if probe.info.range_max !== undefined}
+              <dl class="probe-details--group">
+                <dt>
+                  range maximum
+                </dt>
+                <dd>{probe.info.range_max}</dd>
+              </dl>
+            {/if}
             <dl class="probe-details--group">
               <dt>
                 disabled
