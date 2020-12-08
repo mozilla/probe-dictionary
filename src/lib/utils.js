@@ -226,3 +226,23 @@ export const getSearchTextFromURLParams = () => {
   }
   return '';
 }
+
+/*
+ * Regular expression description (since JS doesn't have an ignore whitespace flag):
+ * \b+                            // Standard word boundary
+ * |(?<=[a-z][A-Z])(?=\d*[A-Z])   // A7Aa -> A7|Aa boundary
+ * |(?<=[a-z][A-Z])(?=\d*[a-z])   // a7Aa -> a7|Aa boundary
+ * |(?<=[A-Z])(?=\d*[a-z])        // a7A -> a7|A boundary
+ */
+export function snakeCase(str) {
+  // Convert a string into a snake_cased string.
+
+  // Replace non-alphanumeric characters with spaces in the reversed string.
+  const subbed = str.split('').reverse().join('').replace(/[^\w]|_/g, ' ');
+  // Apply the regexp on the reversed string.
+  const words = subbed.split(/\b|(?<=[a-z][A-Z])(?=\d*[A-Z])|(?<=[a-z][A-Z])(?=\d*[a-z])|(?<=[A-Z])(?=\d*[a-z])/);
+  // Filter spaces between words and snake_case.
+  const filtered = words.filter((w) => w.trim() !== '').map((w) => w.toLowerCase()).join('_');
+  // Return string reversed again.
+  return filtered.split('').reverse().join('')
+}
