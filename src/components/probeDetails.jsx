@@ -6,7 +6,8 @@ import ReactJSON from 'react-json-view';
 import {
   getVersionRange,
   getVersionRangeFromHistory,
-  getFriendlyExpiryDescriptionForHistory
+  getFriendlyExpiryDescriptionForHistory,
+  snakeCase
 } from '../lib/utils';
 
 
@@ -74,8 +75,9 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
 
   // Available documentation.
   const dataDocs = {
-    main_summary: 'https://docs.telemetry.mozilla.org/concepts/choosing_a_dataset.html#mainsummary',
-    events: 'https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html',
+    'telemetry.main': 'https://docs.telemetry.mozilla.org/datasets/pings.html#main-ping',
+    'telemetry.main_summary': 'https://docs.telemetry.mozilla.org/datasets/batch_view/main_summary/reference.html',
+    'telemetry.events_v1': 'https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html',
   };
 
   // Helper for code markup.
@@ -104,9 +106,9 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
     datasetInfo.push(getNewTabLink(url, 'Use Counter Dashboard'));
   }
 
-  // All events are available in main_summary and the events table.
+  // All events are available in telemetry.main and the events table.
   if (probe.type === 'event') {
-    const dataset = 'events';
+    const dataset = 'telemetry.events_v1';
     let datasetText = dataset;
     if (dataset in dataDocs) {
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
@@ -114,70 +116,38 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
     datasetInfo.push(<React.Fragment>{stmoLink}: in the {code(datasetText)} table</React.Fragment>);
   }
 
-  // main_summary includes all scalars.
+  // telemetry.main includes all scalars.
   if (probe.type === 'scalar') {
-    const dataset = 'main_summary';
+    const dataset = 'telemetry.main';
     let datasetText = dataset;
     if (dataset in dataDocs) {
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
-    const name = <React.Fragment>{code(<React.Fragment>scalar_<i>&lt;process&gt;</i>_{probe.name.toLowerCase().replace(/\./g, '_')}</React.Fragment>)}</React.Fragment>;
-    datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
+    if (state.details.record_in_processes) {
+      state.details.record_in_processes.forEach(process => {
+        let name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.scalars.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+        datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
+      });
+    }
   }
 
-  // main_summary includes a whitelist of histograms dynamically.
-  const mainSummaryHistogramWhitelist = [
-    'A11Y_INSTANTIATED_FLAG',
-    'A11Y_CONSUMERS',
-    'CERT_VALIDATION_SUCCESS_BY_CA',
-    'CYCLE_COLLECTOR_MAX_PAUSE',
-    'FX_SEARCHBAR_SELECTED_RESULT_METHOD',
-    'FX_URLBAR_SELECTED_RESULT_INDEX',
-    'FX_URLBAR_SELECTED_RESULT_INDEX_BY_TYPE',
-    'FX_URLBAR_SELECTED_RESULT_METHOD',
-    'FX_URLBAR_SELECTED_RESULT_TYPE',
-    'GC_MAX_PAUSE_MS',
-    'GC_MAX_PAUSE_MS_2',
-    'GHOST_WINDOWS',
-    'HTTP_CHANNEL_DISPOSITION',
-    'HTTP_PAGELOAD_IS_SSL',
-    'INPUT_EVENT_RESPONSE_COALESCED_MS',
-    'SEARCH_RESET_RESULT',
-    'SSL_HANDSHAKE_RESULT',
-    'SSL_HANDSHAKE_VERSION',
-    'SSL_TLS12_INTOLERANCE_REASON_PRE',
-    'SSL_TLS13_INTOLERANCE_REASON_PRE',
-    'TIME_TO_DOM_COMPLETE_MS',
-    'TIME_TO_DOM_CONTENT_LOADED_END_MS',
-    'TIME_TO_DOM_CONTENT_LOADED_START_MS',
-    'TIME_TO_DOM_INTERACTIVE_MS',
-    'TIME_TO_DOM_LOADING_MS',
-    'TIME_TO_FIRST_CLICK_MS',
-    'TIME_TO_FIRST_INTERACTION_MS',
-    'TIME_TO_FIRST_KEY_INPUT_MS',
-    'TIME_TO_FIRST_MOUSE_MOVE_MS',
-    'TIME_TO_FIRST_SCROLL_MS',
-    'TIME_TO_LOAD_EVENT_END_MS',
-    'TIME_TO_LOAD_EVENT_START_MS',
-    'TIME_TO_NON_BLANK_PAINT_MS',
-    'TIME_TO_RESPONSE_START_MS',
-    'TOUCH_ENABLED_DEVICE',
-    'TRACKING_PROTECTION_ENABLED',
-    'UPTAKE_REMOTE_CONTENT_RESULT_1',
-    'WEBVR_TIME_SPENT_VIEWING_IN_2D',
-    'WEBVR_TIME_SPENT_VIEWING_IN_OCULUS',
-    'WEBVR_TIME_SPENT_VIEWING_IN_OPENVR',
-    'WEBVR_USERS_VIEW_IN',
-  ];
-
-  if ((probe.type === 'histogram') && mainSummaryHistogramWhitelist.includes(probe.name)) {
-    const dataset = 'main_summary';
+  if (probe.type === 'histogram') {
+    const dataset = 'telemetry.main';
     let datasetText = dataset;
     if (dataset in dataDocs) {
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
-    let name = <React.Fragment>{code(<React.Fragment>histogram_<i>&lt;process&gt;</i>_{probe.name.toLowerCase()}</React.Fragment>)}</React.Fragment>;
-    datasetInfo.push(<React.Fragment>{datasetText} as {name}</React.Fragment>);
+    if (state.details.record_in_processes) {
+      state.details.record_in_processes.forEach(process => {
+        let name;
+        if (process === 'main') {
+          name = <React.Fragment>{code(<React.Fragment>payload.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+        } else {
+          name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+        }
+        datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
+      });
+    }
   }
 
   return datasetInfo;
