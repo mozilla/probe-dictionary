@@ -34,6 +34,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "cypress": "^3.4.1"
+    "@babel/preset-env": "^7.12.7",
+    "cypress": "^3.4.1",
+    "jest": "^26.6.3"
   }
 }
