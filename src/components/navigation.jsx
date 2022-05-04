@@ -1,26 +1,6 @@
 import React from 'react';
 
 
-async function handleShortLinkClick() {
-  const url = 'https://api-ssl.bitly.com/v3/shorten?';
-  // To test this locally either edit your local hosts file or
-  // replace window.location.href with any url string.
-  const params = `longUrl=${encodeURIComponent(window.location.href)}&access_token=48ecf90304d70f30729abe82dfea1dd8a11c4584&format=json`;
-
-  const response = await fetch(url + params);
-  if (response.status !== 200) {
-    console.error(`Bitly API response error. Status Code: ${response.status}`);
-    return;
-  }
-
-  const { data } = await response.json();
-  if (data.url) {
-    const linkInputElm = document.querySelector('.permalink-control input');
-    linkInputElm.value = data.url;
-    linkInputElm.classList.remove('hidden');
-  }
-}
-
 const Navigation = ({doStatsLinkClick, doFindProbesLinkClick, datePublished}) => {
   let dateString = '';
   if (datePublished) {
@@ -57,23 +37,6 @@ const Navigation = ({doStatsLinkClick, doFindProbesLinkClick, datePublished}) =>
           </li>
           <li className="nav-item">
             <a className="nav-link" href="https://telemetry.mozilla.org/"><i className="fa fa-home" /> Telemetry portal</a>
-          </li>
-          <li>
-            <div className="permalink-control">
-              <div className="input-group">
-                <span className="input-group-btn">
-                  <button
-                    onClick={handleShortLinkClick}
-                    type="button"
-                    className="btn btn-default"
-                    title="Get Shortlink"
-                  >
-                    <i className="fa fa-link" /> Get Shortlink
-                  </button>
-                </span>
-                <input type="text" className="form-control hidden" />
-              </div>
-            </div>
           </li>
         </ul>
         <div className="navbar-text my-lg-0" id="last-updated">
