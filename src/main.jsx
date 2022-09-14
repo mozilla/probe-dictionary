@@ -179,12 +179,7 @@ class Main extends Component {
         }
 
         // Add a detailed type to differentiate between regular and keyed probes
-        if (history[0]["details"]["keyed"]) {
-          // Ensure that we only add the word "keyed" once, since React lifecycle can call this method multiple times
-          data["detailed_type"] = data["type"].includes("keyed") ? data["type"] : `keyed ${data["type"]}`
-        } else {
-          data["detailed_type"] = data["type"]
-        }
+        data["detailed_type"] = history[0]["details"]["keyed"] ? `keyed ${data["type"]}` : data["type"]
 
         // Filter for version constraint.
         if (selectedVersion !== 'any') {
