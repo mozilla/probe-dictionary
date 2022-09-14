@@ -124,8 +124,9 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
     if (state.details.record_in_processes) {
+      const isKeyed = probe["history"][channel][0]["details"]["keyed"];
       state.details.record_in_processes.forEach(process => {
-        let name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.scalars.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+        let name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.{isKeyed ? 'keyed_scalars' : 'scalars'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
       });
     }
@@ -138,12 +139,13 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
     if (state.details.record_in_processes) {
+      const isKeyed = probe["history"][channel][0]["details"]["keyed"];
       state.details.record_in_processes.forEach(process => {
         let name;
         if (process === 'main') {
-          name = <React.Fragment>{code(<React.Fragment>payload.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+          name = <React.Fragment>{code(<React.Fragment>payload.{isKeyed ? 'keyed_histograms' : 'histograms'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         } else {
-          name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+          name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.{isKeyed ? 'keyed_histograms' : 'histograms'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         }
         datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
       });
