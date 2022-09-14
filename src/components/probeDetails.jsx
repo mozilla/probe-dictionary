@@ -62,7 +62,9 @@ function getProbeDocumentationURI(type) {
   const links = {
     environment: sourceDocs + 'data/environment.html',
     histogram: sourceDocs + 'collection/histograms.html',
+    'keyed histogram': sourceDocs + 'collection/histograms.html#keyed-histograms',
     scalar: sourceDocs + 'collection/scalars.html',
+    'keyed scalar': sourceDocs + 'collection/scalars.html#keyed-scalars',
     event: sourceDocs + 'collection/events.html',
   };
 
@@ -281,7 +283,7 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Type:</td>
                 <td id="detail-probe-type" className="grow">
-                  <a href={getProbeDocumentationURI(probe.type)}>{probe["detailed_type"]}</a>
+                  <a href={getProbeDocumentationURI(probe["detailed_type"])}>{probe["detailed_type"]}</a>
                 </td>
               </tr>
               <tr title="Whether this probe collected on Firefox release or only on prerelease channels.">
