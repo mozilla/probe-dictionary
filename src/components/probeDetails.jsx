@@ -62,7 +62,9 @@ function getProbeDocumentationURI(type) {
   const links = {
     environment: sourceDocs + 'data/environment.html',
     histogram: sourceDocs + 'collection/histograms.html',
+    'keyed histogram': sourceDocs + 'collection/histograms.html#keyed-histograms',
     scalar: sourceDocs + 'collection/scalars.html',
+    'keyed scalar': sourceDocs + 'collection/scalars.html#keyed-scalars',
     event: sourceDocs + 'collection/events.html',
   };
 
@@ -124,8 +126,9 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
     if (state.details.record_in_processes) {
+      const isKeyed = probe["history"][channel][0]["details"]["keyed"];
       state.details.record_in_processes.forEach(process => {
-        let name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.scalars.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+        let name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.{isKeyed ? 'keyed_scalars' : 'scalars'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
       });
     }
@@ -138,12 +141,13 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
     }
     if (state.details.record_in_processes) {
+      const isKeyed = probe["history"][channel][0]["details"]["keyed"];
       state.details.record_in_processes.forEach(process => {
         let name;
         if (process === 'main') {
-          name = <React.Fragment>{code(<React.Fragment>payload.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+          name = <React.Fragment>{code(<React.Fragment>payload.{isKeyed ? 'keyed_histograms' : 'histograms'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         } else {
-          name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.histograms.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
+          name = <React.Fragment>{code(<React.Fragment>payload.processes.{(process === 'main') ? 'parent' : process}.{isKeyed ? 'keyed_histograms' : 'histograms'}.{snakeCase(probe.name)}</React.Fragment>)}</React.Fragment>;
         }
         datasetInfo.push(<React.Fragment>{stmoLink}: in {datasetText} as {name}</React.Fragment>);
       });
@@ -279,7 +283,7 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Type:</td>
                 <td id="detail-probe-type" className="grow">
-                  <a href={getProbeDocumentationURI(probe.type)}>{probe.type}</a>
+                  <a href={getProbeDocumentationURI(probe["detailed_type"])}>{probe["detailed_type"]}</a>
                 </td>
               </tr>
               <tr title="Whether this probe collected on Firefox release or only on prerelease channels.">
@@ -351,7 +355,7 @@ class ProbeDetails extends Component {
               {getExtraProbeDetails(probe, probeInfo).map(detail => (
                 <tr key={detail.label}>
                   <td className="fit pr-2">{detail.label}:</td>
-                  <td className="grow">{detail.content}</td>
+                  <td className="grow">{detail.content.toString()}</td>
                 </tr>
                 ))}
               {categoryLabels && (

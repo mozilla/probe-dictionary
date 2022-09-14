@@ -178,6 +178,9 @@ class Main extends Component {
           history = history.filter(m => m.optout);
         }
 
+        // Add a detailed type to differentiate between regular and keyed probes
+        data["detailed_type"] = history[0]["details"]["keyed"] ? `keyed ${data["type"]}` : data["type"]
+
         // Filter for version constraint.
         if (selectedVersion !== 'any') {
           history = history.filter(m => {
