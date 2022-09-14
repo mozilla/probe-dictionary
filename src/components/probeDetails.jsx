@@ -281,7 +281,7 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Type:</td>
                 <td id="detail-probe-type" className="grow">
-                  <a href={getProbeDocumentationURI(probe.type)}>{probe.type}</a>
+                  <a href={getProbeDocumentationURI(probe.type)}>{probe["detailed_type"]}</a>
                 </td>
               </tr>
               <tr title="Whether this probe collected on Firefox release or only on prerelease channels.">
@@ -353,7 +353,7 @@ class ProbeDetails extends Component {
               {getExtraProbeDetails(probe, probeInfo).map(detail => (
                 <tr key={detail.label}>
                   <td className="fit pr-2">{detail.label}:</td>
-                  <td className="grow">{detail.content}</td>
+                  <td className="grow">{detail.content.toString()}</td>
                 </tr>
                 ))}
               {categoryLabels && (

@@ -34,7 +34,7 @@ const SearchResultsRow = ({
   return (
     <tr onClick={() => doExposeProbeDetails(probeId, rowData)}>
       <td className="search-results-field-name">{rowData.name}</td>
-      <td className="search-results-field-type">{rowData.type}</td>
+      <td className="search-results-field-type">{rowData["detailed_type"]}</td>
       <td className="search-results-field-population"
           title="Whether this probe collected on Firefox release or only on prerelease channels.">
         {getPopulation(history)}
