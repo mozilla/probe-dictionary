@@ -110,7 +110,7 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
 
   // All events are available in telemetry.main and the events table.
   if (probe.type === 'event') {
-    const dataset = 'telemetry.events_v1';
+    const dataset = 'telemetry.events';
     let datasetText = dataset;
     if (dataset in dataDocs) {
       datasetText = getNewTabLink(dataDocs[dataset], dataset);
