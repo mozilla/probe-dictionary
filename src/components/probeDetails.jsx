@@ -79,7 +79,7 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
   const dataDocs = {
     'telemetry.main': 'https://docs.telemetry.mozilla.org/datasets/pings.html#main-ping',
     'telemetry.main_summary': 'https://docs.telemetry.mozilla.org/datasets/batch_view/main_summary/reference.html',
-    'telemetry.events_v1': 'https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html',
+    'telemetry.events': 'https://docs.telemetry.mozilla.org/datasets/batch_view/events/reference.html',
   };
 
   // Helper for code markup.
