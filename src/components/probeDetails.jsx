@@ -20,7 +20,7 @@ const getNewTabLink = (link, label) => (
 
 function getFriendlyRecordingRangeForAllChannels(history) {
   let result = [];
-  
+
   ['nightly', 'beta', 'release'].forEach(channel => {
     const rangeText = getVersionRangeFromHistory(history[channel], channel);
     if (rangeText) {
@@ -301,7 +301,6 @@ class ProbeDetails extends Component {
               <tr>
                 <td className="fit pr-2">Find in:</td>
                 <td className="grow">
-                  {getNewTabLink(`https://dxr.mozilla.org/mozilla-central/search?q=${probe.name}`, 'DXR')},{' '}
                   {getNewTabLink(`https://searchfox.org/mozilla-central/search?q=${probe.name}`, 'Searchfox')}</td>
               </tr>
               <tr>
@@ -319,7 +318,7 @@ class ProbeDetails extends Component {
                 <td id="detail-recording-range" className="grow">
                   {getFriendlyRecordingRangeForAllChannels(probe.history)}
                   <p className="experimental-warning">
-                    This was computed from the history object in the JSON below. 
+                    This was computed from the history object in the JSON below.
                     If the range seems incorrect please{' '}
                     {getNewTabLink('https://github.com/mozilla/probe-dictionary/issues/new', 'file a bug')} with
                     the probe name and expected range.
