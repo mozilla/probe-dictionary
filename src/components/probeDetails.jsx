@@ -98,7 +98,7 @@ function getDatasetInfo(revisions, channelInfo, probeId, probe, channel, state) 
 
   // Use counter dashboard links.
   if ((probe.type === 'histogram') && probe.name.startsWith('USE_COUNTER2_')) {
-    const base = 'https://georgf.github.io/usecounters/';
+    const base = 'https://mozilla.github.io/usecounters/';
     const tokenizedName = probe.name.split('_');
     const params = {
       group: tokenizedName[2],
