@@ -179,7 +179,7 @@ class Main extends Component {
         }
 
         // Add a detailed type to differentiate between regular and keyed probes
-        data["detailed_type"] = history[0]["details"]["keyed"] ? `keyed ${data["type"]}` : data["type"]
+        data["detailed_type"] = history && history[0] && history[0]["details"]["keyed"] ? `keyed ${data["type"]}` : data["type"]
 
         // Filter for version constraint.
         if (selectedVersion !== 'any') {
